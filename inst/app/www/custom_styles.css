@@ -1,0 +1,156 @@
+:root {
+    --disco-main: #FDB813;
+    --disco-main2: #FA7D2B;
+    --disco-sec: #847dd1;
+    --disco-sec2: #7a74c1;
+    --disco-button: #33cc33;
+    --disco-warning: #BE1E2D;
+    --neutral: #808285;
+    --neutral2: #515356;
+    --neutral-light: #c8cace;
+}
+
+.disco{
+  color: var(--disco-main);
+  font-family:impact;
+  letter-spacing: 1px;
+  /* font-family: arial;
+  letter-spacing: 2px;
+  font-weight: bold;
+  */
+}
+
+.disco-button{
+  color: var(--disco-main);
+}
+
+.sidebar-toggle{
+  color: var(--disco-main) !important;
+}
+
+.navbar{
+  color: var(--disco-main) !important;
+}
+
+.disco-warning{
+  color: var(--disco-warning);
+  font-weight: bold;
+}
+
+/* logo */
+.skin-blue .main-header .logo {
+  background-color: var(--disco-sec);
+}
+
+/* logo when hovered */
+.skin-blue .main-header .logo:hover {
+  background-color: var(--disco-main2);
+}
+
+/* navbar (rest of the header) */
+.skin-blue .main-header .navbar {
+  background-color: var(--disco-sec2);
+}
+
+/* main sidebar */
+.skin-blue .main-sidebar {
+  background-color: var(--neutral-light);
+}
+
+/* main sidebar table */
+#summaryTable{
+  background-color: var(--neutral);
+}
+
+/* other links in the sidebarmenu */
+.skin-blue .main-sidebar .sidebar .sidebar-menu a{
+  background-color: var(--neutral-light);
+  color: var(--neutral2);
+}
+
+/* active selected tab in the sidebarmenu */
+.skin-blue .main-sidebar .sidebar .sidebar-menu .active a{
+  background-color: var(--disco-main2);
+  color: #ffffff;
+}
+
+.sidebarsplitter {
+               height: 6px;
+               border: 0;
+               margin-top: 5px;
+               margin-bottom: 5px;
+               box-shadow: inset 0 6px 6px -6px rgba(0, 0, 0, 0.5);
+               border-color: var(--neutral)
+}
+
+/* other links in the sidebarmenu when hovered */
+.skin-blue .main-sidebar .sidebar .sidebar-menu a:hover{
+  background-color: var(--disco-sec2);
+  color: #ffffff;
+}
+
+.box.box-solid.box-primary>.box-header{
+  background-color: var(--disco-sec);
+}
+
+.box.box-solid.box-primary {
+    border: 1px solid var(--disco-sec);
+}
+
+.irs{
+  color: var(--disco-sec);
+}
+
+a:link    { color: var(--disco-main2)}  /* unvisited links */
+a:visited { color: var(--disco-main2)}  /* visited links */
+a:hover   { color: var(--disco-sec)}  /* user hovers */
+a:active  { color: var(--disco-sec)}  /* active links */
+
+
+.mainloader {
+  border: 8px solid var(--disco-main);
+  border-top: 8px solid var(--disco-sec2);
+  border-right: 8px solid var(--neutral-light);
+  border-bottom: 8px solid var(--neutral-light);
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  -webkit-animation:spin 2s linear infinite;
+  -moz-animation:spin 2s linear infinite;
+  animation:spin 2s linear infinite;
+}
+.loader {
+  -webkit-animation:spin 2s linear infinite;
+  -moz-animation:spin 2s linear infinite;
+  animation:spin 2s linear infinite;
+}
+@-moz-keyframes spin { 100% { -moz-transform: rotate(360deg); } }
+@-webkit-keyframes spin { 100% { -webkit-transform: rotate(360deg); } }
+@keyframes spin { 100% { -webkit-transform: rotate(360deg); transform:rotate(360deg); } }
+
+
+/* shiny download buttons */
+a.shiny-download-link:link, a.shiny-download-link:active,a.shiny-download-link:hover, a.shiny-download-link:visited{
+  color: var(--neutral2);
+}
+
+/* plot download buttons */
+.plotDL {
+  display: right-align;
+}
+
+.nav-tabs span.header-section-number {
+    width: auto;
+    padding: 0 10px;
+}
+
+/* Resize all plots to 50% total window size*/
+.shiny-plot-output{
+  height:50vh !important;
+}
+
+#startRegress{
+  color: var(--neutral2);
+  background-color: var(--disco-main2)
+}
+

@@ -1,0 +1,73 @@
+Package: DiscoRhythm
+Title: Interactive Workflow for Discovering Rhythmicity in Biological Data
+Version: 0.99.0
+Authors@R: c(
+    person("Matthew", "Carlucci",
+    email = "Matthew.Carlucci@camh.ca",
+    role = c("aut", "cre")),
+    person("Algimantas", "Kriščiūnas",
+    email = "algimantas.krisciunas@gmc.vu.lt",
+    role = c("aut")),
+    person("Haohan", "Li",
+    email = "ch2siu@waterloo.ca",
+    role = c("aut")),
+    person("Povilas", "Gibas",
+    email = "povilas.gibas@bti.vu.lt",
+    role = c("aut")),
+    person("Karolis", "Koncevičius",
+    email = "karolis.koncevicius@gmc.vu.lt",
+    role = c("aut")),
+    person("Art", "Petronis",
+    email = "Art.Petronis@camh.ca",
+    role = c("aut")),
+    person("Gabriel", "Oh",
+    email = "Garbriel.Oh@camh.ca",
+    role = c("aut"))
+    )
+Description: Set of functions for estimation of cyclical characteristics, such 
+  as period, phase, amplitude, and statistical significance in large temporal 
+  datasets. Supporting functions are available for quality control, 
+  dimensionality reduction, spectral analysis, and analysis of experimental 
+  replicates. Contains a R Shiny web interface to execute all workflow steps.
+Depends: R (>= 3.5.0)
+License: GPL-3
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 6.1.1
+VignetteBuilder: knitr
+Imports: 
+    matrixTests,
+    matrixStats,
+    MetaCycle,
+    data.table,
+    ggplot2,
+    ggExtra,
+    dplyr,
+    broom,
+    reshape2,
+    shiny,
+    shinyBS,
+    shinycssloaders,
+    shinydashboard,
+    shinyjs,
+    BiocStyle,
+    rmarkdown,
+    knitr,
+    kableExtra,
+    magick,
+    VennDiagram,
+    UpSetR,
+    heatmaply,
+    viridis,
+    plotly,
+    DT,
+    gridExtra,
+    methods,
+    stats
+Suggests: testthat
+SystemRequirements: To generate html reports pandoc 
+  (http://pandoc.org/installing.html) is required.
+biocViews: Software, TimeCourse, QualityControl, Visualization, GUI,
+  PrincipalComponent
+URL: https://github.com/matthewcarlucci/DiscoRhythm
+BugReports: https://github.com/matthewcarlucci/DiscoRhythm/issues

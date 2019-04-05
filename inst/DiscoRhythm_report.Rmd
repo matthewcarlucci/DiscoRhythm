@@ -1,0 +1,216 @@
+---
+title: DiscoRhythm_`r packageVersion("DiscoRhythm")` Report
+date:
+output:
+  BiocStyle::html_document:
+    code_download: true
+    toc: true
+    number_sections: true
+    toc_float: true
+    css: app/www/custom_styles.css
+---
+
+> The analysis below can be reproduced in R using `discoBatch()` or 
+interactively in `discoApp()` by using
+the same input data and parameters shown below.
+Note: This report is static and does not perform any reactive data processing.
+
+# Data Processing
+
+## Parameter Settings
+Below is a table of all parameters input to this report.
+See `?discoBatch` R documentation for parameter descriptions.
+
+```{r echo=F}
+knitr::kable(data.frame(
+  "Parameter"=c("cor_threshold","cor_method","cor_threshType","pca_threshold",
+                "pca_scale","pca_pcToCut","aov_method","aov_pcut","aov_Fcut",
+                "avg_method","osc_method","timeType","main_per",
+                "osc_period"),
+  "Value"=c(cor_threshold,cor_method,cor_threshType,pca_threshold,
+            pca_scale,paste(pca_pcToCut,collapse = " "),
+            aov_method,aov_pcut,aov_Fcut,avg_method,
+            paste(osc_method,collapse=" "),
+            timeType,main_per,osc_period)
+  ), format = "markdown")
+```
+
+```{r echo=F}
+batchscript=system.file("", "DiscoRhythm_batch.R", 
+                               package = "DiscoRhythm",
+                               mustWork = TRUE)
+```
+
+Below is all R code necessary to generate the main DiscoRhythm results. These
+results will be used in section \@ref(visualizations) for generating the
+summary figures. Refer back to the introduction to DiscoRhythm document
+(`browseVignettes("DiscoRhythm")`) for a detailed description of the workflow 
+steps.
+
+```{r code = readLines(batchscript)}
+```
+
+# Visualizations
+
+Importing the DiscoRhythm plotting functions used by the web application
+for use in this report. To reproduce these results ensure you have all 
+necessary package versions (See \@ref(session-info)). Refer to the user's
+guide or to the descriptions in the web application for details on each figure.
+
+```{r }
+source(system.file("app/code/server", "plots.R", package = "DiscoRhythm",
+                   mustWork = TRUE))
+```
+
+# Process Input Data
+
+## Design Summary
+
+```{r }
+knitr::kable(discoDesignSummary(Metadata), format = "markdown")
+```
+
+# Outlier Detection
+
+## Inter-sample Correlations {.tabset}
+
+### Average Correlations
+
+```{r }
+plotly::ggplotly(plotAvgCor(Metadata,CorRes$meanCor,
+                            corCut = CorRes$threshold,tUnit = "hr"))
+```
+
+### Correlation Heatmap
+
+```{r }
+plotHeatMCor(CorRes$corMat,1)
+```
+
+## PCA {.tabset}
+
+### PC Score Distributions
+
+```{r }
+plotly::ggplotly(
+  plotPCAdists(PCAres,SDfactor = pca_threshold,pcToUse = pca_pcToCut)
+)
+```
+
+### One Pair
+
+```{r }
+gridExtra::grid.arrange(
+  plotPCAWithShape(PCAres$x,Metadata,col = "None",1,2,PCAres$outliers)+
+    ggtitle("Before Outlier Removal"),
+  plotPCAWithShape(PCAresAfter$x,Metadata,col = "None",1,2)+
+    ggtitle("After Outlier Removal"),
+  ncol=2)
+```
+
+### Scree Plot
+
+```{r }
+plotPCAstats(PCAres$table,PCAresAfter$table,pcToUse = pca_pcToCut)
+```
+
+### All Pairs {.tabset}
+
+#### Before Outlier Removal
+
+```{r }
+plotPCAPairs(PCAres$x,c("PC1","PC2","PC3","PC4"))
+```
+
+#### After Outier Removal
+
+```{r messages=F}
+invisible(plotPCAPairsAfter(PCAresAfter$x,c("PC1","PC2","PC3","PC4"),
+                            PCAres$outliers))
+```
+
+## Outlier Summary {.tabset}
+### Outliers
+
+```{r }
+DT::datatable(Metadata[PCAres$outliers | CorRes$outliers,])
+```
+
+### Remaining Samples
+
+```{r }
+knitr::kable(discoDesignSummary(MetaFinal), format = "markdown")
+```
+
+# Replicate Analysis {.tabset}
+## ANOVA P-Value Histogram
+
+```{r }
+plotPvalues(ANOVAres$aovP,50, aov_pcut, 'ANOVA')
+```
+
+## Signal-to-noise
+
+```{r }
+ObsVsExpSNR(ANOVAres$allStats,aov_Fcut)
+```
+
+# Period Detection
+## Period Detection
+
+```{r }
+plotPeriodDetect(PeriodRes)
+```
+
+## PC Fits to Fixed Period {.tabset}
+### PC Cosinor Fits
+
+```{r }
+plotOVpcaScatter(OVpca = OVpca,regressionMeta,osc_period)
+```
+
+### Cosinor Table
+
+```{r }
+knitr::kable(
+  discoODAs(data.frame("PC"=1:ncol(OVpca$x),t(OVpca$x)),regressionMeta)$CS,
+  format = "markdown"
+)
+```
+
+# Oscillation Detection
+## Detection Summary {.tabset}
+### P-value Histograms
+
+```{r }
+plotPQValueHist(discoODAres,bg = seq_len(nrow(regressionData)),50,
+                cutoff = 0.05,discoODAid2name)
+```
+
+### Acrophase Rose Diagrams
+
+```{r }
+fg <- lapply(discoODAres,function(x) which(x$pvalue<0.05))
+plotAllAcroHist(discoODAres,fg,50,osc_period,TRUE,discoODAid2name)
+```
+
+### Amplitude Histogram
+
+```{r }
+
+plotAmpliHist(discoODAres,bg = seq_len(nrow(regressionData)),
+              fg=fg[['CS']],50,'')
+```
+
+### Intersection of Methods
+
+```{r }
+allIntersect(fg)
+```
+
+# Session Info
+
+```{r }
+sessionInfo()
+```
+

@@ -1,0 +1,9 @@
+Meta
+doc
+.Rproj.user
+.Rhistory
+.RData
+.DS_Store
+inst/doc
+*.html
+vignettes/disco_workflow_vignette.R

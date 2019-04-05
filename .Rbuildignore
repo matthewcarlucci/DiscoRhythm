@@ -1,0 +1,7 @@
+^Meta$
+^doc$
+^.*\.Rproj$
+^\.Rproj\.user$
+^\.git$
+^\.gitlab-ci\.yml$
+^.*\.tar\.gz$
