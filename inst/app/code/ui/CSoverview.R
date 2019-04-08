@@ -37,10 +37,12 @@ fluidPage(
                         tags$hr(),
                         p(
                             class = "text-muted",
-                            "Each period is tested as independent Cosinor
-                            models across all rows of time series.
+                            "Each period is tested as an independent Cosinor
+                            model fit across all rows.
                             A dominant period should present
-                            itself by a higher median r-squared of Cosinor fit."
+                            itself by a higher median r-squared of Cosinor fit
+                            and row specific periodicities may be seen as 
+                            outlier data points."
                             )
                         )
                     )

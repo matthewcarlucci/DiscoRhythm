@@ -9,7 +9,8 @@ discoCheckInput(Maindata)
 \arguments{
 \item{Maindata}{data.frame with the first column containing row IDs and all
 subsequent columns containing experimental values. Columns should follow the
-expected naming format described in the vignette.}
+expected naming format described in the vignette. May also be a 
+SummarizedExperiment with colData in the same format as Metadata.}
 }
 \value{
 data.frame in Maindata format (checked for errors and
@@ -24,6 +25,7 @@ If matrix values are character it will be attempted to convert them
 to numeric.
 If input is not a data.frame it will be converted using
 \code{as.data.frame()}.
+User will be warned if row IDs contain duplicate entries.
 }
 \examples{
 Maindata <- discoGetSimu()

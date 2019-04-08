@@ -192,6 +192,8 @@ intended for this purpose. If column
 names are not unique, the `Unique Id` field will be generated to provide 
 unique sample names during usage of DiscoRhythm.
 
+### Processed Metadata Table
+
 The data extracted above is stored in the DiscoRhythm application as:
 
 ```{r echo=F,message=FALSE}
@@ -199,8 +201,6 @@ knitr::kable(head(discoParseMeta(colnames(indata)[-1])), format = "markdown")
 ```
 
 --------------------------------------------------
-
-Examples of valid DiscoRhythm naming styles:
 
 *Note: If there are more groupings in the dataset or if the dataset does not fit
 into this design, it may be appropriate to split the dataset into subgroups 
@@ -582,8 +582,11 @@ knitr::include_graphics("SessionArchivingSS.jpg")
 
 # DiscoRhythm R Usage
 
-For each of the sections below, refer to the DiscoRhythm R package manual for 
-more details on function usage, arguments and methods or use `?`. For instance, 
+This section will detail usage of the R functions used to perform the
+analysis in section \@ref(discorhythm-interface-walkthrough). For each of
+the sections below, refer to the DiscoRhythm R package manual for
+specific technical details on usage, arguments and methods or use `?` to
+access individual manual pages. For instance, 
 get more 
 help for the function `discoBatch()` with command `?discoBatch`.
 
@@ -598,8 +601,8 @@ indata <- discoGetSimu()
 knitr::kable(head(indata[,1:6]), format = "markdown") # Inspect the data
 ```
 
-The two complementary data objects used frequently in the DiscoRhythm R package
-are:
+The two complementary data objects used frequently in the DiscoRhythm R
+package are:
 
 1) Maindata - A data.frame following the format above (described in section 
 \@ref(input-datasets)). This contains the observed values of the experiment.
@@ -613,6 +616,8 @@ are expected:
   - ID  
   - Time  
   - ReplicateID  
+
+Maindata and Metadata may be conveniently combined into a single MaindataSE `r BiocStyle::Biocpkg("SummarizedExperiment")` object for use as an input throughout the workflow. Maindata arguments to the DiscoRhythm functions below could be substituted with MaindataSE in all following code execution.
 
 ### discoCheckInput
 
@@ -647,6 +652,23 @@ shown in brackets.
 knitr::kable(discoDesignSummary(Metadata),format = "markdown")
 ```
 
+### discoDFtoSE/discoSEtoDF
+
+For interoperability with other Bioconductor packages, it may be desirable to import data as a SummarizedExperiment object for use in place of the `Maindata` plain tabular format.
+
+Convenient functions have been provided in DiscoRhythm for converting to and from the SummarizedExperiment format:
+
+```{r}
+### Two methods of constructing a SummarizedExperiment
+# 1) Directly from Maindata
+# Performs discoParseMeta to get colData
+MaindataSE <- discoDFtoSE(Maindata)
+# 2) Merge the generated Maindata and Metadata into one
+MaindataSE <- discoDFtoSE(Maindata,Metadata)
+Maindata <- discoSEtoDF(MaindataSE)
+```
+
+
 ## Outlier Detection
 
 ### discoInterCorOutliers
@@ -655,7 +677,6 @@ Performs the analysis described in \@ref(inter-sample-correlation).
 
 ```{r}
 CorRes <- discoInterCorOutliers(Maindata,
-                                Metadata,
                                 cor_method="pearson",
                                 threshold=3,
                                 thresh_type="SD")
@@ -678,7 +699,7 @@ A light wrapper was written for the `stats::prcomp` function for better use with
 the web application and it can be utilized as:
 
 ```{r}
-PCAresAfter <- discoPCA(Maindata[,-1][,!PCAres$outliers])
+discoPCAres <- discoPCA(Maindata)
 ```
 
 This returns the same output as prcomp with the addition of a reformatted 
@@ -689,13 +710,13 @@ summary table (available as `PCAresAfter$table`).
 Below the results of the outlier detection analysis are shown:
 
 ```{r}
-DataFinal <- data.frame(Maindata[,1],
+Maindata_filtered <- data.frame(Maindata[,1],
                         Maindata[,-1][,!PCAres$outliers & !CorRes$outliers])
-MetaFinal <- Metadata[!PCAres$outliers & !CorRes$outliers,]
+Metadata_filtered <- Metadata[!PCAres$outliers & !CorRes$outliers,]
 
 DT::datatable(Metadata[PCAres$outliers | CorRes$outliers,])
 
-knitr::kable(discoDesignSummary(MetaFinal),format = "markdown")
+knitr::kable(discoDesignSummary(Metadata_filtered),format = "markdown")
 ```
 
 ## Row Selection
@@ -705,14 +726,14 @@ knitr::kable(discoDesignSummary(MetaFinal),format = "markdown")
 Performs the analysis described in \@ref(row-selection).
 
 ```{r}
-ANOVAres <- discoRepAnalysis(DataFinal,
-                             MetaFinal,
+ANOVAres <- discoRepAnalysis(Maindata_filtered,
+                             Metadata_filtered,
                              aov_method="Equal Variance",
                              aov_pcut=0.05,
                              aov_Fcut=1,
                              avg_method="Median")
-regressionMeta <- ANOVAres$regMet
-regressionData <- ANOVAres$regDat
+Maindata_combined <- ANOVAres$regDat
+Metadata_combined <- ANOVAres$regMet
 ```
 
 ## Dominant Rhythmicities  
@@ -722,16 +743,16 @@ regressionData <- ANOVAres$regDat
 Performs the analysis described in \@ref(period-detection).
 
 ```{r}
-PeriodRes <- discoPeriodDetection(regressionData,
-                                  regressionMeta,
+PeriodRes <- discoPeriodDetection(Maindata_combined,
+                                  Metadata_combined,
                                   timeType="linear",
                                   main_per=24)
 ```
 
 ```{r}
-OVpca <- discoPCA(regressionData[,-1])
+OVpca <- discoPCA(Maindata_combined)
 knitr::kable(discoODAs(data.frame("PC"=1:ncol(OVpca$x),t(OVpca$x)),
-                       regressionMeta)$CS, format = "markdown")
+                       Metadata_combined)$CS, format = "markdown")
 ```
 
 ## Oscillation Detection
@@ -742,7 +763,8 @@ Performs the analysis described in \@ref(oscillation-detection) using just the
 Cosinor method.
 
 ```{r}
-discoODAres <- discoODAs(regressionData,regressionMeta,
+discoODAres <- discoODAs(Maindata_combined,
+                         Metadata_combined,
                          period=24,
                          method="CS",
                          ncores=1,
@@ -760,7 +782,7 @@ called through a single call to `discoBatch()`.
 discoBatch(indata=indata,
   report="discoBatch_example.html",
   metadata=NULL,
-  ncores=parallel::detectCores()-1,
+  ncores=1,
   main_per=24,
   timeType="linear",
   cor_threshold=3,

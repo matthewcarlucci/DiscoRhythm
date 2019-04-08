@@ -9,7 +9,8 @@ discoPCA(Maindata, scale = TRUE, npcs = 10)
 \arguments{
 \item{Maindata}{data.frame with the first column containing row IDs and all
 subsequent columns containing experimental values. Columns should follow the
-expected naming format described in the vignette.}
+expected naming format described in the vignette. May also be a 
+SummarizedExperiment with colData in the same format as Metadata.}
 
 \item{scale}{logical, whether or not to scale the data prior to PCA, see
 \link[stats]{prcomp} for more details.}

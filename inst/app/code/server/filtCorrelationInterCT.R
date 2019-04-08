@@ -5,7 +5,7 @@ interCTPlot <- reactive({
     plotAvgCor(Metadata(), meanCor(), corrThreshold(), input$tUnit)
 })
 output$plotInterCTCor <- renderPlotly({
-    gg <- ggplotly(interCTPlot())
+    gg <- plotly::ggplotly(interCTPlot())
   # Remove additional info from point to display
     for (i in seq_len(length(gg$x$data))) {
         gg$x$data[[i]]$text <- gsub("<.*", "", gsub(".*ID: ", "",

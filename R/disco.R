@@ -132,11 +132,11 @@ discoApp <- function(){
 
 #' Execute Oscillation Detection Using DiscoRhythm
 #'
-#' Runs each selected oscillation deteciton algorithm sequentially to obtain
+#' Runs each selected oscillation deteciton algorithm sequentially to
+#'  obtain
 #' oscillation characteristics of each row of the input data.
-#'
-#' @param regressionData data.frame input.
-#' @param regressionMeta data.frame input.
+#'  Technical replicates are expected to be merged by this stage.
+#' @inheritParams discoInterCorOutliers
 #' @param period numeric, the hypothesized period to test for.
 #' @param method character, names of ODAs to use. If length>1 will test all
 #' input method names.
@@ -160,9 +160,22 @@ discoApp <- function(){
 #' # Execute the Cosinor method only
 #' discoODAres <- discoODAs(Maindata,Metadata,method="CS")
 #'
-discoODAs <- function(regressionData, regressionMeta, period=24,
+discoODAs <- function(Maindata, Metadata=NULL, period=24,
     method = "CS", circular_t=FALSE, ncores = 1) {
 
+    # Convert se input
+    if(methods::is(Maindata,"SummarizedExperiment")){
+        if(is.null(Metadata)){
+            Metadata <- colData(Maindata)
+        }
+        Maindata <- discoSEtoDF(Maindata)
+    } else {
+        if(is.null(Metadata)){
+            message("Extracting sample metadata from column names.")
+            Metadata <- discoParseMeta(colnames(Maindata)[-1])
+        }
+    }
+    
     if(any(method %in% DiscoRhythm::discoODAid2name)){
         message("Detected full ODA names, coverting to
                 Ids using discoODAid2name")
@@ -171,13 +184,13 @@ discoODAs <- function(regressionData, regressionMeta, period=24,
             )[DiscoRhythm::discoODAid2name %in% method]
     }
 
-    method <- discoGetODAs(regressionData,regressionMeta,
+    method <- discoGetODAs(Maindata,Metadata,
         method,period,circular_t)
 
     unif <- list()
     # Run CS
     if ("CS" %in% method) {
-        unif$CS <- lmCSmat(regressionData[, -1], regressionMeta$Time, period)
+        unif$CS <- lmCSmat(Maindata[, -1], Metadata$Time, period)
     # Fix NAs
         nanId <- is.nan(unif$CS$pvalue)
         unif$CS[nanId, "acrophase"] <- NaN
@@ -192,7 +205,7 @@ discoODAs <- function(regressionData, regressionMeta, period=24,
         # All arguments of meta2d are explicitly called
         cyc <- MetaCycle::meta2d(
             infile = "dummy", outdir = "dummy", filestyle = "csv",
-            timepoints = regressionMeta$Time,
+            timepoints = Metadata$Time,
             minper = period, maxper = period, cycMethod = rest,
             analysisStrategy = "auto",
             outputFile = FALSE,
@@ -204,7 +217,7 @@ discoODAs <- function(regressionData, regressionMeta, period=24,
             releaseNote = FALSE,
             outSymbol = "dummy", parallelize = .Platform$OS.type != "windows",
             nCores = ncores,
-            inDF = regressionData
+            inDF = Maindata
             )
 
         for (method in rest) {
@@ -276,7 +289,7 @@ PeriodDetection_range <- function(times,circular_t,main_per,test_periods){
 #' @inheritParams discoODAs
 #'
 #' @return A data.frame of Rsquared values for each period, for each row of
-#' regressionData.
+#' Maindata.
 #'
 #' @examples
 #' demodata <- discoGetSimu()
@@ -289,11 +302,24 @@ PeriodDetection_range <- function(times,circular_t,main_per,test_periods){
 #' rsqs <- discoPeriodDetection(demodata,demometa,timeType="circular")
 #'
 #' @export
-discoPeriodDetection <- function(regressionData, regressionMeta,
+discoPeriodDetection <- function(Maindata,
+                                 Metadata=NULL,
     timeType = "linear", main_per = 24,
     test_periods = NULL) {
-
-    times <- regressionMeta$Time
+    
+    # Convert se input
+    if(methods::is(Maindata,"SummarizedExperiment")){
+        if(is.null(Metadata)){
+            Metadata <- colData(Maindata)
+        }
+        Maindata <- discoSEtoDF(Maindata)
+    } else {
+        if(is.null(Metadata)){
+            Metadata <- discoParseMeta(colnames(Maindata)[-1])
+        }
+    }
+    
+    times <- Metadata$Time
     circular_t <- (timeType == "circular")
 
     # Validates chosen periods or generates an appropraite range
@@ -301,8 +327,8 @@ discoPeriodDetection <- function(regressionData, regressionMeta,
 
     # Run Cosinor to get r-squared on all rows at candidate periods
     cosinor_res <- vapply(as.numeric(periods), function(per) {
-        lmCSmat(regressionData[, -1], times, per = per)$Rsq
-    }, numeric(nrow(regressionData)))
+        lmCSmat(Maindata[, -1], times, per = per)$Rsq
+    }, numeric(nrow(Maindata)))
     colnames(cosinor_res) <- periods
 
     allres <- data.table::melt(cosinor_res)

@@ -34,8 +34,9 @@ discoParseMeta <- function(samplenames, shinySession = NULL) {
 
     if (!all(grepl(myregex, samplenames))) {
         stop(c("Unable to parse sample names. ",
-            "Please use time values only, or use the same structure ",
-            "as provided example files to indicate replicates."))
+            "Column names should contain time values only, 
+            or use the same structure ",
+            "as the provided example to indicate replicates."))
     }
 
     meta <- data.frame(

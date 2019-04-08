@@ -7,3 +7,4 @@ doc
 inst/doc
 *.html
 vignettes/disco_workflow_vignette.R
+*.Rproj

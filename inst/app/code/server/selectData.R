@@ -57,14 +57,20 @@ Metadata <- reactive({
     )
 })
 
+selectDataSE <- reactive({
+    discoSE(Maindata(),Metadata())
+})
+
+
 ########################################
 # EXPLORATORY TABLES
 ########################################
 
 output$rawSampleKey <- DT::renderDataTable({
     req(!is.null(Maindata()))
-  # Only show at most 50 rows
-    Maindata()[1:ifelse(nrow(Maindata()) < 50, nrow(Maindata()), 50), ]
+    nr <- nrow(Maindata())
+    # Only show at most 50 rows
+    Maindata()[1:min(nr, 50), ]
 },
 rownames = FALSE,
 options = list(scrollX = TRUE, pageLength = 10, autoWidth = TRUE),
@@ -176,7 +182,7 @@ observe({
         req(Maindata())
         shinyjs::show("dataName")
         shinyjs::show("summaryTable")
-        summaryVal$nSamplesOri <- ncol(Maindata()) - 1
+        summaryVal$nSamplesOri <- nrow(Metadata())
         summaryVal$nRowsOri <- nrow(Maindata())
     }
     summaryVal$nSamples <- NA
@@ -186,17 +192,7 @@ observe({
     summaryVal$ANOVAstate <- NA
     summaryVal$TRmerge <- NA
 })
-# Warn user if any row IDs are duplicated
-observe({
-    req(Maindata())
-    if (anyDuplicated(Maindata()$IDs) > 0) {
-        showNotification(type = "warning", duration = 8, HTML(
-            paste0("<h4>Duplicated row IDs detected!</h4>"),
-            paste0(
-              "Please consider removing the duplicated IDs before continuing.")
-            ))
-    }
-})
+
 # Hide tabs if no CSV loaded and show when loaded
 observeEvent(input$selectInputType, {
     myTabs <- c("filtCorrelationInterCT", "pca", "metadata",

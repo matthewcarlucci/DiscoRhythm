@@ -28,7 +28,7 @@ observe({
 })
 
 
-OVpca <- reactive(DiscoRhythm:::discoPCA(regressionData()[, -1]))
+OVpca <- reactive(DiscoRhythm:::discoPCA(regressionData()))
 
 ### Period detection
 output$PeriodDetectionRange <- renderUI({
@@ -80,7 +80,7 @@ PeriodRes <- reactive({
 })
 
 OVpca <- reactive({
-    discoPCA(regressionData()[, -1], scale = TRUE)
+    discoPCA(regressionData(), scale = TRUE)
 })
 
 output$OVperiodTable <- renderTable(OVpca()$table)

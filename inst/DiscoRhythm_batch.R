@@ -9,12 +9,13 @@ Maindata <- discoCheckInput(indata)
 Metadata <- discoParseMeta(colnames(Maindata)[-1])
 
 # Intersample correlations
-CorRes <- discoInterCorOutliers(Maindata,Metadata,cor_method,
+CorRes <- discoInterCorOutliers(Maindata,cor_method,
                                 cor_threshold,cor_threshType)
 
 # PCA for outlier detection
 PCAres <- discoPCAoutliers(Maindata,pca_threshold,pca_scale,pca_pcToCut)
-PCAresAfter <- discoPCA(Maindata[,-1][,!PCAres$outliers])
+PCAresAfter <- discoPCA(data.frame(Maindata[,1],
+                                   Maindata[,-1][,!PCAres$outliers]))
 
 # Removing the outliers from the main data.frame and metadata data.frame
 DataFinal <- data.frame(Maindata[,1],
@@ -30,7 +31,7 @@ regressionMeta <- ANOVAres$regMet
 regressionData <- ANOVAres$regDat
 
 # Perform PCA on the final dataset
-OVpca <- discoPCA(regressionData[,-1])
+OVpca <- discoPCA(regressionData)
 
 # Period Detection
 PeriodRes <- discoPeriodDetection(regressionData,

@@ -8,6 +8,7 @@
 #' to numeric.
 #' If input is not a data.frame it will be converted using
 #' \code{as.data.frame()}.
+#' User will be warned if row IDs contain duplicate entries.
 #'
 #' @inheritParams discoInterCorOutliers
 #'
@@ -20,30 +21,43 @@
 #' Maindata <- discoGetSimu()
 #' Maindata_clean <- discoCheckInput(Maindata)
 #'
+#' @importFrom SummarizedExperiment SummarizedExperiment colData
 discoCheckInput <- function(Maindata) {
-
+    
+    isSE <- methods::is(Maindata,"SummarizedExperiment")
+    if(isSE){
+        dat <- discoSEtoDF(Maindata)
+    } else {
+        dat <- Maindata
+    }
+    
     # Check input is a data.frame
-    if (!methods::is(Maindata,"data.frame")) {
+    if (!methods::is(dat,"data.frame")) {
         warning("Input data is not a data.frame, attempting to convert")
-        Maindata <- as.data.frame(Maindata)
+        dat <- as.data.frame(dat)
     }
 
     # Check enough data is available for analysis
     if (ncol(Maindata) <= 3) {
         stop("More than 3 samples are needed to perform analysis")
     }
-
+    
+    if (anyDuplicated(dat$IDs)) {
+                warning("Please consider deduplicating row IDs before 
+                        continuing.")
+    }
+    
     ## Remove constant rows or rows with NAs
     # Flag rows with NAs
-    rowToKeep <- apply(Maindata[, -1], 1, function(x)
+    rowToKeep <- apply(dat[, -1], 1, function(x)
         !any(is.na(as.numeric(x))))
     # Flag rows with constant values
     rowToKeep[rowToKeep] <- !apply(
-        Maindata[rowToKeep, -1], 1,
+        dat[rowToKeep, -1], 1,
         function(x) max(as.numeric(x)) == min(as.numeric(x))
         )
     if (sum(!rowToKeep) != 0) {
-        Maindata <- Maindata[rowToKeep, ]
+        dat <- dat[rowToKeep, ]
         warning(
             paste0("Deleted ", sum(!rowToKeep),
                 " rows since they were constant across samples ",
@@ -51,15 +65,26 @@ discoCheckInput <- function(Maindata) {
     }
 
     # If values are not read as numeric coerce to numeric
-    if (!all(vapply(Maindata[, -1], function(x) is.numeric(x), logical(1)))) {
+    if (!all(vapply(dat[, -1], function(x) is.numeric(x), logical(1)))) {
         warning("Data was not read as numeric, attempting to coerce to numeric")
-        colNames <- colnames(Maindata)
-        Maindata <- cbind(Maindata[, 1],
-            data.frame(lapply(Maindata[, -1], function(x) as.numeric(x))))
-        colnames(Maindata) <- colNames
+        colNames <- colnames(dat)
+        dat <- cbind(dat[, 1],
+            data.frame(lapply(dat[, -1], function(x) as.numeric(x))))
+        colnames(dat) <- colNames
     }
-
-    return(Maindata)
+    
+    
+    if(isSE){
+        mat <- as.matrix(dat[,-1])
+        rownames(mat) <- dat[,1]
+        ret <- SummarizedExperiment(assays = mat,
+                                    colData = colData(Maindata)
+        )
+    } else { 
+        ret <- dat
+    }
+    
+    return(ret)
 }
 
 #' Summarize the experimental design

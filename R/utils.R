@@ -1,3 +1,54 @@
+#' Data formatting for DiscoRhythm
+#'
+#' Functions to convert between usage of
+#' data.frame or SummarizedExperiment data formats.
+#'
+#' @name discoDFtoSE
+NULL
+
+#' @rdname discoDFtoSE
+#'
+#'
+#' @inheritParams discoInterCorOutliers
+#' @export
+#' 
+#' @return a SummarizedExperiment object with colData containing a 
+#' DiscoRhythm format Metadata DataFrame. 
+#' 
+#' @importFrom SummarizedExperiment SummarizedExperiment assay
+#' @importFrom S4Vectors DataFrame
+discoDFtoSE <- function(Maindata,Metadata=NULL){
+    if(methods::is(Maindata,"SummarizedExperiment")){
+        warning("Input is already a SummarizedExperiment")
+        return(Maindata)
+    }
+    counts <- as.matrix(Maindata[,-1])
+    rownames(counts) <- Maindata[,1]
+    colnames(counts) <- NULL
+    if(is.null(Metadata)){
+        Metadata <- discoParseMeta(colnames(Maindata)[-1])
+    }
+    
+    se <- SummarizedExperiment(assays=list(counts=counts),
+                               colData=DataFrame(Metadata))
+    
+    return(se)
+}
+
+#' @rdname discoDFtoSE
+#' 
+#' @param se SummarizedExperiment with \code{!is.null(rownames(se))}.
+#' 
+#' @export
+#' 
+#' @return a DiscoRhythm format Maindata data.frame.
+#' 
+#' @importFrom SummarizedExperiment assay
+#' @importFrom BiocGenerics rownames
+discoSEtoDF <- function(se){
+    return(data.frame("IDs"=rownames(se),assay(se)))
+}
+
 #' Handle Error/Warning messages appropriately with
 #' shiny notifications for warnings and
 #' pop-ups for errors

@@ -31,7 +31,7 @@ observe({
 # Perform PCA
 ########################################
 pcaBefore <- reactive({
-    outdata <- discoPCA(Maindata()[, -1], input$PCAscale)
+    outdata <- discoPCA(Maindata(), input$PCAscale)
 
   # Test if a max sd=5 is large enough for the slider
   # such that there are no outliers by default
@@ -78,23 +78,11 @@ pcaAfter <- reactive({
                 )
         }
 
-        afterData <- Maindata()[, -1][, outliersPCAkept()]
-    # Flag rows with NAs
-        rowToKeep <- apply(afterData, 1, function(x) !any(is.na(as.numeric(x))))
-    # Flag rows with constant values
-        rowToKeep[rowToKeep] <- !apply(
-            afterData[rowToKeep, ], 1,
-            function(x) max(as.numeric(x)) == min(as.numeric(x))
-            )
-        if (sum(!rowToKeep) != 0) {
-            afterData <- afterData[rowToKeep, ]
-            warning(
-                paste0("Deleted ",
-                    sum(!rowToKeep),
-                    " rows since they were constant
-                    across samples or contained ",
-                    "missing values"))
-        }
+        tmp <- data.frame(Maindata()[,1],
+                                Maindata()[, -1][, outliersPCAkept()]
+        )
+        afterData <- discoCheckInput(tmp)
+        
         discoPCA(afterData, input$PCAscale)
     }, "PCA", shinySession = session)
 })
