@@ -57,8 +57,11 @@
 #' system data file used
 #' in DiscoRhythm for various demonstrations and tests.
 #'
-#' @return the simulated demo dataset (Maindata format) used in the DiscoRhythm
-#' web application
+#' @param as_se logical, indicates if example data should be returned as a
+#' SummarizedExperiment or data.frame.
+#'
+#' @return the simulated demo dataset used in the DiscoRhythm
+#' web application as a data.frame or SummarizedExperiment.
 #'
 #' @export
 #'
@@ -66,9 +69,10 @@
 #'
 #' indata <- discoGetSimu()
 #'
-discoGetSimu <- function(){
+discoGetSimu <- function(as_se=FALSE){
     indata <- utils::read.csv(system.file("extdata",
                         "Simphony_Example.csv",
                         package = "DiscoRhythm", mustWork = TRUE))
+    if(as_se) indata <- discoDFtoSE(indata)
     return(indata)
 }

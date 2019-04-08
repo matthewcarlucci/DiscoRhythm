@@ -140,20 +140,21 @@ plotPCAWithShape <- function(x, Metadata, col, pcA = 1, pcB = 2,
     KEY <- rownames(x)
     COLOR <- as.factor(Metadata[which(Metadata$ID %in% KEY), col])
     da <- data.frame(x[, c(as.numeric(pcA), as.numeric(pcB))])
-    da[, "shape"] <- 16
-    if (!is.null(outids)) da[!outids, "shape"] <- 4
+    da$isoutlier <- FALSE
+    if (!is.null(outids)) da$isoutlier[outids] <- TRUE
     if (pcA == pcB) warning("X and Y are the same principal component")
-        data <- da %>% `colnames<-`(c("A", "B", "shape"))
+    data <- da 
+    colnames(data) <- c("A", "B", "isoutlier")
 
     withcolor <- length(COLOR) != 0
 
     if (!withcolor) {
         p <- ggplot(data, aes(A, B, key = KEY)) +
-        geom_point(aes(shape = shape), size = 2, alpha = 0.8,
+        geom_point(aes(shape = isoutlier), size = 2, alpha = 0.8,
             color = colors$neutral)
     } else {
         p <- ggplot(data, aes(A, B, color = COLOR, key = KEY)) +
-        geom_point(aes(shape = shape), size = 2, alpha = 0.8)
+        geom_point(aes(shape = isoutlier), size = 2, alpha = 0.8)
     }
     p <- p +
     labs(
@@ -164,7 +165,7 @@ plotPCAWithShape <- function(x, Metadata, col, pcA = 1, pcB = 2,
         ) +
     sharedtheme() +
     theme(legend.position = "none") +
-    scale_shape_identity()
+    scale_shape_manual(values = c("TRUE"=4,"FALSE"=16))
     if (withcolor) {
         p <- p + scale_color_manual(
           values=colors$qualRamp(length(unique(COLOR))))

@@ -4,11 +4,15 @@
 \alias{discoGetSimu}
 \title{Read in the DiscoRhythm Simulated dataset}
 \usage{
-discoGetSimu()
+discoGetSimu(as_se = FALSE)
+}
+\arguments{
+\item{as_se}{logical, indicates if example data should be returned as a
+SummarizedExperiment or data.frame.}
 }
 \value{
-the simulated demo dataset (Maindata format) used in the DiscoRhythm
-web application
+the simulated demo dataset used in the DiscoRhythm
+web application as a data.frame or SummarizedExperiment.
 }
 \description{
 A convenience function to get the simulated circadian transcriptomic

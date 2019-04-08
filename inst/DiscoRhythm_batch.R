@@ -5,42 +5,36 @@
 #####################################################################
 
 # Preprocess inputs
-Maindata <- discoCheckInput(indata)
-Metadata <- discoParseMeta(colnames(Maindata)[-1])
+selectDataSE <- discoCheckInput(discoDFtoSE(indata))
 
 # Intersample correlations
-CorRes <- discoInterCorOutliers(Maindata,cor_method,
+CorRes <- discoInterCorOutliers(selectDataSE,cor_method,
                                 cor_threshold,cor_threshType)
 
 # PCA for outlier detection
-PCAres <- discoPCAoutliers(Maindata,pca_threshold,pca_scale,pca_pcToCut)
-PCAresAfter <- discoPCA(data.frame(Maindata[,1],
-                                   Maindata[,-1][,!PCAres$outliers]))
+PCAres <- discoPCAoutliers(selectDataSE,pca_threshold,pca_scale,pca_pcToCut)
+PCAresAfter <- discoPCA(selectDataSE[,!PCAres$outliers])
 
 # Removing the outliers from the main data.frame and metadata data.frame
-DataFinal <- data.frame(Maindata[,1],
-                        Maindata[,-1][,!PCAres$outliers & !CorRes$outliers])
-MetaFinal <- Metadata[!PCAres$outliers & !CorRes$outliers,]
+FilteredSE <- selectDataSE[,!PCAres$outliers & !CorRes$outliers]
 
 # Running ANOVA and merging replicates
-ANOVAres <- discoRepAnalysis(DataFinal,MetaFinal, aov_method,
+ANOVAres <- discoRepAnalysis(FilteredSE, aov_method,
                              aov_pcut, aov_Fcut, avg_method)
 
 # Data to be used for Period Detection and Oscillation Detection
-regressionMeta <- ANOVAres$regMet
-regressionData <- ANOVAres$regDat
+FinalSE <- ANOVAres$se
 
 # Perform PCA on the final dataset
-OVpca <- discoPCA(regressionData)
+OVpca <- discoPCA(FinalSE)
 
 # Period Detection
-PeriodRes <- discoPeriodDetection(regressionData,
-                     regressionMeta,
+PeriodRes <- discoPeriodDetection(FinalSE,
                      timeType,
                      main_per)
 
 # Oscillation Detection
-discoODAres <- discoODAs(regressionData,regressionMeta,
+discoODAres <- discoODAs(FinalSE,
                         circular_t = timeType=="circular",
                         period=osc_period,
                         osc_method,ncores)

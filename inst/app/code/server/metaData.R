@@ -92,6 +92,10 @@ MetaFinal <- reactive({
     df
 })
 
+FilteredSE <- reactive({
+  discoDFtoSE(DataFinal(),MetaFinal())
+})
+
 output$DataFinal <- downloadHandler(
     filename <- paste0(status$loadedDatasetName, "_DataFinal.csv"),
     content = function(file) {

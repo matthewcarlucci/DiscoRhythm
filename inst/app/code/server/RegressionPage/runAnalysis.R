@@ -23,9 +23,7 @@ discoODAres <- eventReactive(input$startRegress, {
     }
 
     odares <- DiscoRhythm:::discoShinyHandler({
-        discoODAs(
-            regressionData(),
-            regressionMeta(),
+        discoODAs(FinalSE(),
             method = selectedModels(),
             circular_t = status$osc_input_design$circular_t,
             period = input$periodInput,

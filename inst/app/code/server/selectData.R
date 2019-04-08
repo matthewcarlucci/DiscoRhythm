@@ -16,29 +16,8 @@ names(downloadNameVector) <- names(csvnameVector)
 ########################################
 
 Maindata <- reactive({
-    req(!is.null(input$inCSV$datapath) | input$selectInputType == "preload")
-    DiscoRhythm:::discoShinyHandler({
-        if (input$selectInputType == "preload") {
-            inputpath <- csvnameVector[input$preData]
-        } else if (input$selectInputType == "csv") {
-            inputpath <- input$inCSV$datapath
-        }
-
-        data <- data.table::fread(inputpath,
-            header = TRUE,
-            data.table = FALSE,
-            nrows = 1e5,
-            stringsAsFactors = FALSE
-            )
-
-        if (nrow(data) >= (1e5 - 1)) {
-            warning("File too long, reading first 100,000 rows only")
-        }
-
-        discoCheckInput(data)
-    }, "Data Matrix",
-    shinySession = session
-    )
+    req(selectDataSE())
+    discoSEtoDF(selectDataSE())
 })
 
 # Low row number will cause skipping QC
@@ -49,16 +28,35 @@ hideQc <- reactive({
 # Metadata() is the main raw meta data object
 # Created if Maindata() is created
 Metadata <- reactive({
-    req(!is.null(Maindata()))
-    DiscoRhythm:::discoShinyHandler(discoParseMeta(colnames(Maindata())[-1],
-        shinySession = session),
-    "Metadata Parsing",
-    shinySession = session
-    )
+    as.data.frame(colData(selectDataSE())  )
 })
 
 selectDataSE <- reactive({
-    discoSE(Maindata(),Metadata())
+    req(!is.null(input$inCSV$datapath) | input$selectInputType == "preload")
+  DiscoRhythm:::discoShinyHandler({
+    if (input$selectInputType == "preload") {
+      inputpath <- csvnameVector[input$preData]
+    } else if (input$selectInputType == "csv") {
+      inputpath <- input$inCSV$datapath
+    }
+    
+    data <- data.table::fread(inputpath,
+                              header = TRUE,
+                              data.table = FALSE,
+                              nrows = 1e5,
+                              stringsAsFactors = FALSE
+    )
+    
+    if (nrow(data) >= (1e5 - 1)) {
+      warning("File too long, reading first 100,000 rows only")
+    }
+    
+    se <- discoDFtoSE(data,shinySession = session)
+    final <- discoCheckInput(se)
+    final
+  }, "Data Import",
+  shinySession = session
+  )
 })
 
 

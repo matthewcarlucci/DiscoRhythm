@@ -12,15 +12,14 @@
 #  output which models are valid
 # Used by discoODAs
 
-discoGetODAs <- function(regressionData, regressionMeta,
-    method=NULL, period, circular_t=FALSE) {
+discoGetODAs <- function(se,method=NULL, period, circular_t=FALSE) {
 
     # Gather necessary info to determine valid ODA methods
-    design <- inferOscDesign(regressionData, regressionMeta)
-    invalidPeriod <- checkPeriod(regressionMeta$Time, period)
+    design <- inferOscDesign(se)
+    invalidPeriod <- checkPeriod(se$Time, period)
 
     if ("JTK" %in% method | is.null(method)) {
-        invalidJTKperiod <- checkJTKperiod(regressionMeta$Time, period)
+        invalidJTKperiod <- checkJTKperiod(se$Time, period)
     } else {
     # Value doesn't matter in this case
         invalidJTKperiod <- TRUE
@@ -56,7 +55,7 @@ discoGetODAs <- function(regressionData, regressionMeta,
 
 #' DiscoRhythm Experimental Design
 #'
-#' Infers the experimental desing from various input data
+#' Infers the experimental design from various input data
 #'
 #' Characteristics of the experiment sampling are gathered to determine which
 #' oscillation deteciton algorithms are suitable.
@@ -66,25 +65,29 @@ discoGetODAs <- function(regressionData, regressionMeta,
 #' @return list with inferred experimental design features needed to perform
 #' replicate analysis and merging in discoRepAnalysis.
 
-inferFilteredDesign <- function(Maindata, Metadata) {
+inferFilteredDesign <- function(se) {
     res <- list()
 
-    mat <- Maindata[, -1]
+    mat <- assay(se)
     res$missing_value <- (any(is.na(mat))) | any(is.nan(as.matrix(mat)))
 
-    res$with_tech_replicate <- any(duplicated(paste(Metadata$Time,
-                                                    Metadata$ReplicateID)))
+    res$with_tech_replicate <- any(duplicated(paste(se$Time,
+                                                    se$ReplicateID)))
 
     return(res)
 }
 
 #' @keywords internal
-# Infer experimental design of regressionData
-inferOscDesign <- function(regressionData, regressionMeta) {
+# Infer experimental design of se
+inferOscDesign <- function(se) {
 
+    if(!methods::is(se,"SummarizedExperiment")){
+        stop("Input must be a SummarizedExperiment.")
+    }
+    
     # Setting MetaCycle variables
-    EXPM <- as.matrix(regressionData[, -1])
-    timepoints <- sort(regressionMeta$Time)
+    EXPM <- assay(se)
+    timepoints <- sort(se$Time)
     uni_timepoints <- unique(timepoints)
 
     ###### Code chunk copied verbatim from MetaCycle v1.1
@@ -162,7 +165,6 @@ checkODAs <- function(infer_design, circular_t,
 # FALSE indicates no algorithms can test this period
 # Conditions are: There must be 3 unique time%%period values
 # Conditions for specific algorithms are evaluated in separate functions
-# Ex. checkJTKperiod()
 checkPeriod <- function(time, period) {
     if (length(unique(time %% period)) <= 2) {
         warning(c("Sample times modulo period must have ",

@@ -4,19 +4,17 @@
 \alias{discoPCA}
 \title{Perform PCA}
 \usage{
-discoPCA(Maindata, scale = TRUE, npcs = 10)
+discoPCA(se, scale = TRUE, npcs = 10)
 }
 \arguments{
-\item{Maindata}{data.frame with the first column containing row IDs and all
-subsequent columns containing experimental values. Columns should follow the
-expected naming format described in the vignette. May also be a 
-SummarizedExperiment with colData in the same format as Metadata.}
+\item{se}{SummarizedExperiment, the main data object used by DiscoRhythm 
+expected to contain se$ID, se$ReplicateID, se$Time sample metadata and
+non-null rownames.}
 
 \item{scale}{logical, whether or not to scale the data prior to PCA, see
 \link[stats]{prcomp} for more details.}
 
-\item{npcs}{numeric, number of principal components to use, see
-\link[stats]{prcomp} for more details.}
+\item{npcs}{numeric, maximum number of principal components to return.}
 }
 \value{
 output from \link[stats]{prcomp} with an added table element
@@ -26,7 +24,7 @@ Calculates PCA results from \code{prcomp} with error handling and outputs
 suitable for the DiscoRhythm workflow.
 }
 \examples{
-Maindata <- discoGetSimu()
-pca <- discoPCA(Maindata[,-1])
+se <- discoGetSimu(TRUE)
+pca <- discoPCA(se)
 
 }

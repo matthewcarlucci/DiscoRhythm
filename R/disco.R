@@ -155,42 +155,31 @@ discoApp <- function(){
 #'
 #' @examples
 #' # Import the simulated example dataset
-#' Maindata <- discoCheckInput(discoGetSimu())
-#' Metadata <- discoParseMeta(colnames(Maindata)[-1])
+#' se <- discoCheckInput(discoGetSimu(TRUE))
 #' # Execute the Cosinor method only
-#' discoODAres <- discoODAs(Maindata,Metadata,method="CS")
+#' discoODAres <- discoODAs(se,method="CS")
 #'
-discoODAs <- function(Maindata, Metadata=NULL, period=24,
+discoODAs <- function(se, period=24,
     method = "CS", circular_t=FALSE, ncores = 1) {
 
-    # Convert se input
-    if(methods::is(Maindata,"SummarizedExperiment")){
-        if(is.null(Metadata)){
-            Metadata <- colData(Maindata)
-        }
-        Maindata <- discoSEtoDF(Maindata)
-    } else {
-        if(is.null(Metadata)){
-            message("Extracting sample metadata from column names.")
-            Metadata <- discoParseMeta(colnames(Maindata)[-1])
-        }
+    if(!methods::is(se,"SummarizedExperiment")){
+        stop("Input must be a SummarizedExperiment.")
     }
     
     if(any(method %in% DiscoRhythm::discoODAid2name)){
         message("Detected full ODA names, coverting to
                 Ids using discoODAid2name")
-        method<-names(
+        method <- names(
             DiscoRhythm::discoODAid2name
             )[DiscoRhythm::discoODAid2name %in% method]
     }
 
-    method <- discoGetODAs(Maindata,Metadata,
-        method,period,circular_t)
+    method <- discoGetODAs(se,method,period,circular_t)
 
     unif <- list()
     # Run CS
     if ("CS" %in% method) {
-        unif$CS <- lmCSmat(Maindata[, -1], Metadata$Time, period)
+        unif$CS <- lmCSmat(assay(se), se$Time, period)
     # Fix NAs
         nanId <- is.nan(unif$CS$pvalue)
         unif$CS[nanId, "acrophase"] <- NaN
@@ -202,10 +191,12 @@ discoODAs <- function(Maindata, Metadata=NULL, period=24,
     rest <- Filter(function(x) x != "CS", method)
     if (length(rest) > 0) {
 
+        Maindata <- discoSEtoDF(se)
+        
         # All arguments of meta2d are explicitly called
         cyc <- MetaCycle::meta2d(
             infile = "dummy", outdir = "dummy", filestyle = "csv",
-            timepoints = Metadata$Time,
+            timepoints = se$Time,
             minper = period, maxper = period, cycMethod = rest,
             analysisStrategy = "auto",
             outputFile = FALSE,
@@ -292,32 +283,23 @@ PeriodDetection_range <- function(times,circular_t,main_per,test_periods){
 #' Maindata.
 #'
 #' @examples
-#' demodata <- discoGetSimu()
-#' demometa <- discoParseMeta(colnames(demodata)[-1])
+#' se <- discoGetSimu(TRUE)
 #'
-#'
-#' # Detect periods on timeType!="circular" data
-#' rsqs <- discoPeriodDetection(demodata,demometa)
-#' # Detect periods on timeType=="circular" data
-#' rsqs <- discoPeriodDetection(demodata,demometa,timeType="circular")
+#' # Detect periods
+#' rsqs <- discoPeriodDetection(se)
 #'
 #' @export
-discoPeriodDetection <- function(Maindata,
-                                 Metadata=NULL,
+#' 
+#' @importFrom SummarizedExperiment colData
+discoPeriodDetection <- function(se,
     timeType = "linear", main_per = 24,
     test_periods = NULL) {
     
-    # Convert se input
-    if(methods::is(Maindata,"SummarizedExperiment")){
-        if(is.null(Metadata)){
-            Metadata <- colData(Maindata)
-        }
-        Maindata <- discoSEtoDF(Maindata)
-    } else {
-        if(is.null(Metadata)){
-            Metadata <- discoParseMeta(colnames(Maindata)[-1])
-        }
+    if(!methods::is(se,"SummarizedExperiment")){
+        stop("Input must be a SummarizedExperiment.")
     }
+    
+    Metadata <- colData(se)
     
     times <- Metadata$Time
     circular_t <- (timeType == "circular")
@@ -327,8 +309,8 @@ discoPeriodDetection <- function(Maindata,
 
     # Run Cosinor to get r-squared on all rows at candidate periods
     cosinor_res <- vapply(as.numeric(periods), function(per) {
-        lmCSmat(Maindata[, -1], times, per = per)$Rsq
-    }, numeric(nrow(Maindata)))
+        lmCSmat(assay(se), times, per = per)$Rsq
+    }, numeric(nrow(se)))
     colnames(cosinor_res) <- periods
 
     allres <- data.table::melt(cosinor_res)

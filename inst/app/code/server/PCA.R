@@ -31,7 +31,7 @@ observe({
 # Perform PCA
 ########################################
 pcaBefore <- reactive({
-    outdata <- discoPCA(Maindata(), input$PCAscale)
+    outdata <- discoPCA(selectDataSE(), input$PCAscale)
 
   # Test if a max sd=5 is large enough for the slider
   # such that there are no outliers by default
@@ -78,9 +78,7 @@ pcaAfter <- reactive({
                 )
         }
 
-        tmp <- data.frame(Maindata()[,1],
-                                Maindata()[, -1][, outliersPCAkept()]
-        )
+        tmp <- selectDataSE()[, outliersPCAkept()]
         afterData <- discoCheckInput(tmp)
         
         discoPCA(afterData, input$PCAscale)
@@ -167,7 +165,7 @@ pcaPlotBefore <- reactive({
         input$PCAcolor,
         input$pcA,
         input$pcB,
-        outliersPCAkept(),
+        !outliersPCAkept(),
         "Before Outlier Removal"
         )
 })
@@ -258,8 +256,8 @@ observeEvent(input$reset_pcToCut, {
 
 ## Hide the Color By Tech Rep button.
 observe({
-    status$raw_inf_design <- DiscoRhythm:::inferFilteredDesign(
-      Maindata(), Metadata())
+    req(selectDataSE())
+    status$raw_inf_design <- DiscoRhythm:::inferFilteredDesign(selectDataSE())
 })
 
 observe({

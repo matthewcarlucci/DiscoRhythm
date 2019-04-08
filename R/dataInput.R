@@ -6,54 +6,53 @@
 #' Rows containing NA's or all constant values are removed.
 #' If matrix values are character it will be attempted to convert them
 #' to numeric.
-#' If input is not a data.frame it will be converted using
-#' \code{as.data.frame()}.
+#' If input is not a matrix it will be converted using
+#' \code{as.matrix()}.
 #' User will be warned if row IDs contain duplicate entries.
 #'
 #' @inheritParams discoInterCorOutliers
 #'
-#' @return data.frame in Maindata format (checked for errors and
-#' modified as needed)
+#' @return SummarizedExperiment checked for errors and
+#' modified as needed
 #'
 #' @export
 #'
 #' @examples
-#' Maindata <- discoGetSimu()
-#' Maindata_clean <- discoCheckInput(Maindata)
+#' se <- discoGetSimu(TRUE)
+#' se_clean <- discoCheckInput(se)
 #'
 #' @importFrom SummarizedExperiment SummarizedExperiment colData
-discoCheckInput <- function(Maindata) {
+discoCheckInput <- function(se) {
     
-    isSE <- methods::is(Maindata,"SummarizedExperiment")
-    if(isSE){
-        dat <- discoSEtoDF(Maindata)
-    } else {
-        dat <- Maindata
+    if(!methods::is(se,"SummarizedExperiment")){
+        stop("Input must be a SummarizedExperiment.")
     }
     
+    dat <- assay(se)
+    
     # Check input is a data.frame
-    if (!methods::is(dat,"data.frame")) {
-        warning("Input data is not a data.frame, attempting to convert")
-        dat <- as.data.frame(dat)
+    if (!methods::is(dat,"matrix")) {
+        warning("Input data is not a matrix, attempting to convert")
+        dat <- as.matrix(dat)
     }
 
     # Check enough data is available for analysis
-    if (ncol(Maindata) <= 3) {
+    if (ncol(se) <= 3) {
         stop("More than 3 samples are needed to perform analysis")
     }
     
-    if (anyDuplicated(dat$IDs)) {
+    if (anyDuplicated(rownames(se))) {
                 warning("Please consider deduplicating row IDs before 
                         continuing.")
     }
     
     ## Remove constant rows or rows with NAs
     # Flag rows with NAs
-    rowToKeep <- apply(dat[, -1], 1, function(x)
+    rowToKeep <- apply(dat, 1, function(x)
         !any(is.na(as.numeric(x))))
     # Flag rows with constant values
     rowToKeep[rowToKeep] <- !apply(
-        dat[rowToKeep, -1], 1,
+        dat[rowToKeep, ], 1,
         function(x) max(as.numeric(x)) == min(as.numeric(x))
         )
     if (sum(!rowToKeep) != 0) {
@@ -65,24 +64,16 @@ discoCheckInput <- function(Maindata) {
     }
 
     # If values are not read as numeric coerce to numeric
-    if (!all(vapply(dat[, -1], function(x) is.numeric(x), logical(1)))) {
+    if (!all(vapply(dat, function(x) is.numeric(x), logical(1)))) {
         warning("Data was not read as numeric, attempting to coerce to numeric")
         colNames <- colnames(dat)
-        dat <- cbind(dat[, 1],
-            data.frame(lapply(dat[, -1], function(x) as.numeric(x))))
+        dat <- data.frame(lapply(dat, function(x) as.numeric(x)))
         colnames(dat) <- colNames
     }
     
-    
-    if(isSE){
-        mat <- as.matrix(dat[,-1])
-        rownames(mat) <- dat[,1]
-        ret <- SummarizedExperiment(assays = mat,
-                                    colData = colData(Maindata)
-        )
-    } else { 
-        ret <- dat
-    }
+    ret <- SummarizedExperiment(assays = dat,
+                                colData = colData(se)
+    )
     
     return(ret)
 }
@@ -94,6 +85,7 @@ discoCheckInput <- function(Maindata) {
 #' summarizes the number of replicates for each biological sample.
 #'
 #' @inheritParams discoInterCorOutliers
+#' @inheritParams discoDFtoSE
 #'
 #' @seealso discoParseMeta
 #'
@@ -104,7 +96,9 @@ discoCheckInput <- function(Maindata) {
 #' for a given biological sample.
 #'
 #' @examples
-#' Metadata <- discoParseMeta(colnames(discoGetSimu())[-1])
+#' # import example data
+#' Metadata <- SummarizedExperiment::colData(discoGetSimu(TRUE))
+#' # Summarize the experiment design
 #' discoDesignSummary(Metadata)
 #'
 discoDesignSummary <- function(Metadata) {

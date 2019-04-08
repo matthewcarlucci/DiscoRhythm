@@ -23,7 +23,9 @@ table of the number of total samples at each timepoint and additionally
 summarizes the number of replicates for each biological sample.
 }
 \examples{
-Metadata <- discoParseMeta(colnames(discoGetSimu())[-1])
+# import example data
+Metadata <- SummarizedExperiment::colData(discoGetSimu(TRUE))
+# Summarize the experiment design
 discoDesignSummary(Metadata)
 
 }

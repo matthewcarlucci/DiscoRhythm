@@ -131,6 +131,7 @@ output$dlInputs <- downloadHandler(
 
 # Summary table rendered for the sidebar
 output$summaryTable <- renderTable({
+    
     tmp <- data.frame(
         "Status" = as.character(c(
             summaryVal$nSamplesOri,
@@ -153,7 +154,7 @@ output$summaryTable <- renderTable({
         ifelse(input$avgMethod!="None",
             "Samples (Combined)","Samples (Filtered)"),
         "Rows (Filtered)"
-        )
+        )[seq_len(nrow(tmp))]
     xtable::xtable(na.exclude(tmp))
 }, rownames = TRUE, striped = FALSE)
 

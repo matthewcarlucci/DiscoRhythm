@@ -67,7 +67,7 @@ source(system.file("app/code/server", "plots.R", package = "DiscoRhythm",
 ## Design Summary
 
 ```{r }
-knitr::kable(discoDesignSummary(Metadata), format = "markdown")
+knitr::kable(discoDesignSummary(colData(selectDataSE)), format = "markdown")
 ```
 
 # Outlier Detection
@@ -77,7 +77,7 @@ knitr::kable(discoDesignSummary(Metadata), format = "markdown")
 ### Average Correlations
 
 ```{r }
-plotly::ggplotly(plotAvgCor(Metadata,CorRes$meanCor,
+plotly::ggplotly(plotAvgCor(colData(selectDataSE),CorRes$meanCor,
                             corCut = CorRes$threshold,tUnit = "hr"))
 ```
 
@@ -101,9 +101,12 @@ plotly::ggplotly(
 
 ```{r }
 gridExtra::grid.arrange(
-  plotPCAWithShape(PCAres$x,Metadata,col = "None",1,2,PCAres$outliers)+
+  plotPCAWithShape(PCAres$x,as.data.frame(colData(selectDataSE)),
+                   col = "None",1,2,
+                   PCAres$outliers)+
     ggtitle("Before Outlier Removal"),
-  plotPCAWithShape(PCAresAfter$x,Metadata,col = "None",1,2)+
+  plotPCAWithShape(PCAresAfter$x,as.data.frame(colData(selectDataSE)),
+                   col = "None",1,2)+
     ggtitle("After Outlier Removal"),
   ncol=2)
 ```
@@ -130,16 +133,19 @@ invisible(plotPCAPairsAfter(PCAresAfter$x,c("PC1","PC2","PC3","PC4"),
 ```
 
 ## Outlier Summary {.tabset}
+
 ### Outliers
 
 ```{r }
-DT::datatable(Metadata[PCAres$outliers | CorRes$outliers,])
+DT::datatable(as.data.frame(
+  colData(selectDataSE)[PCAres$outliers | CorRes$outliers,]
+))
 ```
 
 ### Remaining Samples
 
 ```{r }
-knitr::kable(discoDesignSummary(MetaFinal), format = "markdown")
+knitr::kable(discoDesignSummary(colData(FilteredSE)), format = "markdown")
 ```
 
 # Replicate Analysis {.tabset}
@@ -166,14 +172,16 @@ plotPeriodDetect(PeriodRes)
 ### PC Cosinor Fits
 
 ```{r }
-plotOVpcaScatter(OVpca = OVpca,regressionMeta,osc_period)
+plotOVpcaScatter(OVpca = OVpca,colData(FinalSE),osc_period)
 ```
 
 ### Cosinor Table
 
 ```{r }
+pcaSE <- discoDFtoSE(data.frame("PC"=1:ncol(OVpca$x),t(OVpca$x)),
+                        colData(FinalSE))
 knitr::kable(
-  discoODAs(data.frame("PC"=1:ncol(OVpca$x),t(OVpca$x)),regressionMeta)$CS,
+  discoODAs(pcaSE,method="CS")$CS,
   format = "markdown"
 )
 ```
@@ -183,7 +191,7 @@ knitr::kable(
 ### P-value Histograms
 
 ```{r }
-plotPQValueHist(discoODAres,bg = seq_len(nrow(regressionData)),50,
+plotPQValueHist(discoODAres,bg = seq_len(nrow(FinalSE)),50,
                 cutoff = 0.05,discoODAid2name)
 ```
 
@@ -198,7 +206,7 @@ plotAllAcroHist(discoODAres,fg,50,osc_period,TRUE,discoODAid2name)
 
 ```{r }
 
-plotAmpliHist(discoODAres,bg = seq_len(nrow(regressionData)),
+plotAmpliHist(discoODAres,bg = seq_len(nrow(FinalSE)),
               fg=fg[['CS']],50,'')
 ```
 

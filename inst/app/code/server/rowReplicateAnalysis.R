@@ -33,9 +33,7 @@ observe({
     # status$init <- FALSE
     # stop("Not enough data")
     } else {
-        status$filtered_inf_design <- DiscoRhythm:::inferFilteredDesign(
-          DataFinal(),
-            MetaFinal())
+        status$filtered_inf_design <- DiscoRhythm:::inferFilteredDesign(FilteredSE())
     # status$init <- TRUE
         shinyjs::show("previewRegDataDiv")
         shinyjs::show("overviewDiv")
@@ -128,13 +126,13 @@ anovaRes <- reactive({
 
     if (status$filtered_inf_design$with_tech_replicate) {
         DiscoRhythm:::discoShinyHandler({
-            discoRepAnalysis(DataFinal(), MetaFinal(),
+            discoRepAnalysis(FilteredSE(),
                 input$aovMethod, input$anovaCut,
                 input$anovaFstatCut, input$avgMethod)
         }, "ANOVA", shinySession = session)
     } else {
         DiscoRhythm:::discoShinyHandler({
-            discoRepAnalysis(DataFinal(), MetaFinal(),
+            discoRepAnalysis(FilteredSE(),
                              aov_method = "None",
                              aov_pcut = 1, aov_Fcut = 0,
                              avg_method = "None")
@@ -150,7 +148,7 @@ anovaPlot <- reactive({
 
 output$anovaPlot <- renderPlot({
     validate(
-        need(nrow(anovaRes()$regDat) != 0,
+        need(nrow(anovaRes()$se) != 0,
             paste0("No rows pass the significance threshold. ",
                 "Consider using a lower cutoff."))
         )
@@ -200,8 +198,18 @@ output$dlFstatPlot <- downloadHandler(
 )
 
 # Main downstream dataframe, passed to regression models
-regressionMeta <- reactive(anovaRes()$regMet)
-regressionData <- reactive(anovaRes()$regDat)
+regressionMeta <- reactive({
+    req(FinalSE())
+    as.data.frame(colData(FinalSE()))
+})
+regressionData <- reactive({
+    req(FinalSE())
+    discoSEtoDF(FinalSE())
+})
+FinalSE <- reactive({
+  req(anovaRes())
+  anovaRes()$se
+})
 
 output$regressionDataTable <- DT::renderDataTable(
     head(regressionData(), 50),

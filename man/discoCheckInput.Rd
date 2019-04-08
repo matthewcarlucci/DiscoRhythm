@@ -4,17 +4,16 @@
 \alias{discoCheckInput}
 \title{Import Data for DiscoRhythm Analysis}
 \usage{
-discoCheckInput(Maindata)
+discoCheckInput(se)
 }
 \arguments{
-\item{Maindata}{data.frame with the first column containing row IDs and all
-subsequent columns containing experimental values. Columns should follow the
-expected naming format described in the vignette. May also be a 
-SummarizedExperiment with colData in the same format as Metadata.}
+\item{se}{SummarizedExperiment, the main data object used by DiscoRhythm 
+expected to contain se$ID, se$ReplicateID, se$Time sample metadata and
+non-null rownames.}
 }
 \value{
-data.frame in Maindata format (checked for errors and
-modified as needed)
+SummarizedExperiment checked for errors and
+modified as needed
 }
 \description{
 Performs various checks and cleaning operations on the input data.
@@ -23,12 +22,12 @@ Performs various checks and cleaning operations on the input data.
 Rows containing NA's or all constant values are removed.
 If matrix values are character it will be attempted to convert them
 to numeric.
-If input is not a data.frame it will be converted using
-\code{as.data.frame()}.
+If input is not a matrix it will be converted using
+\code{as.matrix()}.
 User will be warned if row IDs contain duplicate entries.
 }
 \examples{
-Maindata <- discoGetSimu()
-Maindata_clean <- discoCheckInput(Maindata)
+se <- discoGetSimu(TRUE)
+se_clean <- discoCheckInput(se)
 
 }

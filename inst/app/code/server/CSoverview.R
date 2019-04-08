@@ -28,7 +28,7 @@ observe({
 })
 
 
-OVpca <- reactive(DiscoRhythm:::discoPCA(regressionData()))
+OVpca <- reactive(DiscoRhythm:::discoPCA(FinalSE()))
 
 ### Period detection
 output$PeriodDetectionRange <- renderUI({
@@ -70,8 +70,7 @@ PeriodRes <- reactive({
 
     DiscoRhythm:::discoShinyHandler({
         discoPeriodDetection(
-            regressionData(),
-            regressionMeta(),
+            FinalSE(),
             input$timeType,
             input$main_per,
             input$OVperiodSlider
@@ -79,9 +78,7 @@ PeriodRes <- reactive({
     }, section = "Period Detection", shinySession = session)
 })
 
-OVpca <- reactive({
-    discoPCA(regressionData(), scale = TRUE)
-})
+
 
 output$OVperiodTable <- renderTable(OVpca()$table)
 output$dlOVperiodTable <- downloadHandler(
@@ -136,9 +133,10 @@ output$PCfitSelectPeriod <- renderUI({
 OVpcaFits <- reactive({
     npc <- ifelse(ncol(OVpca()$x) > 10, 10, ncol(OVpca()$x))
     per <- as.numeric(input$OVperiodSelect)
-    res <- discoODAs(data.frame("PC"=1:ncol(OVpca()$x),t(OVpca()$x)),
-        regressionMeta(),period = per)$CS[1:npc, ]
-    res <- data.frame("PC" = paste0("PC", 1:npc), res)
+    se <- discoDFtoSE(data.frame("PC"=1:ncol(OVpca()$x),t(OVpca()$x)),
+                      regressionMeta())
+    res <- discoODAs(se,period = per)$CS[seq_len(npc), ]
+    res <- data.frame("PC" = paste0("PC", seq_len(npc)), res)
     res
 })
 output$OVpcaFits <- renderTable(OVpcaFits())

@@ -10,9 +10,8 @@ shinyjs::hide("previewRegDataDiv")
 
 # Gathering the experimental design for oscillation detection
 observe({
-    req(regressionData(), regressionMeta())
-    status$osc_inf_design <- DiscoRhythm:::inferOscDesign(regressionData(),
-        regressionMeta())
+    req(FinalSE())
+    status$osc_inf_design <- DiscoRhythm:::inferOscDesign(FinalSE())
 })
 observe({
     status$osc_input_design <- list(
