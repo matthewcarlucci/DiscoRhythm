@@ -9,7 +9,7 @@ discoPCA(se, scale = TRUE, npcs = 10)
 \arguments{
 \item{se}{SummarizedExperiment, the main data object used by DiscoRhythm 
 expected to contain se$ID, se$ReplicateID, se$Time sample metadata and
-non-null rownames.}
+non-null rownames. See the vignette for more details.}
 
 \item{scale}{logical, whether or not to scale the data prior to PCA, see
 \link[stats]{prcomp} for more details.}
@@ -17,7 +17,7 @@ non-null rownames.}
 \item{npcs}{numeric, maximum number of principal components to return.}
 }
 \value{
-output from \link[stats]{prcomp} with an added table element
+output from \link[stats]{prcomp} with an added table summary
 }
 \description{
 Calculates PCA results from \code{prcomp} with error handling and outputs

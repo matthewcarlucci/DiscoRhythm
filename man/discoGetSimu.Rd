@@ -11,7 +11,7 @@ discoGetSimu(as_se = FALSE)
 SummarizedExperiment or data.frame.}
 }
 \value{
-the simulated demo dataset used in the DiscoRhythm
+The simulated demo dataset used in the DiscoRhythm
 web application as a data.frame or SummarizedExperiment.
 }
 \description{

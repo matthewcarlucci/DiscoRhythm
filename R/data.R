@@ -60,7 +60,7 @@
 #' @param as_se logical, indicates if example data should be returned as a
 #' SummarizedExperiment or data.frame.
 #'
-#' @return the simulated demo dataset used in the DiscoRhythm
+#' @return The simulated demo dataset used in the DiscoRhythm
 #' web application as a data.frame or SummarizedExperiment.
 #'
 #' @export

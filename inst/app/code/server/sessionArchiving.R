@@ -19,7 +19,7 @@ output$sessionArchivingUI <- renderUI({
         "Download the data objects associated with each step of the
         analysis providing easy access to the data for further analysis.",
         br(),br(),
-        downloadButton("downloadData", "Download R Data of Inputs"),
+        downloadButton("dlInputs", "Download R Data of Inputs"),
         "Download the input dataset and essential parameter
         settings for regenerating the results using the DiscoRhythm R function
         discoBatch().",
@@ -123,10 +123,10 @@ discoBatchParams <- reactive({
 output$dlInputs <- downloadHandler(
     filename = function() {
         paste0("DiscoRhythm", verCode, "_inputs_", status$loadedDatasetName,
-               ".Rdata")
+               ".RDS")
     },
     content = function(file) {
-      save(discoBatchParams(),file = file)
+      saveRDS(discoBatchParams(),file = file)
     })
 
 # Summary table rendered for the sidebar

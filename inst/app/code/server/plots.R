@@ -480,7 +480,7 @@ plotAmpliHist <- function(discoODAres, bg, fg, binNum, obsUnit = "") {
 }
 
 allIntersect <- function(fg) {
-    if(length(fg)<2) {
+    if(sum(sapply(fg,length)>0)<2) {
         return(errorPlot("Multiple methods needed\n for intersection"))
     }
     library(UpSetR)

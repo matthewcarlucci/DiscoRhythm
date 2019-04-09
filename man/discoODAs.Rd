@@ -3,21 +3,17 @@
 \name{discoGetODAs}
 \alias{discoGetODAs}
 \alias{discoODAs}
-\alias{discoPeriodDetection}
 \title{Get Valid Oscillation Detection Algorithms}
 \usage{
 discoGetODAs(se, method = NULL, period, circular_t = FALSE)
 
 discoODAs(se, period = 24, method = "CS", circular_t = FALSE,
   ncores = 1)
-
-discoPeriodDetection(se, timeType = "linear", main_per = 24,
-  test_periods = NULL)
 }
 \arguments{
 \item{se}{SummarizedExperiment, the main data object used by DiscoRhythm 
 expected to contain se$ID, se$ReplicateID, se$Time sample metadata and
-non-null rownames.}
+non-null rownames. See the vignette for more details.}
 
 \item{method}{character, names of ODAs to use. If length>1 will test all
 input method names.}
@@ -27,17 +23,6 @@ input method names.}
 \item{ncores}{number of cores to parallelize with (applicable to JTK, ARSER
 and LS only). If 1 will execute in serial.}
 
-\item{timeType}{character, time is either reported as "linear" or
-"circular" on some base-cycle (ex. time of day). This determines the periods
-that will be tested for.}
-
-\item{main_per}{numeric, if \code{timeType=="circular"} main_per
-indicates the period of the base-cycle where sampling times are derived.}
-
-\item{test_periods}{numeric, a vector of the periods to test.
-if \code{timeType=="linear"} and length(test_periods)==2 it will be assumed
-to be a range of periods to test over.}
-
 \item{realtive_t0}{logical, is time circular on some base-cycle
 (ex. time of day).}
 }
@@ -45,9 +30,6 @@ to be a range of periods to test over.}
 A named list of results where each element is a data.frame for the
 corresponding method containing estimates for:
 p-value, amplitude, acrophase, q-value, and period used.
-
-A data.frame of Rsquared values for each period, for each row of
-Maindata.
 }
 \description{
 Runs each selected oscillation deteciton algorithm sequentially to
@@ -60,11 +42,6 @@ oscillation characteristics of each row of the input data.
 se <- discoCheckInput(discoGetSimu(TRUE))
 # Execute the Cosinor method only
 discoODAres <- discoODAs(se,method="CS")
-
-se <- discoGetSimu(TRUE)
-
-# Detect periods
-rsqs <- discoPeriodDetection(se)
 
 }
 \keyword{internal}

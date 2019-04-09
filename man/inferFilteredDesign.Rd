@@ -9,7 +9,7 @@ inferFilteredDesign(se)
 \arguments{
 \item{se}{SummarizedExperiment, the main data object used by DiscoRhythm 
 expected to contain se$ID, se$ReplicateID, se$Time sample metadata and
-non-null rownames.}
+non-null rownames. See the vignette for more details.}
 }
 \value{
 list with inferred experimental design features needed to perform

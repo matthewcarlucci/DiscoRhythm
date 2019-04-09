@@ -19,14 +19,20 @@ NULL
 #' @inheritParams discoParseMeta
 #' @export
 #' 
-#' @return a SummarizedExperiment object with colData containing sample
+#' @return A SummarizedExperiment object with colData containing sample
 #' metadata. 
 #' 
 #' @importFrom SummarizedExperiment SummarizedExperiment assay
 #' @importFrom S4Vectors DataFrame
+#' 
+#' @examples 
+#' 
+#' df <- discoGetSimu()
+#' se <- discoDFtoSE(df)
+#' 
 discoDFtoSE <- function(Maindata,Metadata=NULL,shinySession=NULL){
     if(methods::is(Maindata,"SummarizedExperiment")){
-        warning("Input is already a SummarizedExperiment")
+        message("Input is already a SummarizedExperiment")
         return(Maindata)
     }
     
@@ -50,12 +56,27 @@ discoDFtoSE <- function(Maindata,Metadata=NULL,shinySession=NULL){
 #' @inheritParams discoInterCorOutliers
 #' @export
 #' 
-#' @return a DiscoRhythm format Maindata data.frame.
+#' @return A DiscoRhythm format Maindata data.frame.
 #' 
 #' @importFrom SummarizedExperiment assay
 #' @importFrom BiocGenerics rownames
+#' 
+#' @examples
+#' df <- discoSEtoDF(se) 
 discoSEtoDF <- function(se){
-    return(data.frame("IDs"=rownames(se),assay(se)))
+    df <- data.frame("IDs"=rownames(se),assay(se))
+    if(!is.null(se$ID)){
+        if(anyDuplicated(se$ID)){
+            message("Duplicate IDs found, remaking IDs...")
+            colnames(df)[-1] <- paste(se$Time,
+                                      seq_len(ncol(se)),
+                                      se$ReplicateID,
+                                      sep="_")
+        } else{
+            colnames(df)[-1] <- se$ID
+        }
+    }
+    return(df)
 }
 
 #' Handle Error/Warning messages appropriately with

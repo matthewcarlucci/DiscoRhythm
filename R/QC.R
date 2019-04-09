@@ -1,6 +1,6 @@
 #' Quality Control for DiscoRhythm
 #'
-#' Functions for executing outlier detection and row filtering workflows
+#' Functions for executing outlier detection and row filtering procedures
 #' prior to rhythmicity analysis.
 #'
 #' @name discoQC
@@ -15,7 +15,7 @@ NULL
 #'
 #' @inheritParams discoPCAoutliers
 #'
-#' @return output from \link[stats]{prcomp} with an added table element
+#' @return output from \link[stats]{prcomp} with an added table summary
 #'
 #' @export
 #'
@@ -77,7 +77,7 @@ discoPCAgetOutliers <- function(x, SDfactor = 3, pcToCut = seq_len(4)) {
 #'
 #' @examples
 #' se <- discoGetSimu(TRUE)
-#' pca <- discoPCAoutliers(se)
+#' PCAres <- discoPCAoutliers(se)
 #'
 discoPCAoutliers <- function(se, threshold = 3,
     scale = TRUE, pcToCut = seq_len(4)) {
@@ -94,7 +94,7 @@ discoPCAoutliers <- function(se, threshold = 3,
 #'
 #' @param se SummarizedExperiment, the main data object used by DiscoRhythm 
 #' expected to contain se$ID, se$ReplicateID, se$Time sample metadata and
-#' non-null rownames.
+#' non-null rownames. See the vignette for more details.
 #' @param cor_method character, method of pairwise correlation
 #' (see \link[stats]{cor}'s "method" argument for all options).
 #' @param threshold numeric, a threshold determining which samples are
@@ -105,14 +105,13 @@ discoPCAoutliers <- function(se, threshold = 3,
 #' "sd" or "value".
 #'
 #' @return A list of 3 objects:
-#' 1) outliers - named boolean indicating if the sample is an outlier
+#' 1) outliers - named logical indicating if the sample is an outlier
 #' 2) meanCor - mean of all pairwise correlations for a given sample
 #' 3) corMat - Matrix of all pairwise correlation values
 #'
 #' @export
 #'
 #' @examples
-#' se <- discoGetSimu(TRUE)
 #' CorRes <- discoInterCorOutliers(se)
 #'
 discoInterCorOutliers <- function(se,
@@ -229,7 +228,6 @@ averageTech <- function(se, method = "Median") {
 #' @export
 #'
 #' @examples
-#' se <- discoGetSimu(TRUE)
 #' ANOVAres <- discoRepAnalysis(se)
 #'
 discoRepAnalysis <- function(se,

@@ -5,9 +5,9 @@
 #' report with data visualizations from an Rmarkdown template. See the
 #' DiscoRhythm vignette for more details on the analysis procedures.
 #'
-#' @param indata data.frame, the first column is the row ID and all other
-#' columns are observation data where the column names are expected to contain
-#' sample metadata in the format expected by \code{discoParseMeta}.
+#' @param indata SummarizedExperiment or data.frame, see the vignette for
+#' the specific formats expected for each of these input types.
+#' \code{discoParseMeta}.
 #' @param report character, if \code{!is.null(report)} an html report with
 #` outputs of the DiscoRhythm workflow will be rendered in the current working
 #` directory using the value as the file name.
@@ -55,13 +55,11 @@
 #' @examples
 #' indata <- discoGetSimu()
 #'
-#' # Batch execute (on demo data) with output in DiscoRhythm_report.html report
-#' discoBatch(indata,report="DiscoRhythm_report.html",
-#' outdata=FALSE, osc_method="CS")
-#'
-#' # Batch execute (on demo data) returning the oscillation detection
-#' # results (output of discoODAs)
-#' discoODAres <- discoBatch(indata,osc_method="CS")
+#' # Batch execute (on demo data) to generate a DiscoRhythm_report.html report.
+#' # Returns the results of discoODAs
+#' discoODAres <- discoBatch(indata,
+#' report="DiscoRhythm_report.html",
+#' osc_method="CS")
 #'
 #' @seealso discoODAs, discoRepAnalysis, discoPeriodDetection,
 #' discoPCAoutliers, discoInterCorOurliers
@@ -168,7 +166,7 @@ discoODAs <- function(se, period=24,
     
     if(any(method %in% DiscoRhythm::discoODAid2name)){
         message("Detected full ODA names, coverting to
-                Ids using discoODAid2name")
+                IDs using discoODAid2name")
         method <- names(
             DiscoRhythm::discoODAid2name
             )[DiscoRhythm::discoODAid2name %in% method]
@@ -266,7 +264,7 @@ PeriodDetection_range <- function(times,circular_t,main_per,test_periods){
     return(periods)
 }
 
-#' @rdname discoODAs
+#' Detect dataset-wide fits to multiple periodicities
 #'
 #' @param timeType character, time is either reported as "linear" or
 #' "circular" on some base-cycle (ex. time of day). This determines the periods

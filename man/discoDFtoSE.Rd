@@ -25,16 +25,23 @@ value prefix.}
 
 \item{se}{SummarizedExperiment, the main data object used by DiscoRhythm 
 expected to contain se$ID, se$ReplicateID, se$Time sample metadata and
-non-null rownames.}
+non-null rownames. See the vignette for more details.}
 }
 \value{
-a SummarizedExperiment object with colData containing sample
+A SummarizedExperiment object with colData containing sample
 metadata.
 
-a DiscoRhythm format Maindata data.frame.
+A DiscoRhythm format Maindata data.frame.
 }
 \description{
 Functions to import a data.frame (from the format expected by the 
 web application \code{discoApp()}) as a SummarizedExperiment object or
 to export a SummarizedExperiment for use with the web application.
+}
+\examples{
+
+df <- discoGetSimu()
+se <- discoDFtoSE(df)
+
+df <- discoSEtoDF(se) 
 }

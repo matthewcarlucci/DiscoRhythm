@@ -19,7 +19,7 @@ discoRepAnalysis(se, aov_method = "Equal Variance", aov_pcut = 0.05,
 \arguments{
 \item{se}{SummarizedExperiment, the main data object used by DiscoRhythm 
 expected to contain se$ID, se$ReplicateID, se$Time sample metadata and
-non-null rownames.}
+non-null rownames. See the vignette for more details.}
 
 \item{threshold}{numeric, a threshold determining which samples are
 outliers (for discoInterCorOutliers, in units of thresh_type, for
@@ -55,22 +55,20 @@ of: "Median","Mean","Random", or "None".}
 list containing PCA results and the detected outliers
 
 A list of 3 objects:
-1) outliers - named boolean indicating if the sample is an outlier
+1) outliers - named logical indicating if the sample is an outlier
 2) meanCor - mean of all pairwise correlations for a given sample
 3) corMat - Matrix of all pairwise correlation values
 }
 \description{
-Functions for executing outlier detection and row filtering workflows
+Functions for executing outlier detection and row filtering procedures
 prior to rhythmicity analysis.
 }
 \examples{
 se <- discoGetSimu(TRUE)
-pca <- discoPCAoutliers(se)
+PCAres <- discoPCAoutliers(se)
 
-se <- discoGetSimu(TRUE)
 CorRes <- discoInterCorOutliers(se)
 
-se <- discoGetSimu(TRUE)
 ANOVAres <- discoRepAnalysis(se)
 
 }

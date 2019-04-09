@@ -12,9 +12,9 @@ discoBatch(indata, report = NULL, outdata = TRUE, ncores = 1,
   avg_method = "Median", osc_method = NULL, osc_period = 24)
 }
 \arguments{
-\item{indata}{data.frame, the first column is the row ID and all other
-columns are observation data where the column names are expected to contain
-sample metadata in the format expected by \code{discoParseMeta}.}
+\item{indata}{SummarizedExperiment or data.frame, see the vignette for
+the specific formats expected for each of these input types.
+\code{discoParseMeta}.}
 
 \item{report}{character, if \code{!is.null(report)} an html report with}
 
@@ -82,13 +82,11 @@ DiscoRhythm vignette for more details on the analysis procedures.
 \examples{
 indata <- discoGetSimu()
 
-# Batch execute (on demo data) with output in DiscoRhythm_report.html report
-discoBatch(indata,report="DiscoRhythm_report.html",
-outdata=FALSE, osc_method="CS")
-
-# Batch execute (on demo data) returning the oscillation detection
-# results (output of discoODAs)
-discoODAres <- discoBatch(indata,osc_method="CS")
+# Batch execute (on demo data) to generate a DiscoRhythm_report.html report.
+# Returns the results of discoODAs
+discoODAres <- discoBatch(indata,
+report="DiscoRhythm_report.html",
+osc_method="CS")
 
 }
 \seealso{

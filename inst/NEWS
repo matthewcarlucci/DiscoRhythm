@@ -1,2 +1,5 @@
+Changes in version 0.99.1 (2019-04-09)
++ Added support for usage of SummarizedExperiment objects
+
 Changes in version 0.99.0 (2019-04-04)
 + Submitted to Bioconductor
