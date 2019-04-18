@@ -30,7 +30,7 @@ discoCheckInput <- function(se) {
     
     dat <- assay(se)
     
-    # Check input is a data.frame
+    # Check input is a matrix
     if (!methods::is(dat,"matrix")) {
         warning("Input data is not a matrix, attempting to convert")
         dat <- as.matrix(dat)
@@ -67,7 +67,7 @@ discoCheckInput <- function(se) {
     if (!all(vapply(dat, function(x) is.numeric(x), logical(1)))) {
         warning("Data was not read as numeric, attempting to coerce to numeric")
         colNames <- colnames(dat)
-        dat <- data.frame(lapply(dat, function(x) as.numeric(x)))
+        dat <- as.matrix(data.frame(lapply(dat, function(x) as.numeric(x))))
         colnames(dat) <- colNames
     }
     

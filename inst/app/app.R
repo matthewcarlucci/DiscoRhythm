@@ -17,6 +17,8 @@ library(shiny)
 library(shinyjs)
 library(shinycssloaders)
 library(shinydashboard)
+library(SummarizedExperiment)
+library(DiscoRhythm)
 
 ########################################
 # DEFINED FUNCTIONS AND OPTIONS
