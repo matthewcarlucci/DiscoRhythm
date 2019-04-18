@@ -4,8 +4,8 @@
 \alias{discoPeriodDetection}
 \title{Detect dataset-wide fits to multiple periodicities}
 \usage{
-discoPeriodDetection(se, timeType = "linear", main_per = 24,
-  test_periods = NULL)
+discoPeriodDetection(se, timeType = c("linear", "circular"),
+  main_per = 24, test_periods = NULL)
 }
 \arguments{
 \item{se}{SummarizedExperiment, the main data object used by DiscoRhythm 

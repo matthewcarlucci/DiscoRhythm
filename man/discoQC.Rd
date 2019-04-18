@@ -10,11 +10,12 @@
 discoPCAoutliers(se, threshold = 3, scale = TRUE,
   pcToCut = seq_len(4))
 
-discoInterCorOutliers(se, cor_method = "pearson", threshold = 3,
-  thresh_type = "SD")
+discoInterCorOutliers(se, cor_method = c("pearson", "kendall",
+  "spearman"), threshold = 3, thresh_type = c("sd", "value"))
 
-discoRepAnalysis(se, aov_method = "Equal Variance", aov_pcut = 0.05,
-  aov_Fcut = 0, avg_method = "Median")
+discoRepAnalysis(se, aov_method = c("Equal Variance", "Welch", "None"),
+  aov_pcut = 0.05, aov_Fcut = 0, avg_method = c("Median", "Mean",
+  "Random", "None"))
 }
 \arguments{
 \item{se}{SummarizedExperiment, the main data object used by DiscoRhythm 

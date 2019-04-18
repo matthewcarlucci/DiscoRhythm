@@ -136,12 +136,12 @@ discoApp <- function(){
 #'  Technical replicates are expected to be merged by this stage.
 #' @inheritParams discoInterCorOutliers
 #' @param period numeric, the hypothesized period to test for.
-#' @param method character, names of ODAs to use. If length>1 will test all
-#' input method names.
+#' @param method character, short names of ODAs to use. If length>1 
+#' all input method names will be evaluated.
+#' @param circular_t logical, is time circular on some base-cycle
+#' (ex. time of day).
 #' @param ncores number of cores to parallelize with (applicable to JTK, ARSER
 #' and LS only). If 1 will execute in serial.
-#' @param realtive_t0 logical, is time circular on some base-cycle
-#' (ex. time of day).
 #'
 #' @rdname discoODAs
 #'
@@ -158,20 +158,15 @@ discoApp <- function(){
 #' discoODAres <- discoODAs(se,method="CS")
 #'
 discoODAs <- function(se, period=24,
-    method = "CS", circular_t=FALSE, ncores = 1) {
-
+    method = c("CS","JTK","LS","ARS"),
+    circular_t=FALSE, ncores = 1) {
+    
+    method = match.arg(method,several.ok = TRUE)
+    
     if(!methods::is(se,"SummarizedExperiment")){
         stop("Input must be a SummarizedExperiment.")
     }
     
-    if(any(method %in% DiscoRhythm::discoODAid2name)){
-        message("Detected full ODA names, coverting to
-                IDs using discoODAid2name")
-        method <- names(
-            DiscoRhythm::discoODAid2name
-            )[DiscoRhythm::discoODAid2name %in% method]
-    }
-
     method <- discoGetODAs(se,method,period,circular_t)
 
     unif <- list()
@@ -290,8 +285,10 @@ PeriodDetection_range <- function(times,circular_t,main_per,test_periods){
 #' 
 #' @importFrom SummarizedExperiment colData
 discoPeriodDetection <- function(se,
-    timeType = "linear", main_per = 24,
+    timeType = c("linear","circular"), main_per = 24,
     test_periods = NULL) {
+    
+    timeType = match.arg(timeType)
     
     if(!methods::is(se,"SummarizedExperiment")){
         stop("Input must be a SummarizedExperiment.")

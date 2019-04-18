@@ -115,19 +115,20 @@ discoPCAoutliers <- function(se, threshold = 3,
 #' CorRes <- discoInterCorOutliers(se)
 #'
 discoInterCorOutliers <- function(se,
-                                    cor_method = "pearson",
+                                    cor_method = c("pearson",
+                                                   "kendall",
+                                                   "spearman"),
                                     threshold = 3,
-                                    thresh_type = "SD") {
+                                    thresh_type = c("sd","value")) {
 
+    cor_method = match.arg(cor_method)
+    thresh_type = match.arg(thresh_type)
+    
     if(!methods::is(se,"SummarizedExperiment")){
         stop("Input must be a SummarizedExperiment.")
     }
     
     dat <- assay(se)
-    
-    if(!(tolower(thresh_type) %in% c("sd","value"))){
-        stop("thresh_type must be 'value' or 'SD'")
-    }
 
     mat <- stats::cor(dat, method = cor_method)
 
@@ -137,9 +138,9 @@ discoInterCorOutliers <- function(se,
 
     meanCor <- rowMeans(corMat, na.rm = TRUE)
 
-    if (thresh_type != "value") {
+    if (thresh_type == "sd") {
         cutval <- (mean(meanCor) - threshold * stats::sd(meanCor))
-    } else {
+    } else if (thresh_type == "value") {
         cutval <- threshold
     }
     outliers <- meanCor <= cutval
@@ -155,7 +156,9 @@ discoInterCorOutliers <- function(se,
 
 # Average technical replicates
 #' @keywords internal
-averageTech <- function(se, method = "Median") {
+averageTech <- function(se, method = c("Median","Mean","Random","None")) {
+    
+    method <- match.arg(method)
     
     if(!methods::is(se,"SummarizedExperiment")){
         stop("Input must be a SummarizedExperiment.")
@@ -231,11 +234,14 @@ averageTech <- function(se, method = "Median") {
 #' ANOVAres <- discoRepAnalysis(se)
 #'
 discoRepAnalysis <- function(se,
-                                aov_method = "Equal Variance",
+                                aov_method = c("Equal Variance","Welch","None"),
                                 aov_pcut = 0.05,
                                 aov_Fcut = 0,
-                                avg_method = "Median"
+                                avg_method = c("Median","Mean","Random","None")
 ) {
+    
+    aov_method=match.arg(aov_method)
+    avg_method=match.arg(avg_method)
     
     if(!methods::is(se,"SummarizedExperiment")){
         stop("Input must be a SummarizedExperiment.")

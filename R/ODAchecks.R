@@ -128,7 +128,10 @@ inferOscDesign <- function(se) {
 #' @seealso discoODAexclusionMatrix
 checkODAs <- function(infer_design, circular_t,
     invalidPeriod, invalidJTKperiod,
-    output = "methods") {
+    output = c("methods","criteria")) {
+    
+    output = match.arg(output)
+    
     crit <- as.logical(
         c(unlist(infer_design), circular_t, invalidPeriod, invalidJTKperiod)
         )

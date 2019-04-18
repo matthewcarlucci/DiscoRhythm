@@ -7,24 +7,24 @@
 \usage{
 discoGetODAs(se, method = NULL, period, circular_t = FALSE)
 
-discoODAs(se, period = 24, method = "CS", circular_t = FALSE,
-  ncores = 1)
+discoODAs(se, period = 24, method = c("CS", "JTK", "LS", "ARS"),
+  circular_t = FALSE, ncores = 1)
 }
 \arguments{
 \item{se}{SummarizedExperiment, the main data object used by DiscoRhythm 
 expected to contain se$ID, se$ReplicateID, se$Time sample metadata and
 non-null rownames. See the vignette for more details.}
 
-\item{method}{character, names of ODAs to use. If length>1 will test all
-input method names.}
+\item{method}{character, short names of ODAs to use. If length>1 
+all input method names will be evaluated.}
 
 \item{period}{numeric, the hypothesized period to test for.}
 
+\item{circular_t}{logical, is time circular on some base-cycle
+(ex. time of day).}
+
 \item{ncores}{number of cores to parallelize with (applicable to JTK, ARSER
 and LS only). If 1 will execute in serial.}
-
-\item{realtive_t0}{logical, is time circular on some base-cycle
-(ex. time of day).}
 }
 \value{
 A named list of results where each element is a data.frame for the

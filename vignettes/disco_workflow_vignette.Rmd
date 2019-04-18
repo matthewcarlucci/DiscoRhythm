@@ -695,7 +695,7 @@ were determined to be outliers.
 CorRes <- discoInterCorOutliers(selectDataSE,
                                 cor_method="pearson",
                                 threshold=3,
-                                thresh_type="SD")
+                                thresh_type="sd")
 ```
 
 ### discoPCAoutliers
@@ -776,7 +776,8 @@ scores as described in \@ref(period-detection).
 OVpca <- discoPCA(FinalSE)
 OVpcaSE <- discoDFtoSE(data.frame("PC"=1:ncol(OVpca$x),t(OVpca$x)),
                                   colData(FinalSE))
-knitr::kable(discoODAs(OVpcaSE,period = 24)$CS, format = "markdown")
+knitr::kable(discoODAs(OVpcaSE,period = 24,method = "CS")$CS,
+             format = "markdown")
 ```
 
 ## Oscillation Detection
@@ -807,13 +808,12 @@ results.
 ```
 discoBatch(indata=indata,
   report="discoBatch_example.html",
-  metadata=NULL,
   ncores=1,
   main_per=24,
   timeType="linear",
   cor_threshold=3,
   cor_method="pearson",
-  cor_threshType="SD",
+  cor_threshType="sd",
   pca_threshold=3,
   pca_scale=TRUE,
   pca_pcToCut=paste0("PC",seq_len(4)),
