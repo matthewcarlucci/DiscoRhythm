@@ -36,7 +36,7 @@ discoPCA <- function(se, scale = TRUE, npcs = 10) {
         stop("Input must be a SummarizedExperiment.")
     }
     if (any(c(!is.numeric(npcs), length(npcs) != 1, npcs <= 0))) {
-        stop("Number of princimap components should be single positive numeric value.")
+        stop("npcs should be a single positive numeric value.")
     }
 
 
