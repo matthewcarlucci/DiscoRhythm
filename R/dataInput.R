@@ -103,26 +103,31 @@ discoCheckInput <- function(se, n_min_sample = 3) {
 #' discoDesignSummary(Metadata)
 #'
 discoDesignSummary <- function(Metadata) {
-        bioRep <- data.frame(ID=paste0("Biological Sample ",
-                                        Metadata$ReplicateID),
-                            ZT=Metadata$Time,
-                            Rep=Metadata$ReplicateID)
-        bioRep <- bioRep[order(bioRep$ZT,bioRep$Rep),]
-        bioRep <- reshape2::melt(table(bioRep$ID, bioRep$ZT))
-        bioRep <- bioRep[bioRep$value != 0,]
-        tmp <- matrix(nrow = nrow(bioRep),ncol = length(unique(bioRep$Var2)),
-                    dimnames = list(rep("Samples", nrow(bioRep)),
-                                    unique(bioRep$Var2)))
-        for (i in unique(bioRep$Var2)) {
-            ids <- paste0(bioRep[bioRep$Var2==i,]$Var1,
-                            " (",bioRep[bioRep$Var2==i,]$value,")")
-            tmp[seq_along(ids)+1,as.character(i)] <- ids
-            tmp[1,as.character(i)] <- sum(bioRep[bioRep$Var2==i,]$value)
-        }
-        rownames(tmp)[1] <- "Total"
-        rownames(tmp)[-1] <- ""
-        keep <- max(apply(tmp, 2, function(X) sum(!is.na(X))))
-        final <- tmp[seq_len(keep),]
-        final[is.na(final)] <- ""
+    bioRep <- data.frame(
+        ID = paste("Biological Sample", Metadata$ReplicateID),
+        ZT = Metadata$Time,
+        Rep = Metadata$ReplicateID
+    )
+    bioRep <- bioRep[order(bioRep$ZT,bioRep$Rep), ]
+    bioRep <- reshape2::melt(table(bioRep$ID, bioRep$ZT))
+    bioRep <- bioRep[bioRep$value != 0,]
+    tmp <- matrix(
+        nrow = nrow(bioRep),
+        ncol = length(unique(bioRep$Var2)),
+        dimnames = list(rep("Samples", nrow(bioRep)), unique(bioRep$Var2))
+    )
+    for (i in unique(bioRep$Var2)) {
+        ids <- paste0(
+            bioRep[bioRep$Var2 == i, ]$Var1,
+            " (", bioRep[bioRep$Var2 == i, ]$value, ")"
+        )
+        tmp[seq_along(ids) + 1, as.character(i)] <- ids
+        tmp[1, as.character(i)] <- sum(bioRep[bioRep$Var2 == i, ]$value)
+    }
+    rownames(tmp)[1] <- "Total"
+    rownames(tmp)[-1] <- ""
+    keep <- max(apply(tmp, 2, function(X) sum(!is.na(X))))
+    final <- tmp[seq_len(keep), ]
+    final[is.na(final)] <- ""
     return(final)
 }
