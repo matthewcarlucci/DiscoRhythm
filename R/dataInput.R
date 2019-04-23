@@ -68,6 +68,9 @@ discoCheckInput <- function(se, n_min_sample = 3) {
             "contained missing values."
         ))
     }
+    if (nrow(dat) == 0) {
+        stop("Deleted all rows, no result to return.")
+    }
     
     ret <- SummarizedExperiment(assays = dat,
                                 colData = colData(se)
