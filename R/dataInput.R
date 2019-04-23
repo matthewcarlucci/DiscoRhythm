@@ -110,7 +110,7 @@ discoDesignSummary <- function(Metadata) {
     )
     bioRep <- bioRep[order(bioRep$ZT,bioRep$Rep), ]
     bioRep <- reshape2::melt(table(bioRep$ID, bioRep$ZT))
-    bioRep <- bioRep[bioRep$value != 0,]
+    bioRep <- bioRep[bioRep$value != 0, ]
     tmp <- matrix(
         nrow = nrow(bioRep),
         ncol = length(unique(bioRep$Var2)),
@@ -127,6 +127,9 @@ discoDesignSummary <- function(Metadata) {
     rownames(tmp)[1] <- "Total"
     rownames(tmp)[-1] <- ""
     keep <- max(apply(tmp, 2, function(X) sum(!is.na(X))))
+    if (keep == 0) {
+        stop("Nothing to return, all values are NA")
+    }
     final <- tmp[seq_len(keep), ]
     final[is.na(final)] <- ""
     return(final)
