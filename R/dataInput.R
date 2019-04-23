@@ -109,7 +109,7 @@ discoDesignSummary <- function(Metadata) {
         Rep = Metadata$ReplicateID
     )
     bioRep <- bioRep[order(bioRep$ZT,bioRep$Rep), ]
-    bioRep <- reshape2::melt(table(bioRep$ID, bioRep$ZT))
+    bioRep <- data.table::melt(table(bioRep$ID, bioRep$ZT))
     bioRep <- bioRep[bioRep$value != 0, ]
     tmp <- matrix(
         nrow = nrow(bioRep),
