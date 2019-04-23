@@ -164,7 +164,7 @@ checkODAs <- function(infer_design, circular_t,
 #' @param time numeric vector of sample collection times.
 #' @param period hypothesized period.
 #' @param min_n_values numeric value specifying minimal number of unique 
-#' time%%period values.
+#' "time MODULO period" values.
 #'
 #' @keywords internal
 #' @return logical indicating whether the period is suitable for testing given
