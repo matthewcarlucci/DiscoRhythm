@@ -163,24 +163,26 @@ checkODAs <- function(infer_design, circular_t,
 #'
 #' @param time numeric vector of sample collection times.
 #' @param period hypothesized period.
+#' @param min_n_values numeric value specifying minimal number of unique 
+#' time%%period values.
 #'
 #' @keywords internal
 #' @return logical indicating whether the period is suitable for testing given
 #' the sampling times of the dataset.
 # Given sample collection times check ability to test the period of interest
 # FALSE indicates no algorithms can test this period
-# Conditions are: There must be 3 unique time%%period values
+# Conditions are: There must be at least min_n_values unique time%%period values
 # Conditions for specific algorithms are evaluated in separate functions
-checkPeriod <- function(time, period) {
-    if (length(unique(time %% period)) <= 2) {
-        warning(c("Sample times modulo period must have ",
-            "at least 3 unique values to continue"))
-        invalidPeriod <- TRUE
-    } else {
-        invalidPeriod <- FALSE
+checkPeriod <- function(time, period, min_n_values = 3) {
+    invalid_period <- length(unique(time %% period)) < min_n_values
+    if (invalid_period) {
+        warning(
+            "Sample times modulo period must have at least ",
+            min_n_values,
+            " unique values to continue."
+        )
     }
-
-    return(invalidPeriod)
+    return(invalid_period)
 }
 
 
