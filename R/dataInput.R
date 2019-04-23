@@ -38,23 +38,6 @@ discoCheckInput <- function(se) {
     if (anyDuplicated(rownames(se))) {
         warning("Please consider deduplicating row IDs before continuing.")
     }
-    
-    ## Remove constant rows or rows with NAs
-    # Flag rows with NAs
-    rowToKeep <- apply(dat, 1, function(x)
-        !any(is.na(as.numeric(x))))
-    # Flag rows with constant values
-    rowToKeep[rowToKeep] <- !apply(
-        dat[rowToKeep, ], 1,
-        function(x) max(as.numeric(x)) == min(as.numeric(x))
-        )
-    if (sum(!rowToKeep) != 0) {
-        dat <- dat[rowToKeep, ]
-        warning(
-            paste0("Deleted ", sum(!rowToKeep),
-                " rows since they were constant across samples ",
-                "or contained missing values"))
-    }
 
     # If values are not read as numeric coerce to numeric
     if (!all(vapply(dat, function(x) is.numeric(x), logical(1)))) {
@@ -62,6 +45,21 @@ discoCheckInput <- function(se) {
         colNames <- colnames(dat)
         dat <- as.matrix(data.frame(lapply(dat, function(x) as.numeric(x))))
         colnames(dat) <- colNames
+    }
+    
+    # Remove constant rows or rows with NAs
+    # Flag rows with NAs
+    rowToKeep <- apply(dat, 1, function(x) {!any(is.na(x))})
+    # Flag rows with constant values
+    rowToKeep[rowToKeep] <- apply(
+        dat[rowToKeep, ], 1,
+        function(x) {!(max(x) == min(x))}
+    )
+    if (sum(!rowToKeep) != 0) {
+        dat <- dat[rowToKeep, ]
+        warning(paste("Deleted", sum(!rowToKeep), "rows since they were constant across samples",
+                "or contained missing values")
+        )
     }
     
     ret <- SummarizedExperiment(assays = dat,
