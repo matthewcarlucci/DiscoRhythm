@@ -24,26 +24,19 @@
 #' @importFrom SummarizedExperiment SummarizedExperiment colData
 discoCheckInput <- function(se) {
     
-    if(!methods::is(se,"SummarizedExperiment")){
+    if (!methods::is(se,"SummarizedExperiment")) {
         stop("Input must be a SummarizedExperiment.")
     }
     
     dat <- assay(se)
-    
-    # Check input is a matrix
-    if (!methods::is(dat,"matrix")) {
-        warning("Input data is not a matrix, attempting to convert")
-        dat <- as.matrix(dat)
-    }
 
     # Check enough data is available for analysis
     if (ncol(se) <= 3) {
-        stop("More than 3 samples are needed to perform analysis")
+        stop("More than 3 samples are needed to perform analysis.")
     }
     
     if (anyDuplicated(rownames(se))) {
-                warning("Please consider deduplicating row IDs before 
-                        continuing.")
+        warning("Please consider deduplicating row IDs before continuing.")
     }
     
     ## Remove constant rows or rows with NAs
