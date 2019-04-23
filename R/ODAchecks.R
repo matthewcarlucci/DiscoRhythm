@@ -12,7 +12,7 @@
 #  output which models are valid
 # Used by discoODAs
 
-discoGetODAs <- function(se,method=NULL, period, circular_t=FALSE) {
+discoGetODAs <- function(se, method = NULL, period, circular_t = FALSE) {
 
     # Gather necessary info to determine valid ODA methods
     design <- inferOscDesign(se)
@@ -21,7 +21,7 @@ discoGetODAs <- function(se,method=NULL, period, circular_t=FALSE) {
     if ("JTK" %in% method | is.null(method)) {
         invalidJTKperiod <- checkJTKperiod(se$Time, period)
     } else {
-    # Value doesn't matter in this case
+        # Value doesn't matter in this case
         invalidJTKperiod <- TRUE
     }
 
@@ -30,24 +30,27 @@ discoGetODAs <- function(se,method=NULL, period, circular_t=FALSE) {
         circular_t,
         invalidPeriod = invalidPeriod,
         invalidJTKperiod = invalidJTKperiod
-        )
+    )
 
     # Use all valid methods if none are specified
     # Filter for only valid methods otherwise
     if (is.null(method)) {
         outmethods <- validModels
     } else {
-        if (!all(method %in% validModels) | is.null(method)) {
-            warning("Not all selected models are valid,
-                    selecting valid methods only")
-            outmethods <- method[method %in% validModels]
-        } else{
+        foo <- method %in% validModels
+        if (!all(foo) | is.null(method)) {
+            warning(
+                "Specified method ", paste(method[!foo], collapse = " "),
+                " is not valid, selecting valid methods only."
+            )
+            outmethods <- method[foo]
+        } else {
             outmethods <- method
         }
     }
 
-    if(length(outmethods)==0){
-        warning("No methods returned from getDiscoRhythmODAs")
+    if (length(outmethods) == 0){
+        warning("No methods returned from getDiscoRhythmODAs.")
     }
     return(outmethods)
 }
