@@ -11,6 +11,8 @@
 #' User will be warned if row IDs contain duplicate entries.
 #'
 #' @inheritParams discoInterCorOutliers
+#' @param n_min_sample numeric value specifying minimal number of samples
+#' needed to perform analysis.
 #'
 #' @return SummarizedExperiment checked for errors and
 #' modified as needed
@@ -22,7 +24,7 @@
 #' se_clean <- discoCheckInput(se)
 #'
 #' @importFrom SummarizedExperiment SummarizedExperiment colData
-discoCheckInput <- function(se) {
+discoCheckInput <- function(se, n_min_sample = 3) {
     
     if (!methods::is(se,"SummarizedExperiment")) {
         stop("Input must be a SummarizedExperiment.")
@@ -31,8 +33,11 @@ discoCheckInput <- function(se) {
     dat <- assay(se)
 
     # Check enough data is available for analysis
-    if (ncol(se) <= 3) {
-        stop("More than 3 samples are needed to perform analysis.")
+    if (ncol(se) <= n_min_sample) {
+        stop(paste(
+            "More than", n_min_sample,
+            "samples are needed to perform analysis."
+        ))
     }
     
     if (anyDuplicated(rownames(se))) {
@@ -57,9 +62,11 @@ discoCheckInput <- function(se) {
     )
     if (sum(!rowToKeep) != 0) {
         dat <- dat[rowToKeep, ]
-        warning(paste("Deleted", sum(!rowToKeep), "rows since they were constant across samples",
-                "or contained missing values")
-        )
+        warning(paste(
+            "Deleted", sum(!rowToKeep),
+            "rows since they were constant across samples or",
+            "contained missing values."
+        ))
     }
     
     ret <- SummarizedExperiment(assays = dat,
