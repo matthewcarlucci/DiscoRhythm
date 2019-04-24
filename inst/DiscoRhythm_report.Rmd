@@ -1,5 +1,5 @@
 ---
-title: DiscoRhythm_`r packageVersion("DiscoRhythm")` Report
+title: DiscoRhythm v`r packageVersion("DiscoRhythm")` Report
 date:
 output:
   BiocStyle::html_document:
@@ -10,10 +10,11 @@ output:
     css: app/www/custom_styles.css
 ---
 
-> The analysis below can be reproduced in R using `discoBatch()` or 
-interactively in `discoApp()` by using
+The analysis below can be reproduced in R with `discoBatch()` or 
+interactively with `discoApp()` by using
 the same input data and parameters shown below.
-Note: This report is static and does not perform any reactive data processing.
+*Note: This report is static and does not perform any reactive data 
+processing.*
 
 # Data Processing
 
@@ -53,7 +54,7 @@ steps.
 # Visualizations
 
 Importing the DiscoRhythm plotting functions used by the web application
-for use in this report. To reproduce these results ensure you have all 
+for use in this report. To reproduce these results, ensure you have all 
 necessary package versions (See \@ref(session-info)). Refer to the user's
 guide or to the descriptions in the web application for details on each figure.
 
