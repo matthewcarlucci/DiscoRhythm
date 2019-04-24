@@ -93,7 +93,7 @@ discoBatch <- function(indata,
         visualizationReport <- system.file("", "DiscoRhythm_report.Rmd",
                                             package = "DiscoRhythm",
                                             mustWork = TRUE)
-        rmarkdown::render(visualizationReport, output_dir = getwd(),
+        rmarkdown::render(visualizationReport, output_dir = dirname(report),
                             output_file = report,clean = TRUE)
     }
 

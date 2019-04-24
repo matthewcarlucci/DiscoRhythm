@@ -61,8 +61,6 @@ output$reportOutput <- downloadHandler(
                ".html")
     },
     content = function(file) {
-        setwd(dirname(file))
-
         # Using the same format and code as the oscillation detection
         # modal
         # Model names
@@ -93,7 +91,7 @@ output$reportOutput <- downloadHandler(
                 ),
             easyClose = TRUE, footer = NULL, size="l"
             ))
-
+        
         DiscoRhythm:::discoShinyHandler({
             do.call(discoBatch,c(list(report=file),discoBatchParams()))
         },"Report Generation",shinySession=session)

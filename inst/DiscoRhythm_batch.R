@@ -4,6 +4,8 @@
 # Expects all arguments to discoBatch in the environment
 #####################################################################
 
+library(DiscoRhythm)
+
 # Preprocess inputs
 selectDataSE <- discoCheckInput(discoDFtoSE(indata))
 

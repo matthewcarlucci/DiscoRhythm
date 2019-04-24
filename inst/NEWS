@@ -1,3 +1,13 @@
+Changes in version 0.99.4 (2019-04-24)
++ Addition of more unit tests on inputs
++ Bug fixes
+
+Changes in version 0.99.3 (2019-04-18)
++ Bug fixes
+
+Changes in version 0.99.2 (2019-04-18)
++ Use match.arg for argument options
+
 Changes in version 0.99.1 (2019-04-09)
 + Added support for usage of SummarizedExperiment objects
 
