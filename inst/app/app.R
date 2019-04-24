@@ -154,7 +154,6 @@ ui <- dashboardPage(
             cursor: default;
         }")),
         shinyjs::useShinyjs(),
-        shinyalert::useShinyalert(),
     # menuItem is the title for the section
     # tabName corresponds to code in code/ui/*R
         menuItem("Introduction",
