@@ -38,7 +38,7 @@ VignetteBuilder: knitr
 Imports: 
     matrixTests,
     matrixStats,
-    MetaCycle,
+    MetaCycle (>= 1.2.0),
     data.table,
     ggplot2,
     ggExtra,
