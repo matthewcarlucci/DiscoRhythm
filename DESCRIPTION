@@ -1,6 +1,6 @@
 Package: DiscoRhythm
 Title: Interactive Workflow for Discovering Rhythmicity in Biological Data
-Version: 0.99.3
+Version: 0.99.4
 Authors@R: c(
     person("Matthew", "Carlucci",
     email = "Matthew.Carlucci@camh.ca",
@@ -29,7 +29,7 @@ Description: Set of functions for estimation of cyclical characteristics, such
   datasets. Supporting functions are available for quality control, 
   dimensionality reduction, spectral analysis, and analysis of experimental 
   replicates. Contains a R Shiny web interface to execute all workflow steps.
-Depends: R (>= 3.5.0)
+Depends: R (>= 3.6.0)
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
