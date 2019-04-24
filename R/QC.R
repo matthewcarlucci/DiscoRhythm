@@ -24,12 +24,21 @@ NULL
 #' pca <- discoPCA(se)
 #'
 discoPCA <- function(se, scale = TRUE, npcs = 10) {
-    if (ncol(se) < 2) stop("Not enough samples for PCA")
-    if (nrow(se) < 2) stop("Not enough rows for PCA")
-    
-    if(!methods::is(se,"SummarizedExperiment")){
+    # Unit checks
+    foo <- dim(se)
+    if (foo[2] < 2) {
+        stop("Not enough samples for PCA.")
+    }
+    if (foo[1] < 2) {
+        stop("Not enough rows for PCA.")
+    }
+    if (!methods::is(se, "SummarizedExperiment")) {
         stop("Input must be a SummarizedExperiment.")
     }
+    if (any(c(!is.numeric(npcs), length(npcs) != 1, npcs <= 0))) {
+        stop("npcs should be a single positive numeric value.")
+    }
+
 
     dat <- assay(se)
     

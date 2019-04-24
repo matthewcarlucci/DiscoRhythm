@@ -12,7 +12,7 @@
 #  output which models are valid
 # Used by discoODAs
 
-discoGetODAs <- function(se,method=NULL, period, circular_t=FALSE) {
+discoGetODAs <- function(se, method = NULL, period, circular_t = FALSE) {
 
     # Gather necessary info to determine valid ODA methods
     design <- inferOscDesign(se)
@@ -21,7 +21,7 @@ discoGetODAs <- function(se,method=NULL, period, circular_t=FALSE) {
     if ("JTK" %in% method | is.null(method)) {
         invalidJTKperiod <- checkJTKperiod(se$Time, period)
     } else {
-    # Value doesn't matter in this case
+        # Value doesn't matter in this case
         invalidJTKperiod <- TRUE
     }
 
@@ -30,24 +30,27 @@ discoGetODAs <- function(se,method=NULL, period, circular_t=FALSE) {
         circular_t,
         invalidPeriod = invalidPeriod,
         invalidJTKperiod = invalidJTKperiod
-        )
+    )
 
     # Use all valid methods if none are specified
     # Filter for only valid methods otherwise
     if (is.null(method)) {
         outmethods <- validModels
     } else {
-        if (!all(method %in% validModels) | is.null(method)) {
-            warning("Not all selected models are valid,
-                    selecting valid methods only")
-            outmethods <- method[method %in% validModels]
-        } else{
+        foo <- method %in% validModels
+        if (!all(foo) | is.null(method)) {
+            warning(
+                "Specified method ", paste(method[!foo], collapse = " "),
+                " is not valid, selecting valid methods only."
+            )
+            outmethods <- method[foo]
+        } else {
             outmethods <- method
         }
     }
 
-    if(length(outmethods)==0){
-        warning("No methods returned from getDiscoRhythmODAs")
+    if (length(outmethods) == 0){
+        warning("No methods returned from getDiscoRhythmODAs.")
     }
     return(outmethods)
 }
@@ -160,24 +163,26 @@ checkODAs <- function(infer_design, circular_t,
 #'
 #' @param time numeric vector of sample collection times.
 #' @param period hypothesized period.
+#' @param min_n_values numeric value specifying minimal number of unique 
+#' "time MODULO period" values.
 #'
 #' @keywords internal
 #' @return logical indicating whether the period is suitable for testing given
 #' the sampling times of the dataset.
 # Given sample collection times check ability to test the period of interest
 # FALSE indicates no algorithms can test this period
-# Conditions are: There must be 3 unique time%%period values
+# Conditions are: There must be at least min_n_values unique time%%period values
 # Conditions for specific algorithms are evaluated in separate functions
-checkPeriod <- function(time, period) {
-    if (length(unique(time %% period)) <= 2) {
-        warning(c("Sample times modulo period must have ",
-            "at least 3 unique values to continue"))
-        invalidPeriod <- TRUE
-    } else {
-        invalidPeriod <- FALSE
+checkPeriod <- function(time, period, min_n_values = 3) {
+    invalid_period <- length(unique(time %% period)) < min_n_values
+    if (invalid_period) {
+        warning(
+            "Sample times modulo period must have at least ",
+            min_n_values,
+            " unique values to continue."
+        )
     }
-
-    return(invalidPeriod)
+    return(invalid_period)
 }
 
 

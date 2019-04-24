@@ -157,14 +157,24 @@ discoApp <- function(){
 #' # Execute the Cosinor method only
 #' discoODAres <- discoODAs(se,method="CS")
 #'
-discoODAs <- function(se, period=24,
+discoODAs <- function(se, period = 24,
     method = c("CS","JTK","LS","ARS"),
     circular_t=FALSE, ncores = 1) {
     
     method = match.arg(method,several.ok = TRUE)
     
-    if(!methods::is(se,"SummarizedExperiment")){
+    # Unit checks
+    if (!methods::is(se, "SummarizedExperiment")) {
         stop("Input must be a SummarizedExperiment.")
+    }
+    if (any(c(!is.numeric(period), length(period) != 1, period <= 0))) {
+        stop("Period should be single positive numeric value.")
+    }
+    if (any(c(!is.numeric(ncores), length(ncores) != 1, ncores <= 0))) {
+        stop("Number of cores should be single positive numeric value.")
+    }
+    if (any(c(!is.logical(circular_t), length(circular_t) != 1))) {
+        stop("circular_t cores should be single logical value.")
     }
     
     method <- discoGetODAs(se,method,period,circular_t)

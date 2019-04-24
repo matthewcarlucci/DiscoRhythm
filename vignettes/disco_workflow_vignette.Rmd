@@ -1,5 +1,5 @@
 ---
-title: "Introduction to `r Biocpkg('DiscoRhythm')`"
+title: "Introduction to `r BiocStyle::Biocpkg('DiscoRhythm')`"
 author:
 - name: Matthew Carlucci
   affiliation: The Krembil Family Epigenetics Laboratory, 
@@ -118,7 +118,7 @@ using the DiscoRhythm R package directly.
 ## Example Dataset
 
 Below is a small simulated circadian transcriptomic dataset generated using the
-`r Githubpkg("hugheylab/simphony")` which follows the expected input 
+`r BiocStyle::Githubpkg("hugheylab/simphony")` which follows the expected input 
 format for DiscoRhythm. The dataset was generated to contain ~50% rhythmic
 transcripts with a diversity of phases of oscillation.
 

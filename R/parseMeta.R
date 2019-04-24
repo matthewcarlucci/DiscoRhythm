@@ -32,11 +32,21 @@ discoParseMeta <- function(samplenames, shinySession = NULL) {
     myregex <- paste0("^([[:alpha:]]*)(\\-?[0-9]+[\\.]?[0-9]*)",
         "\\_?([[:alnum:]\\.]*)\\_?([[:alnum:]\\.]*)$")
 
-    if (!all(grepl(myregex, samplenames))) {
-        stop(c("Unable to parse sample names. ",
-            "Column names should contain time values only, 
-            or use the same structure ",
-            "as the provided example to indicate replicates."))
+    foo <- grepl(myregex, samplenames)
+    if (!all(foo)) {
+        # Check if getting rid of white space helps
+        if (all(grepl(myregex, trimws(samplenames)))) {
+            warning("Sample names contained white spaces that was removed.")
+            samplenames <- trimws(samplenames)
+        } else {
+            stop(
+                "Unable to parse sample names: ",
+                paste(samplenames[!foo], collapse = ","), ". ",
+                "Column names should contain time values only, ",
+                "or use the same structure as the provided example", 
+                "to indicate replicates."
+            )
+        }
     }
 
     meta <- data.frame(

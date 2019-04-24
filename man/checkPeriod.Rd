@@ -4,12 +4,15 @@
 \alias{checkPeriod}
 \title{Validate Detection Period}
 \usage{
-checkPeriod(time, period)
+checkPeriod(time, period, min_n_values = 3)
 }
 \arguments{
 \item{time}{numeric vector of sample collection times.}
 
 \item{period}{hypothesized period.}
+
+\item{min_n_values}{numeric value specifying minimal number of unique 
+"time MODULO period" values.}
 }
 \value{
 logical indicating whether the period is suitable for testing given

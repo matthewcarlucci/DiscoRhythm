@@ -4,12 +4,15 @@
 \alias{discoCheckInput}
 \title{Import Data for DiscoRhythm Analysis}
 \usage{
-discoCheckInput(se)
+discoCheckInput(se, n_min_sample = 3)
 }
 \arguments{
 \item{se}{SummarizedExperiment, the main data object used by DiscoRhythm 
 expected to contain se$ID, se$ReplicateID, se$Time sample metadata and
 non-null rownames. See the vignette for more details.}
+
+\item{n_min_sample}{numeric value specifying minimal number of samples
+needed to perform analysis.}
 }
 \value{
 SummarizedExperiment checked for errors and
