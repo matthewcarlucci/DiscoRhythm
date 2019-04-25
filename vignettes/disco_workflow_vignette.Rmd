@@ -73,13 +73,13 @@ is required in order to use the report generation features of DiscoRhythm.*
 Running the command `library(DiscoRhythm); discoApp()` will then launch the 
 application.
 
-### Run Locally with Docker (Optional)
+### Run the Web Application with Docker (Optional)
 
-Alternatively, if [docker](https://docs.docker.com/install/) is available, 
-the 
-[prebuilt DiscoRhythm container](https://hub.docker.com/r/mcarlucci/discorhythm) 
-can be pulled from Docker Hub and run locally to avoid installation of 
-DiscoRhythm and its dependencies.
+Alternatively, if [docker](https://docs.docker.com/install/) is installed, the 
+[DiscoRhythm container on Docker Hub](https://hub.docker.com/r/mcarlucci/discorhythm) 
+can be pulled and used to run the web application locally 
+avoiding the need to install DiscoRhythm and its dependencies (See instructions
+on Docker Hub). 
 
 ## Using DiscoRhythm in R
 

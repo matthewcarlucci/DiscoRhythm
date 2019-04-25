@@ -29,10 +29,9 @@ library(devtools)
 install_github("matthewcarlucci/DiscoRhythm", build_vignettes=TRUE)
 ```
 
-### DiscoRhythm with Docker
+### Usage with Docker
 
-```
-docker run --rm -p 3838:3838 mcarlucci/discorhythm
-```
-
-The web application should then be available at `localhost:3838/discorhythm`
+If [docker](https://docs.docker.com/install/) is installed on
+a machine, the 
+[DiscoRhythm container on Docker Hub](https://hub.docker.com/r/mcarlucci/discorhythm) 
+can be used to run the DiscoRhythm web application. 
