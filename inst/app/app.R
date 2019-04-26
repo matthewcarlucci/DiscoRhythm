@@ -38,7 +38,7 @@ addQicon <- function(title = "", id = NULL) {
 ########################################
 # GLOBAL VARIABLES
 ########################################
-docsURL <- "https://disco.camh.ca/apps/vignettes/disco_workflow_vignette.html"
+docsURL <- "https://bioconductor.org/packages/3.9/bioc/vignettes/DiscoRhythm/inst/doc/disco_workflow_vignette.html"
 verCode <- packageVersion("DiscoRhythm")
 
 # Method code to full name
@@ -58,8 +58,12 @@ RTconst <- c("JTK" = 100, "ARS" = 75, "LS" = 50, "CS" = 700)
 
 discotheme <- NULL
 
-# Currently the app will not be parallelized
-NCORES <- 1
+# argument passed from discoApp or set outside call to app.R
+if(exists(".discorhythm_ncores")){
+  NCORES <- .discorhythm_ncores
+} else {
+  NCORES <- 1
+}
 
 ########################################
 # USER INTERFACE
@@ -310,6 +314,7 @@ server <- function(input, output, session) {
         library(broom)
         library(heatmaply)
     })
+    
 }
 
 ########################################

@@ -71,7 +71,8 @@ BiocManager::install("DiscoRhythm")
 is required in order to use the report generation features of DiscoRhythm.*
 
 Running the command `library(DiscoRhythm); discoApp()` will then launch the 
-application.
+application. The application can be parallelized on multiple cores 
+for improved performance using `discoApp(ncores=number_of_available_cores)`.
 
 ### Run the Web Application with Docker (Optional)
 

@@ -1,3 +1,10 @@
+Changes in version 0.99.6 (2019-04-26)
++ Addition of ncores and port arguments to discoApp
+
+Changes in version 0.99.4 (2019-04-24)
++ Addition of more unit tests on inputs
++ Bug fixes
+
 Changes in version 0.99.4 (2019-04-24)
 + Addition of more unit tests on inputs
 + Bug fixes

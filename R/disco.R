@@ -110,6 +110,10 @@ discoBatch <- function(indata,
 #' This launches the web interface to DiscoRhythm containing all analysis
 #' tools. The vignette contains details on usage.
 #'
+#' @inheritParams discoBatch
+#' @param port numeric, port to run the shiny application on. Sets shiny.port
+#' option.
+#'
 #' @return Nothing is returned by this function.
 #'
 #' @examples
@@ -118,13 +122,20 @@ discoBatch <- function(indata,
 #' }
 #' @export
 #'
-discoApp <- function(){
+discoApp <- function(ncores=1, port=3838){
     appDir <- system.file("app", "", package = "DiscoRhythm")
     if (appDir == "") {
         stop("Could not find example directory.
             Try re-installing `DiscoRhythm`.",
             call. = FALSE)
     }
+    
+    options(shiny.port=port)
+    
+    # making .discorhythm_ncores available to the shiny app environment
+    .GlobalEnv$.discorhythm_ncores <- ncores
+    on.exit(rm(.discorhythm_ncores, envir=.GlobalEnv))
+    
     shiny::runApp(appDir, display.mode = "normal")
 }
 
