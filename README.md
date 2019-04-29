@@ -6,7 +6,7 @@ Web Interface**
 
 ## Getting Started
 
-Access the DiscoRhythm web application through the [public server](https://disco.camh.ca/apps/disco/). Install DiscoRhythm locally for improved performance.
+Access the DiscoRhythm web application through the [public server](https://disco.camh.ca). Install DiscoRhythm locally for improved performance.
 
 See the [tutorial](https://bioconductor.org/packages/3.9/bioc/vignettes/DiscoRhythm/inst/doc/disco_workflow_vignette.html) for details on usage of the web application and R package.
 
@@ -31,7 +31,6 @@ install_github("matthewcarlucci/DiscoRhythm", build_vignettes=TRUE)
 
 ### Usage with Docker
 
-If [docker](https://docs.docker.com/install/) is installed on
-a machine, the 
+If [docker](https://docs.docker.com/install/) is installed, the 
 [DiscoRhythm container on Docker Hub](https://hub.docker.com/r/mcarlucci/discorhythm) 
 can be used to run the DiscoRhythm web application. 
