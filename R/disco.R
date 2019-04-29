@@ -94,6 +94,9 @@ discoBatch <- function(indata,
                                             package = "DiscoRhythm",
                                             mustWork = TRUE)
         rmarkdown::render(visualizationReport, output_dir = dirname(report),
+                            # avoid writing intermediate files to non-writable
+                            # locations (i.e. if DiscoRhythm installed by root)
+                            intermediates_dir = dirname(report),
                             output_file = report,clean = TRUE)
     }
 
