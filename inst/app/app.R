@@ -19,6 +19,7 @@ library(shinycssloaders)
 library(shinydashboard)
 library(SummarizedExperiment)
 library(DiscoRhythm)
+library(shinyBS)
 
 ########################################
 # DEFINED FUNCTIONS AND OPTIONS
