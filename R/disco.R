@@ -159,7 +159,7 @@ discoApp <- function(ncores=1, port=3838){
 #' @return A named list of results where each element is a data.frame for the
 #' corresponding method containing estimates for:
 #' p-value, amplitude, acrophase, q-value, and period used.
-#'
+#' 
 #' @export
 #'
 #' @examples
@@ -230,6 +230,7 @@ discoODAs <- function(se, period = 24,
                 "_pvalue", "_BH.Q", "_period"))]
             colnames(tmpdf) <- c("acrophase", "amplitude",
                 "pvalue", "qvalue", "period")
+            rownames(tmpdf) <- cyc[[method]]$CycID
             unif[[method]] <- tmpdf
         }
     }
