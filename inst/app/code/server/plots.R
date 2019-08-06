@@ -281,9 +281,15 @@ plotPeriodDetect <- function(dat, tUnit = "hours") {
 }
 
 plotOVpcaScatter <- function(OVpca, regressionMeta, OVperiodSelect,
-    tUnit = "CT") {
+    tUnit = "CT", PCsToUse=NULL) {
     time <- regressionMeta$Time
-    npc <- ifelse(ncol(OVpca$x) > 10, 10, ncol(OVpca$x))
+    
+    if(is.null(PCsToUse)){
+      PCsToUse <- ifelse(ncol(OVpca$x) > 10, 1:10, 1:ncol(OVpca$x))  
+    } else{
+      PCsToUse <- as.numeric(substr(PCsToUse,3,20))
+    }
+    
     per <- as.numeric(OVperiodSelect)
 
   # Shade by fit period/2
@@ -291,7 +297,7 @@ plotOVpcaScatter <- function(OVpca, regressionMeta, OVperiodSelect,
 
   # Make plotting data.frame
     plotdf <- data.table::melt(data.frame("time"=regressionMeta$Time,
-        OVpca$x[,1:npc]),id.var="time")
+        OVpca$x[,PCsToUse]),id.var="time")
     colnames(plotdf) <- c("time","PC","value")
     plotdf$nPC <- as.numeric(gsub("PC","",plotdf$PC))
     plotdf$PC <- reorder(plotdf$PC, plotdf$nPC)

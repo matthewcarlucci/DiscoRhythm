@@ -58,7 +58,14 @@ fluidPage(
                 fluidRow(
                     column(
                         3,
-                        uiOutput("PCfitSelectPeriod")
+                        uiOutput("PCfitSelectPeriod"),
+                        selectizeInput(
+                            inputId = "PCfitSelectPCs",
+                            "PCs To Plot",
+                            choices = paste0("PC", 1:10),
+                            selected = paste0("PC", 1:4),
+                            multiple = TRUE
+                        )
                         ),
                     column(
                         9,

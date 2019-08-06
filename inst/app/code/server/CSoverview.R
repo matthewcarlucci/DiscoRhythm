@@ -147,7 +147,8 @@ output$dlOVpcaFits <- downloadHandler(
 
 OVpcaScatter <- reactive({
     req(input$OVperiodSelect)
-    plotOVpcaScatter(OVpca(), regressionMeta(), input$OVperiodSelect)
+    plotOVpcaScatter(OVpca(), regressionMeta(), input$OVperiodSelect,
+                     PCsToUse = input$PCfitSelectPCs)
 })
 output$OVpcaScatter <- renderPlot(OVpcaScatter())
 output$dlOVpcaScatter <- downloadHandler(
