@@ -1,5 +1,3 @@
-#' Get Valid Oscillation Detection Algorithms
-#'
 #' @rdname discoODAs
 #'
 #' @inheritParams discoODAs

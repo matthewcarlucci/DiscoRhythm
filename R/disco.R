@@ -141,33 +141,97 @@ discoApp <- function(ncores=1, port=3838){
 
 #' Execute Oscillation Detection Using DiscoRhythm
 #'
-#' Runs each selected oscillation deteciton algorithm sequentially to
-#'  obtain
-#' oscillation characteristics of each row of the input data.
-#'  Technical replicates are expected to be merged by this stage.
+#' Runs specified oscillation detection algorithms (if possible) 
+#' sequentially to obtain oscillation characteristics for each row of 
+#' the input data.
+#'
 #' @inheritParams discoInterCorOutliers
 #' @param period numeric, the hypothesized period to test for.
 #' @param method character, short names of ODAs to use. If length>1 
 #' all input method names will be evaluated.
 #' @param circular_t logical, is time circular on some base-cycle
-#' (ex. time of day).
-#' @param ncores number of cores to parallelize with (applicable to JTK, ARSER
+#' (ex. time of day). See the DiscoRhythm vignette for details.
+#' @param ncores numeric, number of cores to parallelize with (applicable to JTK, ARSER
 #' and LS only). If 1 will execute in serial.
 #'
 #' @rdname discoODAs
 #'
 #' @return A named list of results where each element is a data.frame for the
-#' corresponding method containing estimates for:
-#' p-value, amplitude, acrophase, q-value, and period used.
+#' corresponding method with rownames corresponding to the feature identifiers
+#' and columns containing estimates for:
+#' \itemize{
+#'   \item p-value
+#'   \item amplitude
+#'   \item acrophase
+#'   \item q-value
+#'   \item period
+#' }
+#' Note that the period in the data.frame is the one that was used for rhythm 
+#' detection and this may not always match the user supplied period in some 
+#' cases (a warning will occur in such cases).
 #' 
-#' @export
+#' @details 
+#' There are currently 4 available algorithms for rhythm detection:
+#' \itemize{
+#'   \item CS = Cosinor (Cornelissen,G. 2014):  a.k.a “Harmonic Regression” 
+#'   fits a sinusoid with a free phase parameter.
+#'   \item LS = Lomb-Scargle (Glynn, 2006): an approach using spectral power 
+#'   density.
+#'   \item ARS = ARSER (Yang, 2010): removes linear trends and performs the 
+#'   Cosinor test.
+#'   \item JTK = JTK Cycle (Hughes, 2010): non-parametric test of rhythmicity 
+#'   robust to outliers.
+#' }
+#' 
+#' Technical replicates are expected to be merged (likely by discoRepAnalysis) 
+#' prior to usage of discoODAs. 
+#' 
+#' The discoGetODAs function is called by discoODAs to determine if the selected
+#' methods may be used. If any methods are not valid, a warning will be 
+#' thrown and only valid methods will be computed.
+#' discoGetODAs is not typically used directly, 
+#' however, it may be called by the user to determine
+#' if the provided SummarizedExperiment is suitable for use with the specified
+#' methods. 
+#' 
+#' @references 
+#' Yang R. and  Su Z. (2010). Analyzing circadian expression data by
+#'   harmonic regression based on autoregressive spectral estimation.
+#'   \emph{Bioinformatics}, \bold{26(12)}, i168--i174.
 #'
+#' Hughes M. E., Hogenesch J. B. and Kornacker K. (2010). JTK_CYCLE: an
+#'   efficient nonparametric algorithm for detecting rhythmic components in
+#'   genome-scale data sets. \emph{Journal of Biological Rhythms},
+#'   \bold{25(5)}, 372--380.
+#'
+#' Glynn E. F., Chen J. and Mushegian A. R. (2006). Detecting periodic
+#'   patterns in unevenly spaced gene expression time series using
+#'   Lomb-Scargle periodograms. \emph{Bioinformatics}, \bold{22(3)},
+#'   310--316.
+#' 
+#' Cornelissen,G. (2014) Cosinor-based rhythmometry. 
+#' \emph{Theor. Biol. Med. Model.}, \bold{11}, 16.
+#'  
 #' @examples
 #' # Import the simulated example dataset
 #' se <- discoCheckInput(discoGetSimu(TRUE))
-#' # Execute the Cosinor method only
-#' discoODAres <- discoODAs(se,method="CS")
+#' 
+#' # Use discoRepAnalysis to average technical replicates
+#' se_merged <- discoRepAnalysis(se,aov_pcut=1)$se
+#' 
+#' # Execute the Cosinor and JTK methods with a 24hr period
+#' discoODAres <- discoODAs(se_merged,method=c("CS","JTK"))
+#' 
+#' # Get the index of rhythmic features detected by both methods at qvalue<0.05
+#' idx <- which(discoODAres$CS$qvalue<0.05 & discoODAres$JTK$qvalue<0.05)
+#' 
+#' # Get the identifiers for common rhythmic features
+#' rownames(se_merged)[idx]
 #'
+#' # Check which methods are suitable for the example dataset
+#' validMethods <- discoGetODAs(se,period=24)
+#'
+#' @export
 discoODAs <- function(se, period = 24,
     method = c("CS","JTK","LS","ARS"),
     circular_t=FALSE, ncores = 1) {
