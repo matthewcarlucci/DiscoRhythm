@@ -85,10 +85,11 @@ discoParseMeta <- function(samplenames, shinySession = NULL) {
         shiny::updateTextInput(shinySession, inputId = "tUnit",
                                 value = timeName)
     }
-
-    return(data.frame(
-        "ID" = samplenames,
+    
+    ret <- data.frame("ID" = samplenames,
         "Time" = as.numeric(as.character(meta$Time)),
-        "ReplicateID" = as.character(meta$replicate_id)
-        ))
+        "ReplicateID" = as.character(meta$replicate_id),
+        stringsAsFactors = FALSE)
+    
+    return(ret)
 }
