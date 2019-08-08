@@ -41,7 +41,6 @@ lmCSmat <- function(x, zts, per = 24) {
   for(i in seq_len(ncol(obstypes))) {
     inds <- colMeans(obsinds == obstypes[,i]) == 1
     res[inds,] <- lmCSmatNoNA(Y[inds,obstypes[,i],drop=FALSE], zts[obstypes[,i]], per)
-    print(i)
   }
 
   res
