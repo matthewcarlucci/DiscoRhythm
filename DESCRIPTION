@@ -1,6 +1,6 @@
 Package: DiscoRhythm
 Title: Interactive Workflow for Discovering Rhythmicity in Biological Data
-Version: 0.99.6
+Version: 1.1.0
 Authors@R: c(
     person("Matthew", "Carlucci",
     email = "Matthew.Carlucci@camh.ca",

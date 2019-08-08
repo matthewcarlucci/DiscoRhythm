@@ -47,7 +47,7 @@ vignette: >
 ## Accessing the Graphical User Interface
 
 The public server for DiscoRhythm is available 
-[here](https://disco.camh.ca/apps/disco/), however, local usage is advised 
+[here](https://disco.camh.ca), however, local usage is advised 
 for improved performance (see \@ref(installation)). 
 
 See the guide in section \@ref(discorhythm-interface-walkthrough) for 
