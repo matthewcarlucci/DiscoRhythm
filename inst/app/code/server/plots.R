@@ -25,12 +25,13 @@ colors$quantRamp <- viridis::viridis
 
 ##### Inter-Sample Correlation #####
 
-plotHeatMCor <- function(mat, k) {
+plotHeatMCor <- function(mat, k, ...) {
     diag(mat) <- NA
     heatmaply::heatmaply(mat,
         colors = colors$quantRamp(20),
         k_row = k,
-        k_col = k
+        k_col = k,
+        ...
         )
 }
 
@@ -319,7 +320,7 @@ plotOVpcaScatter <- function(OVpca, regressionMeta, OVperiodSelect,
 #####  Oscillation Detection #####
 
 plotPvalues <- function(pv, nBin = 80, cutSignificant = 0.05, title = "") {
-    perSig <- formatC(mean(pv < cutSignificant) * 100)
+  perSig <- formatC(mean(pv < cutSignificant) * 100)
     nSig <- formatC(sum(pv < cutSignificant))
     p <- ggplot(data.frame(pv), aes(pv)) +
     geom_histogram(color = colors$neutral2, fill = colors$neutral,

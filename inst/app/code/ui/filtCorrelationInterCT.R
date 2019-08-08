@@ -42,7 +42,7 @@ fluidPage(
                 htmlOutput("corSummary"), br(),
                 downloadButton("corMatrixCSV", "CSV"),
                 hr(),
-                p(class="text-muted","Results for this section was generated
+                p(class="text-muted","Results for this section were generated
                 using DiscoRhythm's ",tags$code("discoInterCorOutliers()"),
                   " R function.")
                 )
@@ -98,7 +98,11 @@ fluidPage(
                                 ticks = FALSE
                                 )
                             ),
-                        column(4),
+                        column(4,
+                               checkboxInput("outliersCorShowOutliers",
+                                             label = "Include Outliers",
+                                             value=FALSE)
+                        ),
                         column(
                             2,
                             downloadButton("dlCorHeatmapHTML", "html",
@@ -113,7 +117,8 @@ fluidPage(
                         "Heatmap of the pairwise correlations between samples.
                         Samples are clustered by complete-linkage
                         and correlation values are indicated by color.
-                        Outliers are excluded in the heatmap."
+                        Outliers are excluded in the heatmap by default and may
+                        be included using the check box."
                         )
                     )
                 )

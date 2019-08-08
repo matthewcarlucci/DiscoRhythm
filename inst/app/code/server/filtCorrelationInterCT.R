@@ -45,8 +45,17 @@ output$corMatrixCSV <- downloadHandler(
 # Heatmap
 ####################
 CorrelationHeatmapPlot <- reactive({
-    mat <- getCorrelation()[outliersCorkept(), outliersCorkept()]
-    plotHeatMCor(mat = mat, k = input$corNclust)
+    if(input$outliersCorShowOutliers){
+        mat <- getCorrelation()
+        p <- plotHeatMCor(mat = mat, k = input$corNclust,
+                          row_side_colors=data.frame(
+                            "flagged_outlier"=!outliersCorkept()
+                          ))
+    }else{
+        mat <- getCorrelation()[outliersCorkept(), outliersCorkept()]
+        p <- plotHeatMCor(mat = mat, k = input$corNclust)
+    }
+    return(p)
 })
 output$plotCorrelationHeatmap <- renderPlotly({
     CorrelationHeatmapPlot() # reactive object
