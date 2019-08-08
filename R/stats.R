@@ -36,7 +36,7 @@ lmCSmat <- function(x, zts, per = 24) {
 
   obsinds  <- t(!is.na(Y))
   obstypes <- unique(obsinds, MARGIN = 2)
-  obstypes <- obstypes[,colSums(obstypes) > 2]
+  obstypes <- obstypes[,colSums(obstypes) > 2, drop=FALSE]
 
   for(i in seq_len(ncol(obstypes))) {
     inds <- colMeans(obsinds == obstypes[,i]) == 1
