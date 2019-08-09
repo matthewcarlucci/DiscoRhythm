@@ -45,7 +45,7 @@ fluidPage(
                     p(class = "text-muted",
                         "To continue, upload a CSV file (100Mb max) or select
                       a Demo CSV")
-                    )
+                )
                 ),
             br(),
             downloadButton("Example", "Download Example CSV")
@@ -138,13 +138,22 @@ fluidPage(
                         p("This sample metadata was extracted from the
                         column names of the input matrix. If this
                         does not look accurate for your dataset
-                        see the ",a("user's guide",href=docsURL),
+                        see the ",a("user's guide",href=docsURL,
+                                    target="_blank"),
                         " for more details on the
                         expected input dataset format.", "Column names were
                         processed by DiscoRhythm's ",
                         tags$code("discoParseMeta()")," R function.",
                             class = "text-muted"
-                            )
+                            ),
+                        hr(),
+                        p(class = "text-muted",
+                          "For best results, the column naming format should be 
+                          used, however, the sample metadata may also be 
+                          uploaded directly in a separate CSV file below."),
+                        fileInput("inMetaCSV",
+                                  label = "Sample Metadata Override",
+                                  accept = c(".csv", ".CSV"))
                         ),
                     column(
                         8,

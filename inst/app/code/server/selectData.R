@@ -15,24 +15,8 @@ names(downloadNameVector) <- names(csvnameVector)
 # Data Collection
 ########################################
 
-Maindata <- reactive({
-    req(selectDataSE())
-    discoSEtoDF(selectDataSE())
-})
-
-# Low row number will cause skipping QC
-hideQc <- reactive({
-    nrow(Maindata()) <= 10
-})
-
-# Metadata() is the main raw meta data object
-# Created if Maindata() is created
-Metadata <- reactive({
-    as.data.frame(colData(selectDataSE())  )
-})
-
-selectDataSE <- reactive({
-    req(!is.null(input$inCSV$datapath) | input$selectInputType == "preload")
+rawData <- reactive({
+  req(!is.null(input$inCSV$datapath) | input$selectInputType == "preload")
   DiscoRhythm:::discoShinyHandler({
     if (input$selectInputType == "preload") {
       inputpath <- csvnameVector[input$preData]
@@ -51,7 +35,41 @@ selectDataSE <- reactive({
       warning("File too long, reading first 100,000 rows only")
     }
     
-    se <- discoDFtoSE(data,shinySession = session)
+    data
+  }, "Data Import",
+  shinySession = session
+  )
+})
+
+userMeta <- reactive({
+  req(!is.null(input$inMetaCSV$datapath))
+  DiscoRhythm:::discoShinyHandler({
+        inputpath <- input$inMetaCSV$datapath
+        data <- data.table::fread(inputpath,
+                              header = TRUE,
+                              data.table = FALSE,
+                              nrows = 1e5,
+                              stringsAsFactors = FALSE
+        )
+    
+        if (nrow(data) >= (1e5 - 1)) {
+          warning("File too long, reading first 100,000 rows only")
+        }
+        
+        data
+  }, "Data Import",
+  shinySession = session
+  )
+})
+
+selectDataSE <- reactive({
+  req(!is.null(input$inCSV$datapath) | input$selectInputType == "preload")
+  DiscoRhythm:::discoShinyHandler({
+    if(!is.null(input$inMetaCSV$datapath)){
+      se <- discoDFtoSE(rawData(),userMeta(),shinySession = session)
+    }else{
+      se <- discoDFtoSE(rawData(),shinySession = session)
+    }
     final <- discoCheckInput(se)
     final
   }, "Data Import",
@@ -59,6 +77,21 @@ selectDataSE <- reactive({
   )
 })
 
+Maindata <- reactive({
+    req(selectDataSE())
+    discoSEtoDF(selectDataSE())
+})
+
+# Low row number will cause skipping QC
+hideQc <- reactive({
+    nrow(Maindata()) <= 10
+})
+
+# Metadata() is the main raw meta data object
+# Created if Maindata() is created
+Metadata <- reactive({
+    as.data.frame(colData(selectDataSE())  )
+})
 
 ########################################
 # EXPLORATORY TABLES
