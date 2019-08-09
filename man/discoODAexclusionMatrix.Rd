@@ -41,7 +41,6 @@ mat["JTK", "invalidJTKperiod"] <- FALSE
 
 # Additional exclusion criteria
 mat["ARS", "circular_t"] <- FALSE
-mat["CS", "missing_value"] <- FALSE
 mat[c("CS", "JTK", "ARS", "LS"), "invalidPeriod"] <- FALSE
 
 discoODAexclusionMatrix <- mat
