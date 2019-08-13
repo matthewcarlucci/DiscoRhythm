@@ -139,11 +139,6 @@ a.shiny-download-link:link, a.shiny-download-link:active,a.shiny-download-link:h
   display: right-align;
 }
 
-.nav-tabs span.header-section-number {
-    width: auto;
-    padding: 0 10px;
-}
-
 /* Resize all plots to 50% total window size*/
 .shiny-plot-output{
   height:50vh !important;

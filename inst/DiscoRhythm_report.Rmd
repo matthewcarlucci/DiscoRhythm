@@ -7,8 +7,14 @@ output:
     toc: true
     number_sections: true
     toc_float: true
-    css: app/www/custom_styles.css
 ---
+
+<style>
+.nav-tabs span.header-section-number {
+    width: auto;
+    padding: 0 10px;
+}
+</style>
 
 The analysis below can be reproduced in R with `discoBatch()` or 
 interactively with `discoApp()` by using
@@ -19,6 +25,7 @@ processing.*
 # Data Processing
 
 ## Parameter Settings
+
 Below is a table of all parameters input to this report.
 See `?discoBatch` R documentation for parameter descriptions.
 
@@ -35,6 +42,8 @@ knitr::kable(data.frame(
             timeType,main_per,osc_period)
   ), format = "markdown")
 ```
+
+## Main Computations
 
 ```{r echo=F}
 batchscript=system.file("", "DiscoRhythm_batch.R", 
