@@ -54,7 +54,7 @@ observeEvent(input$startRegress,{
     replace(., name2id,id2name)[.]
   # Runtime estimation
     nrows <- ifelse(status$filtered_inf_design$with_tech_replicate &
-        input$useAnova,
+        input$aovMethod!="None",
         sum(anovaP() <= input$anovaCut),
         nrow(DataFinal())
         )

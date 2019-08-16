@@ -141,8 +141,8 @@ observe({
 # Return runtime estimate
 output$regressionWarning <- renderText({
   # Runtime estimate
-    nrows <- ifelse(status$filtered_inf_design$with_tech_replicate &
-        input$useAnova,
+    nrows <- ifelse(status$filtered_inf_design$with_tech_replicate & 
+                      input$aovMethod!="None",
         sum(anovaP() <= input$anovaCut),
         nrow(DataFinal())
         )
@@ -152,7 +152,7 @@ output$regressionWarning <- renderText({
     txt <- h4("Execution Summary")
     txt <- paste0(
         txt,
-        tags$li(tags$b(paste0("Very approximate runtime: ",
+        tags$li(tags$b(paste0("Approximate runtime: ",
             formatC(round(runtime / 60) + 1), " minutes"))))
 
     txt
