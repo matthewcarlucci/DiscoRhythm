@@ -225,7 +225,7 @@ averageTech <- function(se, method = c("Median","Mean","Random","None")) {
     })
 
     res2 <- do.call(rbind, res)
-    regMet <- res2[, -1]
+    regMet <- res2[, c("Time","ReplicateID")]
 
     outse <- discoDFtoSE(regDat,regMet)
     
