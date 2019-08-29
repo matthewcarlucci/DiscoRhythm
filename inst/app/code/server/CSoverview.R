@@ -44,13 +44,20 @@ output$PeriodDetectionRange <- renderUI({
     # Only test periods larger than twice the sampling interval
         tests <- (trainper / c(1:8))[
         which(as.numeric(trainper / c(1:8)) > sampint * 2)]
+        list(
         selectInput(
             inputId = "OVperiodSlider",
             label = "Periods To Test:",
             multiple = TRUE,
             choices = tests,
             selected = tests
+            ),
+            p(class="text-muted",
+              "For circular time, only harmonics of the base-cycle will be 
+              available for testing and periods to test must be greater than 
+              twice the sampling interval."
             )
+        )
     } else {
         list(
             sliderInput("OVperiodSlider",
@@ -60,7 +67,11 @@ output$PeriodDetectionRange <- renderUI({
                 value = c(sampint*3, rng + sampint)
                 ),
             p("12 periods will be tested, spaced evenly across the frequency
-                domain within the selected range.", class = "text-muted")
+                domain within the selected range.", class = "text-muted"),
+            p(class="text-muted",
+              "Periods are limited from a smallest period of 3 times
+                          the sampling-interval up to the sampling duration."
+            )
             )
     }
 })
@@ -105,7 +116,7 @@ output$PCfitSelectPeriod <- renderUI({
   # Circular time can only detect harmonics of the base-cycle period
   # Linear time can detect a continuous range of periods
 
-    csect <- input$timeType == "relative"
+    csect <- input$timeType == "circular"
     trainper <- as.numeric(input$main_per)
     rng <- diff(range(regressionMeta()$Time))
     sampint <- min(unique(diff(sort(unique(regressionMeta()$Time)))))
@@ -123,7 +134,7 @@ output$PCfitSelectPeriod <- renderUI({
     } else {
         sliderInput("OVperiodSelect",
             label = "Period",
-            min = sampint,
+            min = sampint * 3,
             max = rng + sampint,
             value = trainper
             )

@@ -16,8 +16,11 @@ fluidPage(
                     column(
                         3,
                         uiOutput("PeriodDetectionRange"),
-                        a("Why is the range of periods restricted?",
-                          href=docsURL,target="_blank"),
+                        p(class="text-muted","See the ",
+                          a("documentation",
+                            href=paste0(docsURL,"#45_period_detection"),
+                            target="_blank")," for more details on how to
+                          use period detection to guide your analysis."),
                         hr(),
                         p(class="text-muted","Results for this section were
                         generated using DiscoRhythm's ",
@@ -65,7 +68,18 @@ fluidPage(
                             choices = paste0("PC", 1:10),
                             selected = paste0("PC", 1:4),
                             multiple = TRUE
-                        )
+                        ),
+                        p(class="text-muted",
+                          "PCA is executed on the data matrix to obtain
+                          the scores for the PC loadings that explain the most
+                          biological variation in the dataset. A cosinor model
+                          is then fit at the specified period to infer whether 
+                          this patterm is rhythmic. See the ",
+                          a("documentation",
+                            href=paste0(docsURL,"#45_period_detection"),
+                            target="_blank")," for more details on how to
+                          use this section to guide your analysis."
+                          )
                         ),
                     column(
                         9,
