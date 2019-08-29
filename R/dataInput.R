@@ -41,7 +41,10 @@ discoCheckInput <- function(se, n_min_sample = 3) {
     }
     
     if (anyDuplicated(rownames(se))) {
-        warning("Please consider deduplicating row IDs before continuing.")
+        warning("Duplicate row IDs found, deduplicating by appending row 
+                number.")
+        # Note: its still possible to have duplicate rows after this operation
+        rownames(dat) <- paste0(rownames(dat),"_",seq_len(nrow(dat)))
     }
 
     # If values are not read as numeric coerce to numeric
