@@ -319,7 +319,6 @@ observe({
 
     output$fisherExactText <- renderText({
         paste0(
-            "<p><b>P-value:</b> ", fisher["p.value"], br(),
             "<b>Odds ratio:</b> ", fisher$estimate["odds ratio"]
             )
     })
