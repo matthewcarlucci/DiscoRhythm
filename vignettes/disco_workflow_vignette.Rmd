@@ -2,33 +2,33 @@
 title: "Introduction to `r BiocStyle::Biocpkg('DiscoRhythm')`"
 author:
 - name: Matthew Carlucci
-  affiliation: The Krembil Family Epigenetics Laboratory, 
-    The Campbell Family Mental Health Research Institute, 
+  affiliation: The Krembil Family Epigenetics Laboratory,
+    The Campbell Family Mental Health Research Institute,
     Centre for Addiction and Mental Health
   email: matthew.carlucci@camh.ca
 - name: Algimantas Kriščiūnas
-  affiliation: Institute of Biotechnology, Life Sciences Center, 
+  affiliation: Institute of Biotechnology, Life Sciences Center,
     Vilnius University, Vilnius, Lithuania
 - name: Haohan Li
-  affiliation: The Krembil Family Epigenetics Laboratory, 
-    The Campbell Family Mental Health Research Institute, 
+  affiliation: The Krembil Family Epigenetics Laboratory,
+    The Campbell Family Mental Health Research Institute,
     Centre for Addiction and Mental Health
 - name: Povilas Gibas
-  affiliation: Institute of Biotechnology, Life Sciences Center, 
+  affiliation: Institute of Biotechnology, Life Sciences Center,
     Vilnius University, Vilnius, Lithuania
 - name: Karolis Koncevičius
-  affiliation: Institute of Biotechnology, Life Sciences Center, 
+  affiliation: Institute of Biotechnology, Life Sciences Center,
     Vilnius University, Vilnius, Lithuania
 - name: Art Petronis
-  affiliation: 
-  - The Krembil Family Epigenetics Laboratory, 
-    The Campbell Family Mental Health Research Institute, 
+  affiliation:
+  - The Krembil Family Epigenetics Laboratory,
+    The Campbell Family Mental Health Research Institute,
     Centre for Addiction and Mental Health
-  - Institute of Biotechnology, Life Sciences Center, 
+  - Institute of Biotechnology, Life Sciences Center,
     Vilnius University, Vilnius, Lithuania
 - name: Gabriel Oh
-  affiliation: The Krembil Family Epigenetics Laboratory, 
-    The Campbell Family Mental Health Research Institute, 
+  affiliation: The Krembil Family Epigenetics Laboratory,
+    The Campbell Family Mental Health Research Institute,
     Centre for Addiction and Mental Health
 package: DiscoRhythm
 output:
@@ -48,29 +48,30 @@ vignette: >
 ## Accessing the Graphical User Interface
 
 The public server for DiscoRhythm is available 
-[here](https://disco.camh.ca)[^1]. 
+[here](https://disco.camh.ca)[^1].
 
 [^1]: Users will be timed out of this server
-after a session is idle for 30 minutes 
-after the last computation has completed. 
-Local usage has no time outs
-and improved performance.
+after a session is idle for 30 minutes
+after the last computation has completed.
 
-The web application currently has no auto-save functionality, **results will be 
+The web application currently has no auto-save functionality, **results will be
 lost upon session termination.** It may be helpful to use the batch execution
-feature (see \@ref(session-archiving)) which automatically downloads results 
+feature (see \@ref(session-archiving)) which automatically downloads results
 upon completion.
 
-To begin with web application usage, proceed directly to
+To start using DiscoRhythm directly from the web application proceed to
 \@ref(discorhythm-interface-walkthrough).
 
-## Installation
+## Local Installation
 
-To run the application locally or use DiscoRhythm with R, the DiscoRhythm R 
-package must be installed. 
+To run the application locally or use DiscoRhythm with R, the DiscoRhythm R
+package and its dependencies [^dependencies] must be installed by executing the
+following
+commands in R:
 
-DiscoRhythm and its dependencies can be installed by executing the following 
-in R:
+[^dependencies]: Installation of [pandoc](https://pandoc.org/installing.html)
+is required in order to use the report
+generation features of DiscoRhythm.
 
 ```
 if (!requireNamespace("BiocManager", quietly=TRUE))
@@ -78,98 +79,107 @@ if (!requireNamespace("BiocManager", quietly=TRUE))
 BiocManager::install("DiscoRhythm")
 ```
 
-*Note: Installation of [pandoc](https://pandoc.org/installing.html) 
-is required in order to use the report generation features of DiscoRhythm.*
+The following commands then can be used in order to launch the DiscoRhythm application:
 
-Running the command `library(DiscoRhythm); discoApp()` will then launch the 
-application. The application can be parallelized on multiple cores 
-for improved performance using `discoApp(ncores=number_of_available_cores)`.
+```
+library(DiscoRhythm)
+discoApp()
+```
+
+For improved performance DiscoRhythm can be parallelized using multiple cores:
+
+```
+discoApp(ncores=number_of_available_cores)
+```
 
 ### Run the Web Application with Docker (Optional)
 
-Alternatively, if [docker](https://docs.docker.com/install/) is installed, the 
-[DiscoRhythm container on Docker Hub](https://hub.docker.com/r/mcarlucci/discorhythm) 
-can be pulled and used to run the web application locally 
-avoiding the need to install DiscoRhythm and its dependencies (See instructions
-on Docker Hub). 
+Alternatively, if [docker](https://docs.docker.com/install/) is installed, the
+[DiscoRhythm container on Docker Hub](https://hub.docker.com/r/mcarlucci/discorhythm)
+can be pulled and used to run the web application locally [^locally]
+avoiding the need to install DiscoRhythm and its dependencies
 
-## Using DiscoRhythm in R
+[^locally]: See instructions on Docker Hub.
 
-The same computations performed in the web application can be executed directly 
-in R. This may be necessary for: 
+## Using DiscoRhythm from R
 
-- Executing the workflow conveniently on multiple datasets
+The same computations performed in the web application can be executed directly
+in R. This may help with:
+
 - Analyzing large datasets
-- Adding custom R code to the workflow
+- Executing the workflow conveniently on multiple datasets
+- Including additional R code to customize the workflow
 
-Section \@ref(discorhythm-r-usage) describes this usage in more detail.
+Section \@ref(discorhythm-r-usage) describes using DiscoRhythm from R in more
+detail.
 
 # Introduction
 
-DiscoRhythm is a set of statistical tools for analyzing large scale temporal 
-biological experiments with a hypothesized periodicity (e.g. circadian 
-transcriptomic experiments). The main goal of this package is to take a 
-normalized data matrix and characterize the rhythmicity of
-it’s features. The entire workflow 
-can be run interactively in the web application or run directly in R to
-perform:
+DiscoRhythm is a framework for analyzing periodicity of large scale temporal
+biological datasets (e.g. circadian transcriptomic experiments).
+The main goal of this package is to characterize the rhythmicity present in the
+provided dataset by performing the following steps:
 
-1. Import and cleaning of a normalized data matrix  
-2. Inter-sample correlations and outlier detection  
-3. Principal component analysis and outlier detection  
-4. Analysis of experimental replicates (if applicable)  
-5. Detection of dominant rhythmicities in the dataset  
-6. Detection of feature-wise oscillation characteristics  
-    - Estimating cyclical characteristics such as: period, phase, 
-amplitude, and statistical significance using four methods 
+1. Import and clean-up
+2. Outlier detection
+3. Principal component analysis
+4. Analysis of experimental replicates
+5. Detection of dominant rhythmicities
+6. Detection of feature-wise oscillation characteristics [^characteristics]
+
+[^characteristics]: Estimating cyclical characteristics such as: period, phase,
+amplitude, and statistical significance using four methods
 (Cosinor, JTK Cycle, ARSER, and Lomb-Scargle).
 
-Section \@ref(input-datasets) describes the expected input to the DiscoRhythm
-workflow.
+The entire workflow can be run interactively in the web application or run
+directly in R.
 
-Next, section \@ref(discorhythm-interface-walkthrough) will describe these steps
-and their purpose in the web application. 
-Section 
-\@ref(discorhythm-r-usage) will then describe how to generate the same results 
-using the DiscoRhythm R package directly.
+Section \@ref(input-format) specifies the data input format expected by the
+DiscoRhythm app.
 
-## Background 
+Next, section \@ref(discorhythm-interface-walkthrough) will describe all the
+analysis steps and their purpose.
+Section
+\@ref(discorhythm-r-usage) will then demonstrate how to generate the same 
+results using the DiscoRhythm R package directly from the R command line.
+
+## Background
 
 ### Key Definitions for Rhythm Detection in Biological Time Series
-**Sinusoid** - A mathematical curve that describes periodic oscillations 
+**Sinusoid** - A mathematical curve that describes periodic oscillations
 following a sine function.
 
-**Period** - Parameter describing the duration after which a temporal pattern 
+**Period** - Parameter describing the duration after which a temporal pattern
 repeats itself.
 
 **Acrophase** - The time in a periodic cycle where a temporal pattern is at its
 maximum value, typically referring to the peak of a sinusoid curve.
 
-**Amplitude** -  The amount of change in signal seen during the course of an
+**Amplitude** - The amount of change in signal seen during the course of an
 oscillation.
 
 **P-value** - Described simply, it is the probability that a finding could have
-occurred under the null hypothesis. For rhythm detection this would be the 
-probability that the “goodness of fit” to a rhythmic model would occur at a 
-value greater than or equal to the observed value with a non-rhythmic signal.
+occurred under the null hypothesis. For rhythm detection this would be the
+probability that the “goodness of fit” of a rhythmic model would occur at a
+value greater than or equal to the observed value when applied to a non-rhythmic signal.
 
-**Biological replicates** - Independent random samples from the population of 
+**Biological replicates** - Independent random samples from the population of
 interest with the same time of collection.
 
-**Technical replicates** - A single biological sample split into multiple 
+**Technical replicates** - A single biological sample split into multiple
 samples which are processed independently are typically labelled as “technical
 replicates” relative to one another and are useful for determining the variance
 introduced simply by the process of sample collection and preprocessing.
 
 ### Real-world Example Datasets
 
-DiscoRhythm was designed for large scale “-omic” data matrices such as those 
-which can be easily obtained from the following studies:
+DiscoRhythm was designed for large scale “-omic” data matrices such as those
+found in the following studies:
 
 @Krishnaiah2017-lm - circadian metabolomics study where data matrices from
-supplemental table 2 may be used as input to DiscoRhythm after removing the 
-first row from each sheet and saving as CSV. The “Liver_data” sheet may be used 
-after the following modifications:  
+supplemental table 2 may be used as input to DiscoRhythm after removing the
+first row from each sheet and saving as CSV. The “Liver_data” sheet may be used
+after the following modifications:
 
 1. Remove row 2 (non-essential metadata)
 2. Remove ‘Set[1-2]-’ from all column names (DiscoRhythm column name format)
@@ -178,95 +188,96 @@ after the following modifications:
 @Hurley2018-hg - A circadian proteomic study where supplemental dataset 2 may be
 used as input to DiscoRhythm after saving sheet “2B” or “2H” as CSV.
 
-@Wu2016-rd - This software package contains truncated transcriptomic datasets 
-that can be exported from R for use with DiscoRhythm including a simulated 
-dataset (object name cycSimu4h2d) containing various waveforms to test the 
+@Wu2016-rd - This software package contains truncated transcriptomic datasets
+that can be exported from R for use with DiscoRhythm including a simulated
+dataset (object name cycSimu4h2d) containing various waveforms to test the
 performance of the rhythm detection algorithms.
 
-@Singer2019-lq - The `r BiocStyle::Githubpkg("hugheylab/simphony")` R package 
+@Singer2019-lq - The `r BiocStyle::Githubpkg("hugheylab/simphony")` R package
 can be used to generate complex simulated “-omic” datasets which can easily be
 formatted for input to DiscoRhythm.
 
-See section \@ref(input-datasets) for full details on input data format.
+See section \@ref(input-format) for full details on input data format.
 
 ### Further Background References
-For a more detailed background on statistical methods, experiment design, and 
+For a more detailed background on statistical methods, experiment design, and
 method selection see the following references:
 
 @Cornelissen2014-sa - A detailed review of Cosinor based techniques for rhythm
-analysis. The cosinor test as presented in Cornelissen et. al. (2014) is a 
-common hypothesis test which may appear in the literature as "Cosinor", 
+analysis. The cosinor test as presented in Cornelissen et. al. (2014) is a
+common hypothesis test which may appear in the literature as "Cosinor",
 "harmonic regression", "sinusoid regression", and other similar names.
 
-@Hughes2017-ik - Experiment design for circadian sequencing experiments. 
-Provides additional comments on rhythmic p-values.
+@Hughes2017-ik - Experiment design for circadian sequencing experiments.
+Provides additional comments on p-values obtained from rhythm detection methods.
 
-@Deckard2013-pm - Evaluates 4 methods (de Lichtenberg, Lomb-scargle, JTK Cycle, 
-and persistent homology) and Fig. 6 provides a clear decision tree for the 
-purpose of selecting one of these algorithms. This publication references 
-additional method evaluation articles.
+@Deckard2013-pm - Evaluates 4 methods (de Lichtenberg, Lomb-scargle, JTK Cycle,
+and persistent homology) and Fig. 6 provides a clear decision tree to aid with
+the selection of the most suitable method for practical data analysis.
+This publication references additional method evaluation articles.
 
-@Wu2014-mo provides an evaluation of 5 methods (ARSER, JTK Cycle, COSOPT, 
+@Wu2014-mo provides an empirical evaluation of 5 methods (ARSER, JTK Cycle, COSOPT,
 Fisher's G test, and HAYSTACK).
 
-These references also provide insights for how to design experiments for usage 
-of rhythm detection methods in DiscoRhythm and insights for which methods may 
-be appropriate (see section \@ref(algorithm-restrictions) for a few additional
-comments).
+These references also provide some valuable insights about the experiment design
+stage of rhythm detection.
+(see section \@ref(algorithm-restrictions) for a few additional comments).
 
-## Available Methods 
+## Available Methods
 
-The four currently implemented methods in DiscoRhythm are well established and 
-have strong statistical methodology. These methods were easily accessed or 
-implemented in R and fit well into the workflow for rhythmicity analysis. 
-Additional algorithms fitting this criteria may be added to DiscoRhythm in the 
-future. Below are some quotes from publications describing each algorithm, 
-which provide some rationale for each:
+The four currently implemented methods in DiscoRhythm are well established and
+have sound statistical methodology. These methods were easily accessed or
+implemented in R and fit well into the workflow for rhythmicity analysis.
+Additional algorithms fitting this criteria may be added to DiscoRhythm in the
+future. Below are some quotes taken directly from publications of these methods,
+briefly describing the rationale for each:
 
-### Cosinor 
+### Cosinor
 
-@Cornelissen2014-sa 
+@Cornelissen2014-sa
 
->“Conceived as a regression problem, the 
-method is applicable to non-equidistant data, a major advantage.” 
+>“Conceived as a regression problem, the
+method is applicable to non-equidistant data, a major advantage.”
 
 and referring to least squares techniques more generally:
 
->“useful in curve-fitting problems, 
+>“useful in curve-fitting problems,
 where it is desirable to obtain a functional form that best fits a given set of
 measurements.”
 
 ### JTK Cycle
 
-@Hughes2010-st 
+@Hughes2010-st
 
 >“JTK_CYCLE’s increased resistance to outliers
 results in considerably greater sensitivity and specificity”
 
 ### Lomb-Scargle
 
-@Glynn2006-rv 
+@Glynn2006-rv
 
->“Our approach should be applicable for 
+>“Our approach should be applicable for
 detection and quantification of periodic patterns in any unevenly spaced gene
 expression time-series data.”
 
 ### ARSER
 
-@Yang2010-os 
+@Yang2010-os
 
 >“ARSER was superior to two existing and widely-used
 methods, COSOPT and Fisher's G-test, during identification of sinusoidal and
 non-sinusoidal periodic patterns in short, noisy and non-stationary time-series”
 
-# Input Datasets
+# Input Format
+
+Description of the input format expected by DiscoRhythm.
 
 ## Example Dataset
 
 Below is a small simulated circadian transcriptomic dataset generated using
-`r BiocStyle::Githubpkg("hugheylab/simphony")` which follows the expected input 
+`r BiocStyle::Githubpkg("hugheylab/simphony")` which follows the expected input
 format for DiscoRhythm. The dataset was generated to contain ~50% rhythmic
-transcripts with many phases of oscillation.
+transcripts with many different phases of oscillation.
 
 ```{r echo=F}
 suppressPackageStartupMessages({
@@ -279,9 +290,9 @@ indata <- discoGetSimu()
 knitr::kable(head(indata[,1:6]),format = "markdown") # Inspect the data
 ```
 
-## Row Naming
+## Row Names
 
-The first column should contain unique feature IDs (e.g. gene names in this 
+The first column should contain unique feature IDs (e.g. gene names in this
 case).
 
 ```{r echo=F}
@@ -298,7 +309,7 @@ kableExtra::column_spec(knitr::kable(head(indata[,1:6])),
               include_thead = TRUE)
 ```
 
-## Column Naming
+## Column Names
 
 Sample metadata is extracted from the column names of the matrix.
 
@@ -310,45 +321,52 @@ kableExtra::row_spec(
 1, background = "inherit",include_thead = TRUE)
 ```
 
-Names are expected to follow the pattern:  
+Names [^alphanumeric] are expected to follow the pattern:
+
+[^alphanumeric]: All fields should contain only alphanumeric values (with the
+exception
+of '.' in the `Time` field which is allowed for decimal values.
 
 `Prefix` `Time`\*\_`Unique Id`\_`Replicate Id`
 
-| Field | Description | Examples |
-|----------------|----------------------|-------------|
-| `Prefix` | A unit of time. The web application will use this as the unit of time by default. |  `hr`, `ZT`, `CT`|
-| `Time`\* | Indicates the time of collection for the respective sample. Can only be positive values. | `20`, `2.1`, `0.3`|
-| `Unique Id` | A free field used to uniquely identify samples in visualizations and summaries. | `GSM3186429`, `sample1`, `subjectA`, `AX` |
-| `Replicate Id` | Used to identify each biological sample uniquely when combined with `Time`. | `1`, `A`, `rep1` |
+| Field          | Description                                                                       | Examples                                  |
+|----------------|-----------------------------------------------------------------------------------|-------------------------------------------|
+| `Prefix`       | A unit of time that will be used by the web application.                          |  `hr`, `ZT`, `CT`                         |
+| `Time`\*       | Indicates the time of collection for the respective sample. Can only be positive. | `20`, `2.1`, `0.3`                        |
+| `Unique Id`    | Used to uniquely identify samples in visualizations and summaries.                | `GSM3186429`, `sample1`, `subjectA`, `AX` |
+| `Replicate Id` | Used to identify each biological sample uniquely when combined with `Time`.       | `1`, `A`, `rep1`                          |
 
-Table: Descriptions of the naming convention used by DiscoRhythm.  
+Table: Descriptions of the naming convention used by DiscoRhythm.
 \* *Mandatory field*
 
-`Time` is the only required field (_i.e._  `32`, `CT32`, `CT32_AS_1`, `32_AS_1` 
-are all valid naming styles) and the other fields are used to obtain a few 
-pieces of sample metadata if necessary:
+**Sample Time -** `Time` [^time] is the only mandatory field and the other 
+fields 
+are used to
+specify the additional information about samples when necessary.
 
-**Biological vs Technical Replicates - ** `Time` + `Replicate Id` [^id] are used
-to
-identify independent samples collected at the same timepoint (biological 
-replicates). Samples with the same `Time` and `Replicate Id` 
-are assumed to be technical replicates from a single biological sample. 
+[^time]: `32`, `CT32`, `CT32_AS_1`, `32_AS_1` are all valid naming styles.
 
-[^id]: If no `Replicate Id` is provided, all samples are assumed to be 
+**Biological vs Technical Replicates -** `Time` + `Replicate Id` [^id] are used
+to identify independent samples collected at the same timepoint (biological
+replicates). Samples with the same `Time` and `Replicate Id`
+are assumed to be technical replicates originating from a single biological
+sample.
+
+[^id]: If no `Replicate Id` is provided, all samples are assumed to be
 independent biological replicates.
 
-**Unique Sample Identity - ** Each column name should be unique such that all
-samples can be uniquely identified to the user. The `Unique Id` field is 
-intended for this purpose. If column 
-names are not unique, the `Unique Id` field will be generated to provide 
+**Unique Sample Identity -** Each column name should be unique such that all
+samples can be uniquely identified to the user. The `Unique Id` field is
+intended for this purpose. If column
+names are not unique, the `Unique Id` field will be generated to provide
 unique sample names during usage of DiscoRhythm.
-
-*Note: all fields should contain only alphanumeric values (with the exception
-of '.' in the `Time` field which is allowed for decimal values.*
 
 ### Processed Metadata Table
 
-The data extracted above is stored in the DiscoRhythm application as:
+The `Time` and `Replicate Id` data extracted from the column names 
+will be seen throughout the DiscoRhythm application [^application] as:
+
+[^application]: This table is the `colData(se)` data stored in R.
 
 ```{r echo=F,message=FALSE}
 knitr::kable(head(SummarizedExperiment::colData(
@@ -358,62 +376,65 @@ knitr::kable(head(SummarizedExperiment::colData(
 
 --------------------------------------------------
 
-*Note: If there are more groupings in the dataset or if the dataset does not fit
-into this design, it may be appropriate to split the dataset into subgroups 
-that fit this design (each subgroup as one input dataset to DiscoRhythm).*
+*Note: If there is more relevant metadata in the experiment that does not fit
+into the design specified in this section, it may 
+be appropriate to split the 
+dataset into several parts and use each subgroup as a separate input for
+DiscoRhythm. Example: If the experiment includes multiple conditions, each
+condition may be an independent input dataset for DiscoRhythm.*
 
-## Time Type
+## Circular and Linear Time
 
-DiscoRhythm defines time in an input dataset in one of two ways:  
+DiscoRhythm defines time within a dataset in one of two ways:
 
-1) Linear time  
-2) Circular time  
+1) Linear time
+2) Circular time
 
-Linear time exists in systems where an experiment start time is meaningful 
-(often setting t=0 to some specific event). Circular time exists in experiments 
-where the start of experiment is not meaningful or left unobserved 
-(e.g. time-of-day in a cross-sectional study). One of these two types must be
-specified for the input 
-dataset and will influence how DiscoRhythm analysis is performed.
+Linear time exists in systems where an experiment start time is meaningful
+(often setting t=0 to some specific event). Circular time exists in experiments
+where the start of experiment is not meaningful or left unobserved
+(e.g. time-of-day in a cross-sectional study). For a specific dataset, one of
+these
+two types has to be selected and it will have an influence on how the
+DiscoRhythm analysis will be performed.
 
 Example of linear time in hours: `1,2,3 ... 24,25,26`  
-Example of circular time, time-of-day in hours: `1,2,3 ... 24,1,2`  
+Example of circular time, time-of-day in hours: `1,2,3 ... 24,1,2`
 
-For example, a dataset obtained from mice entrained on a 12-h light,
-12-h dark schedule before being released into total darkness prior to 
-collection. The presence of a specific event (release into total darkness)
-would make the dataset suitable for the "Linear time" setting of DiscoRhythm.  
+For example, circadian studies with mice often entrain to a 24hr light/dark
+schedule and then release mice into total darkness in order to remove external
+cues. The presence of a specific event 
+(release into total darkness) would make the dataset suitable for the "Linear
+time" setting of DiscoRhythm.
 
-*Note: If samples were collected during the entrainment to the light/dark 
-base-cycle, "Circular time" would be appropriate as mice sampled at the 
-same point in the cycle on different days may be treated as biological 
-replicates.*
+On the other hand, if samples were collected during the entrainment to the
+light/dark base-cycle, "Circular time" would be appropriate as mice sampled at
+the
+same point in the cycle on different days may be treated as biological
+replicates [@Hughes2017-ik].
 
 # DiscoRhythm Interface Walkthrough
 
 This section will walk the user through each section of the DiscoRhythm web
-application. It is recommended to keep this documentation open during 
-first usage of the application to read details for each section.
+application. It is recommended to keep this documentation open during
+the first use of the application in order to track what the application is doing
+in each section.
 
 ## The Interface
 
-The DiscoRhythm web interface is a dashboard
-where the sections of the 
-analysis can be accessed in the sidebar and progress in a sequential 
-fashion with data from the previous step being
-fed into the next.
+The DiscoRhythm web interface is a dashboard where the sections of the
+analysis progress in a sequential fashion with data from the previous step
+being carried over to the next.
+Each section can be accessed using the sidebar on the left.
 
-There are interactive controls to set parameters for each section's analysis. 
-When parameters relevant to a figure change, the corresponding figure will 
-dynamically update to reflect the newly calculated results. Since DiscoRhythm 
-is intended for use sequentially 
-through the sections, **returning to earlier sections of the analysis and
-modifying
-parameters may result in unexpected behaviour.**
+Interactive controls allow users to set parameters specific to each section's analysis.
+When parameters relevant to a figure change, the corresponding figure will
+dynamically update to reflect the newly calculated results. The exception
+to this is the oscillation detection section which requires user input to 
+re-compute results.
 
 Various download buttons are available throughout
-the application for archival of both plot outputs
-and numerical results. 
+the application for extracting plot outputs and numerical results.
 
 ```{r interface, echo=F, fig.cap="Screenshot of the initial DiscoRhythm landing page."}
 knitr::include_graphics("IntroductionSS.jpg")
@@ -421,8 +442,8 @@ knitr::include_graphics("IntroductionSS.jpg")
 
 ## Select Data
 
-**Purpose:** To upload, clean, and summarize the experimental design for the 
-input dataset.
+**Purpose:** To upload, clean, and summarize the experimental design of the
+provided dataset.
 
 ```{r echo=FALSE}
 # Figure caption template
@@ -434,87 +455,84 @@ figcap="Screenshot of the '%s' section of the DiscoRhythm interface."
 knitr::include_graphics("selectDataSS.jpg")
 ```
 
-An input dataset is expected to be in comma separated value (CSV) format as 
-specified in section \@ref(input-datasets). Upload the dataset using the 
+An input dataset is expected to be in comma separated value (CSV) format as
+specified in section \@ref(input-format). Upload the dataset using the
 "upload CSV" input method.
 
-The simulated dataset (from section \@ref(example-dataset)) is available to 
+The simulated dataset (from section \@ref(example-dataset)) is available to
 test the features of DiscoRhythm.
 
-Messages or warnings may be seen at this point as DiscoRhythm imports 
-the dataset and performs a few cleaning tasks:
+Messages or warnings may be seen at this point as DiscoRhythm imports
+the dataset and performs a few clean-up tasks:
 
-1. Rows where max=min (constant values) will be removed  
-2. Rows with missing values will be removed    
-3. Column names will be checked for valid formatting [^formatting]  
-4. Duplicate row names will be deduplicated  
+1. Rows with constant values will be removed
+2. Rows with any number of missing values will be removed
+3. Validity of column name formatting will be checked [^formatting]
+4. Duplicate row names will be made unique
 
 Some oscillation detection algorithms are capable of handling rows with
-missing values, however, this currently may only be performed via R 
-(using the `discoODAs` function).  
+missing values, however, this currently may only be performed via R
+(using the `discoODAs` function).
 
 [^formatting]: Duplicate column names will be deduplicated by replacing all
-`Unique Id`. 
-See \@ref(column-naming)
+`Unique Id` with unique sample keys.
 
-### Specify Dataset Parameters  
+### Specify Dataset Parameters
 
-**Time Type - **See \@ref(time-type).  
+**Time Type - **See \@ref(circular-and-linear-time).
 
-**Period of Interest - **The main hypothesized period should be specified in 
-order to set appropriate defaults throughout the application. If unknown, set 
+**Period of Interest -** The main hypothesized period should be specified in
+order to set appropriate defaults throughout the application. If unknown, set it
 to the range of the sample collection times.
 
-**Time Unit/Observation Unit - **Units to display in the axis labels throughout 
+**Time Unit/Observation Unit - **Units to display in the axis labels throughout
 the application.
 
-
-If the "Sampling Summary" table does not seem to accurately reflect the data, 
-please refer back to section \@ref(column-naming). It is also a good idea 
-to expand the "Inspect Input Data Matrix" and "Inspect Parsed Metadata" boxes 
-to ensure the data has been read 
-correctly.
+If the "Sampling Summary" table does not seem to accurately reflect the data,
+please refer back to section \@ref(column-names). It is also a good idea
+to expand the "Inspect Input Data Matrix" and "Inspect Parsed Metadata" boxes
+to ensure the data has been read correctly.
 
 In "Inspect Parsed Metadata" it is possible to override the
 metadata extracted from the column names with an independent CSV table which
 matches the metadata table format outlined in \@ref(processed-metadata-table),
-however, this is not recommended for regular use.  
+however, this is not recommended for regular use.
 
 ## Outlier Removal
 
-Experimental artifacts commonly result in data from collected samples 
-to not accurately reflect the true biological phenomenon. This can 
-often be observed through systematic signals from a single sample which do not 
-have biological plausibility. DiscoRhythm attempts to detect such systematic 
-outliers by two methods:
+Experimental artifacts commonly result in data not accurately reflecting the
+true biological phenomenon. This can often be observed through systematic
+signals from a single sample that do not have biological plausibility.
+DiscoRhythm attempts to detect such systematic
+outliers with the use of two separate methods:
 
-- Intersample-correlations  
-- Principal component analysis  
+- Intersample-correlations
+- Principal component analysis
 
-Each method is applied independently to the dataset to detect outliers and then 
-the filtering summary section is used to decide which detected outliers to 
-remove. A reasonable standard deviation threshold for both methods would be 
-around 2 to 3. 
+Each method is applied independently to the dataset in order to detect outliers, then
+the filtering summary section is used to decide which detected outliers to
+remove. A reasonable standard deviation threshold for both methods would be
+around 2 to 3.
 
-**By default, no outliers will be flagged for removal.** The DiscoRhythm web 
+**By default, no outliers will be flagged for removal.** The DiscoRhythm web
 application will set the default threshold such that no outliers are flagged.
 
 ### Inter-sample Correlation
 
-**Purpose:** Samples are pairwise correlated using either the Pearson or 
-Spearman method of correlation to detect outliers. 
+**Purpose:** In order to detect outliers samples are pairwise correlated using
+either the Pearson or Spearman method.
 
 **Heatmap:** The values of these pairwise correlations can be visualized in this
-tab, where samples with similar correlation values are grouped 
+tab, where samples with similar correlation values are grouped
 together using clustering.
 
-**Outlier Detection:** The average correlation value for each sample is used as 
-a metric of its overall similarity to all other samples and is summarized in 
-this figure.  
+**Outlier Detection:** The average correlation value for each sample is used as
+a metric of its overall similarity to all other samples and is summarized in
+this figure.
 
-Samples with a high deviation below the mean will be flagged as outliers where 
-the user may specify a number of standard deviations below the mean to use as
-a threshold.
+Samples with average correlations significantly below the mean will be flagged
+as outliers and the user may specify a number of standard deviations below the
+mean to use as a threshold.
 
 ```{r corQC, echo=FALSE, fig.cap=sprintf(figcap,'Inter-sample Correlation')}
 knitr::include_graphics("IntersampleCorrelationSS.jpg")
@@ -524,18 +542,18 @@ knitr::include_graphics("IntersampleCorrelationSS.jpg")
 
 **Purpose:** Utilize principal component analysis (PCA) to detect outliers.
 
-PCA is used to extract the strongest recurring patterns in the dataset. 
+PCA is used to extract the strongest recurring patterns in the dataset.
 Outliers detected in these patterns (PC scores)
-are flagged by their deviation from the mean where again the user may specify a 
-threshold in units of standard deviations to use. 
+are flagged by their deviation from the mean where again the user may specify a
+threshold in units of standard deviations.
 
 **Scale Before PCA:** Whether to scale rows to a standard deviation of 1 prior
-to PCA such that all rows are on an equal scale. Scaling is usually advisable.
+to PCA such that all rows are on an equal scale. 
 
 **PCs to Use For Outlier Detection:** Click to change the list of PCs to use for
 outlier removal in the
-case a PC is determined inappropriate for use in outlier detection. You can 
-remove unwanted PCs by pressing "delete" and add extra ones by typing 
+case the scores of a PC seem inappropriate for use in outlier detection. You can
+remove unwanted PCs by pressing "delete" and add extra ones by typing
 their number.
 
 **Before CSV/After CSV:** Downloadable summaries of the PCA before and after the
@@ -543,18 +561,18 @@ detected outliers are removed.
 
 Figures:
 
-**Distributions:** The distributions of PC scores 
-used to detect outliers. Only the PCs colored darkly are used for the final
-outlier flagging. Outliers will be shown with an 'x'. 
+**Distributions:** The distributions of PC scores
+used to detect outliers. Only the PCs colored darkly are used for
+outlier detection. Outliers will be shown with an 'x'.
 
-**Scree:** PCs are numbered where the amount of variance explained by each PC 
-(therefore their 'importance') decreases with increasing PC number. 
-This can be seen in the "Scree" figure. Users should choose an 
-appropriate number of PCs to use for outlier detection by the 
+**Scree:** PCs are numbered where the amount of variance explained by each PC
+(their 'importance') decreases with increasing PC number.
+This can be seen in the "Scree" figure. Users should choose an
+appropriate number of PCs to use for outlier detection by the
 shape of this scree plot.
 
-**One Pair and All Pairs:** Plotting the PC scores of the components versus one 
-another may reveal grouping that cannot be determined from simple analysis of 
+**One Pair and All Pairs:** Plotting the PC scores of the components versus one
+another may reveal grouping that cannot be determined from simple analysis of
 individual PCs.
 
 ```{r pcaQC, echo=F, fig.cap=sprintf(figcap,'PCA')}
@@ -565,14 +583,14 @@ knitr::include_graphics("PCASS.jpg")
 
 **Purpose:** Determine how to proceed with outlier removal.
 
-The user may at this point choose to remove the flagged outliers or may 
-disregard these flags if it is suspected the dissimilarity of these samples may 
-be biologically relevant. The user may also remove samples which they deem 
-to be unreliable for further analysis by other metrics (e.g. experimental 
+The user may at this point choose to remove the flagged outliers or may
+disregard these flags if it is suspected the dissimilarity of these samples may
+be biologically relevant. The user may also manually remove samples which they deem
+to be unreliable for further analysis by other metrics (e.g. experimental
 quality metrics).
 
-**Raw Distributions:** A boxplot for each individual sample which can 
-be used to further evaluate sample selection.
+**Raw Distributions:** A boxplot for the values of each individual sample which
+can be used to further evaluate sample selection.
 
 **Input and Final:** Shows summary tables for data before and after outlier
 removal.
@@ -584,40 +602,39 @@ knitr::include_graphics("FilteringSummarySS.jpg")
 ## Row Selection
 
 **Purpose:** Utilize any technical replicates present in the dataset to quantify
-the signal-to-noise for each row. Combine technical replicates for downstream 
-analysis.
+the signal-to-noise ratio for each row. Then combine technical replicates for
+downstream analysis.
 
-Technical replicates are not useful for the statistical 
-tests used by DiscoRhythm for oscillation detection as they are not 
-representative of the populational variance of the data (_i.e._ do not satisfy 
-the independence assumptions). They will instead be used to identify rows of 
-the dataset where the biological variation is greater than the technical 
-variation (_i.e._ high signal-to-noise). A hypothesis test is performed using 
-ANOVA procedures to determine whether there may be a real biological signal in 
-the row. 
+Technical replicates are not useful for the statistical
+tests used by DiscoRhythm for oscillation detection as they are not
+representative of the populational variance of the data (_i.e._ do not satisfy
+the independence assumptions). They will instead be used to identify rows of
+the dataset where the biological variation is greater than the technical
+variation. ANOVA procedures are used to determine whether a row has detectable
+biological signal.
 
-**ANOVA Method:** 3 options are available for ANOVA:  
+**ANOVA Method:** 3 options are available for ANOVA:
 
-1) Equal Variance - all sets of technical replicates are assumed to have the 
-same variance. Recommended in most cases.  
-2) Welch - sets of technical replicates may have different variance.  
-3) None - do not test rows using ANOVA.  
+1) Equal Variance - all sets of technical replicates are assumed to have the
+same variance. Recommended in most cases.
+2) Welch - sets of technical replicates may have different variance.
+3) None - do not test rows using ANOVA.
 
 **F-statistic Cutoff:** The user may choose to filter rows by the magnitude
-of the signal-to-noise rather than by statistical significance.
+of the signal-to-noise ratio rather than by statistical significance.
 
-Replicates should be combined for downstream rhythmicity analysis. DiscoRhythm 
+Replicates should be combined for downstream rhythmicity analysis. DiscoRhythm
 provides three methods for combining technical replicates:
 
 - Mean - Take the mean of each set of technical replicates
 - Median - Take the median of each set of technical replicates
-- Random Selection - Take one of the technical replicates for each sample at 
+- Random Selection - Take one of the technical replicates for each sample at
 random
 
-*Note: Users may also choose to not combine technical replicates. This is only 
-advisable if the technical replicates do in fact represent independent samples 
-of the population/dataset (i.e. if they were erroneously labelled in section 
-\@ref(input-datasets)).*
+*Note: Users may also choose not to combine technical replicates. This is only
+advisable if the technical replicates do in fact represent independent samples
+of the population/dataset (i.e. if they were erroneously labelled in section
+\@ref(input-format)).*
 
 ```{r repAnalysis, echo=F, fig.cap=sprintf(figcap,'Row Selection')}
 knitr::include_graphics("RowSelectionSS.jpg")
@@ -625,19 +642,20 @@ knitr::include_graphics("RowSelectionSS.jpg")
 
 ## Period Detection
 
-**Purpose:** Summarize the strength of multiple periodicities across 
+**Purpose:** Summarize the strength of multiple periodicities across
 the entire dataset. This section may be used for broad characterization
 of the dataset, or as an exploratory analysis tool for determining the
 main periodicities of the dataset to use for oscillation detection.
 
 ### Period Detection
 
-Periods will be limited[^3] from a smallest period of 
-3 times the sampling-interval up to the sampling duration and 12 periods 
-will be tested evenly spaced across this range. 
+Available periods will be limited [^limit] starting from a smallest period of
+3 times the sampling-interval up to the sampling duration.
+12 periods, evenly spaced across this range, will be used for period detection.
 
-[^3]: For circular time, only harmonics of the 
-base-cycle will be available for testing. 
+[^limit]: For circular time, only harmonics of the
+base-cycle will be available for testing (_e.g._ for 24hr base-cycle: 12hr, 
+8hr _etc._).
 
 ```{r domPer, echo=F, fig.cap=sprintf(figcap,'Period Detection')}
 knitr::include_graphics("PeriodDetectionSS.jpg")
@@ -645,18 +663,19 @@ knitr::include_graphics("PeriodDetectionSS.jpg")
 
 #### Methods
 
-The aim of this section is to evaluate various periodicities across all 
-features such that a fixed period may be hypothesized as a model for all 
-(or mostly all) features of the dataset. While methods for determining period 
-strength for individual time series have been established, methods for 
-determining a common period across multiple parallel time series are less 
-clear. The period detection section attempts to determine this optimal period 
-by obtaining a “goodness of fit” for all features and allows for inspection for 
-the period with the highest median fit. 
+The aim of this section is to evaluate various periodicities across all
+features such that a fixed period may be chosen for oscillation detection.
+While methods for determining period
+strength for individual time series have been established, methods for
+determining a common period across multiple parallel time series are less
+clear. The period detection section attempts to determine this optimal period
+by obtaining a “goodness of fit” across all features and allows for inspection
+for
+the period with the highest median fit.
 Cosinor’s R<sup>2</sup> was chosen over other methods of estimating model fit
-quality due 
-to: the maturity of the method, its execution speed, and its ability to be 
-executed under most experiment design conditions (see 
+quality due
+to: the maturity of the method, its execution speed, and its ability to be
+executed under most experiment design conditions (see
 \@ref(algorithm-restrictions)).
 
 ### PC Fits
@@ -664,12 +683,15 @@ executed under most experiment design conditions (see
 To obtain an abstract representation of the rhythmic patterns seen across the
 dataset, PCA is performed to reduce dimensionality and test the summarized
 temporal signal for rhythmicity (using the Cosinor method). Using an _a priori_
-hypothesized period, a significant fit to **a single** PC may indicate there are
+hypothesized period, a significant fit on **a single** PC may indicate the
+presence of
 few phases in the dataset, while strong fits **to multiple** PCs suggests that
-there may exist multiple phases of oscillation. Oscillations in lower principal
-components would be more meaningful than higher principal components. When a
-period is selected based on period detection results, more caution should be
-taken in the reliability of the findings due to selection bias.
+there may exist multiple phases of oscillation. Oscillations detected among the
+first few principal
+components would be more meaningful than oscillations in the last components.
+When a period is selected based on period detection results, more caution should
+be taken as the reliability of the findings might suffer due to selection bias
+and overfitting.
 
 ```{r PCfits, echo=F, fig.cap=sprintf(figcap,'PC Cosinor Fits')}
 knitr::include_graphics("PCfitsSS.jpg")
@@ -681,23 +703,23 @@ of (e.g. batch effects or unobserved confounders).
 
 ### Using Results to Proceed
 
-The two statistical summaries of the periodicity provided in the period 
-detection section may be used to proceed with the analysis in 
-“Oscillation Detection” in multiple ways. Three scenarios are provided below 
-to aid in illustrating some approaches for utilizing results. The aim often 
+The two statistical summaries of the periodicity provided in the period
+detection section may be used to proceed with the analysis in
+“Oscillation Detection” in multiple ways. Three scenarios are provided below
+to aid in illustrating some approaches for utilizing the results. The aim often
 should be to proceed with a hypothesis driven analysis; however, data driven
 exploratory approaches may also be used.
 
-1) **An exact periodicity is hypothesized.** The goal is to determine which 
+1) **An exact periodicity is hypothesized.** The goal is to determine which
 features fit this hypothesis.
 
     - Use period detection for data summary purposes only.
-    - Use PC fits to summarize dominant rhythms and inspect for any odd 
+    - Use PC fits to summarize dominant rhythms and inspect for any odd
     patterns.
     - Proceed to oscillation detection using the hypothesized periodicity to
     detect rhythmic features.
 
-2) **An approximate periodicity is hypothesized**, such as when subjects are 
+2) **An approximate periodicity is hypothesized**, such as when subjects are
 in free running conditions. The goal is to determine which features fit this
 approximate hypothesis.
 
@@ -708,68 +730,67 @@ approximate hypothesis.
     detection. Some caution should be taken for an increased false positive rate
     due to the period tuning procedure.
 
-3) **The period is entirely unknown.** The goal may be to find a dominant 
-periodicity with a secondary goal of identifying which features follow this 
+3) **The period is entirely unknown.** The goal may be to find a dominant
+periodicity with a secondary goal of identifying which features follow this
 period.
 
-    - Use period detection to find a dominant period (period with highest median 
+    - Use period detection to find a dominant period (period with highest median
 r-squared).
-    - Use PC fits to test for a dominant periodic pattern and inspect for other 
+    - Use PC fits to test for a dominant periodic pattern and inspect for other
 patterns.
     - Proceed to oscillation detection with the dominant period to determine
-    presence 
-of feature-wise rhythms. Caution should be taken in these findings as the 
-selection of period using the data will not be taken into account during 
+    presence
+of feature-wise rhythms. Caution should be taken in these findings as the
+selection of period using the data will not be taken into account during
 feature-wise oscillation detection and inferences will have an increased false
-positive rate. Validation datasets are recommended to confirm feature-wise 
+positive rate. Validation datasets are recommended to confirm feature-wise
 rhythms.
 
 
 ## Oscillation Detection
 
-**Purpose:** Individually quantify rhythmicity of remaining rows of the dataset 
-where each row will be tested for rhythmicity using methods suitable for the 
+**Purpose:** Individually quantify rhythmicity of remaining rows in the dataset
+where each row will be tested for rhythmicity using methods suitable for the
 sample collections present.
 
 ### Rhythmicity Calculation Configuration
 
-The user must choose a single period[^5] of oscillation to test across all rows
+The user must choose a single period [^period] of oscillation to test across all rows
 of the dataset. The application may show warnings/messages regarding the choice
-of period. By default, the period input in the 'Select Data' section will be
+of period. By default, the period specified in the 'Select Data' section will be
 chosen.
 
-[^5]: If it is unknown which periodicity to test start with the dominant period
+[^period]: If it is unknown which periodicity to test start with the dominant period
 seen in section \@ref(period-detection).
 
-JTK Cycle, Lomb-Scargle, and ARSER results are all obtained through the 
-MetaCycle R package (meta2d function using minper=maxper). Cosinor is a
-built-in function of DiscoRhythm. A brief summary of each method:
+JTK Cycle, Lomb-Scargle, and ARSER results are all obtained through the
+MetaCycle R package (meta2d function using minper=maxper). Cosinor is 
+provided by DiscoRhythm. A brief summary of each method:
 
-**Cosinor** - a.k.a "Harmonic Regression" Fits a sinusoid 
-with a free phase parameter.  
-**JTK Cycle** - non-parametric test of rhythmicity robust to outliers.  
-**Lomb-Scargle** - an approach using spectral power density.   
-**ARSER** - removes linear trends and performs the Cosinor test.    
+**Cosinor** - a.k.a "Harmonic Regression" Fits a sinusoid
+with a free phase parameter.
+**JTK Cycle** - non-parametric test of rhythmicity robust to outliers.
+**Lomb-Scargle** - an approach using spectral power density.
+**ARSER** - removes linear trends and performs the Cosinor test.
 
-**Exclusion Criteria Matrix:** A table is presented which describes the
-criteria
-which exclude a method from use and shown are criteria which are true for 
-the loaded dataset[^6]. The reasons may be due to either computational 
+**Exclusion Criteria Matrix:** A table is presented describing the
+criteria that exclude a method from being used. All exclusion criteria which are
+true for the loaded dataset are shown [^crit]. The reasons for exclusion may be
+due to either computational
 (causes errors under given conditions) or statistical restrictions
-(requirements 
-of study design) of the method.
+(requirements of study design) of the method.
 
-[^6]: If no criteria are present, the table will be absent.
+[^crit]: If no criteria are present, this table will be absent.
 
-| Criteria              | Description               |
-|-----------------------------|-------------------------------------|
-| missing_value | Rows contain missing values. |
-| with_bio_replicate | Biological replicates are present. |
-| non_integer_interval | The spacing between samples is not an integer value. |
-| uneven_interval | Time between collections is not uniform. |
-| circular_t | Time is circular (see \@ref(time-type)).|
-| invalidPeriod | Chosen period to test is not valid. |
-| invalidJTKperiod | Chosen period to test is not valid for JTK Cycle. |
+| Criteria                    | Description                                            |
+|-----------------------------|--------------------------------------------------------|
+| missing_value               | Rows contain missing values.                           |
+| with_bio_replicate          | Biological replicates are present.                     |
+| non_integer_interval        | The spacing between samples is not an integer value.   |
+| uneven_interval             | Time between collections is not uniform.               |
+| circular_t                  | Time is circular (see \@ref(circular-and-linear-time)).|
+| invalidPeriod               | Chosen period to test is not valid.                    |
+| invalidJTKperiod            | Chosen period to test is not valid for JTK Cycle.      |
 
 ```{r detOsc, echo=F, fig.cap=sprintf(figcap,'Oscillation Detection (Preview)')}
 knitr::include_graphics("OscillationDetectionPrevSS.jpg")
@@ -783,21 +804,21 @@ handle this condition:
 [^matrix]: This matrix is from the object: `discoODAexclusionMatrix`
 
 ```{r echo=FALSE}
-DiscoRhythm::discoODAexclusionMatrix %>% 
-  t() %>% 
+DiscoRhythm::discoODAexclusionMatrix %>%
+  t() %>%
   knitr::kable(format = "markdown")
 ```
 
 This criteria should be considered during the design phase of an experiment
 when
-possible to ensure the most appropriate method is able to be used. It may not 
+possible to ensure the most appropriate method will be available for use. It may not
 always be ideal to utilize multiple methods for rhythm detection as the process
 of integrating the results is not well defined and may interfere with drawing
-clear conclusions. Discussions regarding methods for integrating rhythm 
+clear conclusions. Discussions regarding methods for integrating rhythm
 detection results may be found in the literature:
 
 @Wu2016-rd - Proposes Fisher’s method for integrating p-values  
-@Hutchison118547 - Proposes Brown’s method for integrating p-values  
+@Hutchison118547 - Proposes Brown’s method for integrating p-values
 
 Users preferring to decide on
 a single method are encouraged to consult the literature on which methods
@@ -805,13 +826,14 @@ are suitable under given conditions (see \@ref(further-background-references)).
 
 ### Visualizing Results
 
-Once rhythmicity computation is completed, 3 sections become available for 
-viewing the results:
+Once rhythmicity computation is completed, 3 sections become available for
+inspecting the results:
 
-**Individual Models:** Allows inspection of the raw data for individual rows
-of the dataset. User may click a row of the table to display the raw data and a
-fitted curve for that row. If the Cosinor method is being viewed, the line will
-be the Cosinor fit, all other methods utilize a loess fit. If the error bar 
+**Individual Models:** Allows inspection of individual rows from the raw 
+dataset.
+User may click a row on the table in order to display the raw data values along
+with a fitted periodic curve. If the Cosinor method is being viewed, the line
+will be the Cosinor fit, all other methods utilize a loess fit. If the error bar
 option is selected, a 95% confidence interval on the mean will be displayed for
 each timepoint.
 
@@ -819,32 +841,31 @@ each timepoint.
 by all executed methods.
 
 **Method Comparison:** Offers pairwise comparison of rhythmic parameters
-calculated by each method to determine the degree of agreement between methods.
+calculated by each method to determine the degree of agreement between them.
 
 ```{r detOscResults, echo=F, fig.cap=sprintf(figcap,'Oscillation Detection')}
 knitr::include_graphics("OscillationDetectionSS.jpg")
 ```
 
-#### Note on Method Comparison
-
-This section should not be used as evidence of rhythmicity, and rather should 
-be used for testing purposes with simulated datasets to determine the degree of 
+_Note on method comparison: This section should not be used as evidence of 
+rhythmicity, and rather should
+be used for testing purposes with simulated datasets to determine the degree of
 agreement of the detection methods under various conditions. For real datasets,
 this section could be used to compare the results of each method to
-determine which features are sensitive to method choice.
+determine which features are sensitive to method choice._
 
 ## Session Archiving
 
-**Purpose:** Obtain a record of the DiscoRhythm session 
-either as batch execution results or by downloading R data associated with the
+**Purpose:** Obtain a record of the DiscoRhythm session
+either as a batch execution result or by downloading R data associated with the
 session.
 
-**Batch Execution** Execute a batch version of the analysis to generate a zip 
+**Batch Execution** Execute a batch version of the analysis to generate a zip
 file containing tables of the oscillation results (produced by `discoODAs()`)
 and an HTML report (produced by `discoBatch()`).
 The zip also contains an R data file of the session inputs.
 
-**Session Inputs** Users may simply download the R data file containing 
+**Session Inputs** Users may simply download the R data file containing
 their input dataset and all current parameter settings such that results can be
 reprocessed using the DiscoRhythm R package.
 
@@ -857,59 +878,61 @@ archive files to recompute results and continue an analysis in R.
 
 # DiscoRhythm R Usage
 
-This section will detail usage of the R functions used to perform the
+The remainder of this vignette will focus on programmatic usage of DiscoRhythm
+functions using R.
+
+This section will demonstrate usage of the R functions used to perform the
 analysis in section \@ref(discorhythm-interface-walkthrough). For each of
 the sections below, refer to the DiscoRhythm R package manual for
 specific technical details on usage, arguments and methods or use `?` to
-access individual manual pages. For instance, 
-get more 
+access individual manual pages. For instance,
+get more
 help for the function `discoBatch()` with command `?discoBatch`.
 
 ## Data Import
 
-`r BiocStyle::Biocpkg("SummarizedExperiment")` objects such as those generated 
+`r BiocStyle::Biocpkg("SummarizedExperiment")` objects such as those generated
 by other Bioconductor packages
 should be suitable inputs to DiscoRhythm functions
-once modified to contain the following required data. 
-For a Summarized experiment object named `se`:
+once modified to contain the required metadata.
+For a "Summarized experiment" object named `se` the following fields are assumed to be present:
 
 1) `rownames(se)` - The feature IDs.
-2) `assay(se)` - A matrix containing experimental data.
+2) `assay(se)`[^assay]] - A matrix containing experimental data.
 3) `colData(se)` - Stores sample metadata (See \@ref(processed-metadata-table)).
-3 columns are required:  
+3 columns are required:
 
-    - ID  
-    - Time  
-    - ReplicateID  
+    - ID
+    - Time
+    - ReplicateID
 
-Objects with this structure will be used throughout usage of the package.  
+Objects with this structure will be used throughout the package.
 
-*Note that at present DiscoRhythm will use the first assay 
-(_i.e._ `assays(se)[[1]]`)
-of the SummarizedExperiment and all others will be ignored.*
+[^assay]: At present DiscoRhythm will use only the
+first assay (`assays(se)[[1]]`) of the SummarizedExperiment
+and all others will be ignored.
 
 ### discoDFtoSE
 
-The CSV inputs to the DiscoRhythm web interface described in section 
-\@ref(input-datasets) can be read into R as
-a data.frame.
-To allow for users using the web application to use the same input for
-analysis in R, the function `discoDFtoSE` is available to convert the tabular 
-input into an apporpriate format for analysis in R described in 
-\@ref(data-import) above. 
+The CSV inputs to the DiscoRhythm web interface described in section
+\@ref(input-format) can be read into R as a `data.frame`.
+To allow the users of the web application to use the same input for their
+analysis in R, the function `discoDFtoSE()` can convert the tabular
+input into an apporpriate format described in
+\@ref(data-import) above.
 
-The sample metadata will be 
-extracted from the column 
-names by matching the format [^format] described in section 
-\@ref(column-naming).
+The sample metadata will be
+extracted from the column
+names by matching the format [^format] described in section
+\@ref(column-names).
 The checks for validity and uniqueness mentioned in section \@ref(select-data)
-will also be performed. Alternatively, this metadata may also be input directly 
-to `discoDFtoSE` as a data.frame. 
+will also be performed. Alternatively, this metadata may be provided directly
+to `discoDFtoSE` as a `data.frame`.
 
 [^format]: See `?discoParseMeta` for regular expression specifications.
 
-Loading in the same example dataset as section \@ref(input-datasets) using
-`discoGetSimu()` to read in the CSV system file as a data.frame:
+Loading in the example dataset described in section \@ref(input-format) using
+`discoGetSimu()` to get the demo dataset as a `data.frame`:
 ```{r}
 library(DiscoRhythm)
 indata <- discoGetSimu()
@@ -925,18 +948,16 @@ se <- discoDFtoSE(indata)
 ### discoSEtoDF
 
 The reverse operation, `discoSEtoDF`, is also available and is mainly intended
-for the purpose of exporting data as CSV for input to the web application.
+for exporting the data to a "csv" format to be used as an input to the web application.
 
 ```
 write.csv(discoSEtoDF(se),file = "DiscoRhythmInputFile.csv",row.names = FALSE)
 ```
 
-Will export data for usage in the web application.
-
 ### discoCheckInput
 
-This function performs the row-wise checks for missing values and constant 
-values as mentioned in section \@ref(select-data). 
+This function performs the row-wise checks for missing values and constant
+values as mentioned in section \@ref(select-data).
 
 ```{r}
 selectDataSE <- discoCheckInput(se)
@@ -944,8 +965,8 @@ selectDataSE <- discoCheckInput(se)
 
 ### discoDesignSummary
 
-The sample collection information present in `colData(selectDataSE)` can be 
-summarized by the `discoDesignSummary` function to detail the number of 
+The sample collection information present in `colData(selectDataSE)` can be
+summarized by the `discoDesignSummary()` function to detail the number of
 biological and technical replicates available at each collection time. Number of
 technical replicates is shown in brackets.
 
@@ -961,7 +982,7 @@ knitr::kable(discoDesignSummary(Metadata),format = "markdown")
 
 Performs the analysis described in \@ref(inter-sample-correlation) to
 return some intermediate results and a vector indicating which samples
-were determined to be outliers.
+were flagged as outliers using the inter-sample correlation method.
 
 ```{r}
 CorRes <- discoInterCorOutliers(selectDataSE,
@@ -974,7 +995,7 @@ CorRes <- discoInterCorOutliers(selectDataSE,
 
 Performs the analysis described in \@ref(principal-component-analysis) to
 return some intermediate results and a vector indicating which samples
-were determined to be outliers.
+were flagged as outliers using the PCA method.
 
 ```{r}
 PCAres <- discoPCAoutliers(selectDataSE,
@@ -985,20 +1006,20 @@ PCAres <- discoPCAoutliers(selectDataSE,
 
 ### discoPCA
 
-A light wrapper was written for the `stats::prcomp` function for better use with
+A simple wrapper was written for the `stats::prcomp` function for better use with
 the web application and it can be utilized as:
 
 ```{r}
 discoPCAres <- discoPCA(selectDataSE)
 ```
 
-This returns the same output as prcomp with the addition of a reformatted 
+This returns the same output as prcomp with the addition of a reformatted
 summary table (available as `PCAresAfter$table`).
 
 ### Filtering Summary
 
-Below the results of the outlier detection analysis (`CorRes` and `PCAres`) 
-are used to subset the data to remove outliers:
+The results of the outlier detection analysis (`CorRes` and `PCAres`)
+are used to remove outliers by subsetting the data.
 
 ```{r}
 FilteredSE <- selectDataSE[,!PCAres$outliers & !CorRes$outliers]
@@ -1015,7 +1036,7 @@ knitr::kable(discoDesignSummary(colData(FilteredSE)),format = "markdown")
 ### discoRepAnalysis
 
 Performs the analysis described in \@ref(row-selection) returning the results
-of the ANOVA test and the `se` data object where technical replicates 
+of the ANOVA test and the `se` data object where technical replicates
 are combined.
 
 ```{r}
@@ -1028,12 +1049,12 @@ ANOVAres <- discoRepAnalysis(FilteredSE,
 FinalSE <- ANOVAres$se
 ```
 
-## Dominant Rhythmicities  
+## Dominant Rhythmicities
 
 ### discoPeriodDetection
 
-Performs the analysis described in \@ref(period-detection) to return a 
-data.frame of Cosinor fits across a range of periods.
+Performs the analysis described in \@ref(period-detection) to return a
+`data.frame` of Cosinor results across a range of periods.
 
 ```{r}
 PeriodRes <- discoPeriodDetection(FinalSE,
@@ -1041,7 +1062,7 @@ PeriodRes <- discoPeriodDetection(FinalSE,
                                   main_per=24)
 ```
 
-The main period of interest is fit using a Cosinor model to principal component 
+The main period of interest is fit using a Cosinor model to principal component
 scores as described in \@ref(period-detection).
 
 ```{r}
@@ -1056,9 +1077,9 @@ knitr::kable(discoODAs(OVpcaSE,period = 24,method = "CS")$CS,
 
 ### discoODAs
 
-Performs the analysis described in \@ref(rhythmicity-calculation-configuration) 
-using just the Cosinor method. 
-`discoODAs` will automatically run all appropraite methods
+Performs the analysis described in \@ref(rhythmicity-calculation-configuration)
+using just the Cosinor method.
+`discoODAs()` will automatically run all appropraite methods
 if none are provided.
 
 ```{r}
@@ -1073,7 +1094,7 @@ discoODAres <- discoODAs(FinalSE,
 
 ### discoBatch
 
-The entire analysis performed in section \@ref(discorhythm-r-usage) may be 
+The entire analysis performed in section \@ref(discorhythm-r-usage) may be
 run through a single call to `discoBatch()` to obtain the final `discoODAres`
 results.
 
@@ -1098,7 +1119,7 @@ discoBatch(indata=indata,
 ```
 
 This command will generate an html report called "discoBatch_example.html"
-which includes the 
+which includes the
 visualizations seen in the DiscoRhythm application. `indata` may be in either
 of the two input formats described in \@ref(data-import) (`data.frame` or
 `SummarizedExperiment`).
@@ -1106,7 +1127,7 @@ of the two input formats described in \@ref(data-import) (`data.frame` or
 ### Importing Archived Sessions
 
 Section \@ref(session-archiving) describes the two current methods of archiving
-results in DiscoRhythm. The R data file produced by each of these methods 
+results in DiscoRhythm. The R data file produced by each of these methods
 containing the input dataset and parameter settings may be used by one
 of the methods below to continue an interactive analysis in R.
 
@@ -1125,15 +1146,15 @@ discoODAres <- do.call(discoBatch, c(list(report='discorhythm_report.html'),
 ```
 
 The above code is simply a call to `discoBatch` using a list of arguments
-as input.  
+as input.
 
-Alternatively, a customized DiscoRhythm workflow may be built on the code 
+Alternatively, a customized DiscoRhythm workflow may be built on the code
 template below which computes the major results. First, to get all necessary
 objects into the workspace, the list will be converted into individual objects
 using the code below.
 
 ```{r echo=F}
-batchscript=system.file("", "DiscoRhythm_batch.R", 
+batchscript=system.file("", "DiscoRhythm_batch.R",
                                package = "DiscoRhythm",
                                mustWork = TRUE)
 ```
@@ -1155,9 +1176,3 @@ sessionInfo()
 ```
 
 # References
-
-
-
-
-
-
