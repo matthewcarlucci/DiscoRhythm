@@ -182,7 +182,8 @@ plotPeriodDetect(PeriodRes)
 ### PC Cosinor Fits
 
 ```{r }
-plotOVpcaScatter(OVpca = OVpca,colData(FinalSE),osc_period)
+plotOVpcaScatter(OVpca = OVpca,colData(FinalSE),osc_period,
+                 PCsToUse = paste0("PC",1:4))
 ```
 
 ### Cosinor Table

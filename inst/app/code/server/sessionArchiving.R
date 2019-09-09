@@ -1,28 +1,30 @@
 output$sessionArchivingUI <- renderUI({
-    advanced_usage <- paste(
-        h3("Reproducibility and Batch Execution"),
-        "The complementary R package to this application may be used to
-        batch execute the entire workflow to obtain all results."
-        )
-
     app_state <- paste(h3("App State"),"DiscoRhythm ", verCode)
 
     HTML(paste(
-        '<div style="max-width:500px; word-wrap:break-word;">',
-        advanced_usage, br(),br(),
-        downloadButton("reportOutput", "Generate HTML Report"),
-        "Re-execute analysis from all sections
-        (with the current parameter settings) and export an html report.
-        This may be useful for archiving results or
-        viewing the code necessary to produce all results.",br(),br(),
-        downloadButton("downloadData", "Download R Data of Results"),
-        "Download the data objects associated with each step of the
-        analysis providing easy access to the data for further analysis.",
+        '<div style="max-width:800px; word-wrap:break-word;">',
+        h4("Batch Execution",
+           downloadButton("reportOutput", "Generate Batch Results")),
+        "Execute a batch version of the analysis with the current parameter 
+        settings.",
+        "If the input dataset is large, this may be a preffered mode
+        of execution over the interactive rhythm detection section which 
+        could time out before performing a manual download of results. 
+        Results from the batch execution mode will 
+        be automatically downloaded/saved upon completion.",
+        "A zip file will be produced containing:",
+        HTML("<ol><li>An HTML report</li>
+              <li>A CSV file for each rhythm detection algorithm's results</li>
+              <li>R data of inputs </li></ol>"),
+        "Batch execution is the recommended method for archiving results as
+        the inputs, outputs, and all software versions used will be archived
+        in one location.",
         br(),br(),
-        downloadButton("dlInputs", "Download R Data of Inputs"),
-        "Download the input dataset and essential parameter
-        settings for regenerating the results using the DiscoRhythm R function
-        discoBatch().",
+        h4("Application Inputs",
+           downloadButton("dlInputs", "Download R Data of Inputs")),
+        "Simply download the current imported dataset and parameter
+        settings such that results can later be (re-)generated with the
+        DiscoRhythm R package.",
         "</div>"
         ))
 })
@@ -35,30 +37,11 @@ observe({
     }
 })
 
-# Download internal objects
-# Evaluating all reactive objects to export
-output$downloadData <- downloadHandler(
-    filename = function() {
-        paste0("disco", verCode, "_stateexport.Rdata")
-    },
-    content = function(file) {
-        reactives <- Filter(function(x) "reactive" %in% class(get(x)),
-            ls(envir = parent.env(environment())))
-        rest <- Filter(function(x) !("reactive" %in% class(get(x))),
-            ls(envir = parent.env(environment())))
-        disco_ro <- lapply(reactives,
-            function(x) try(do.call(x, list()), silent = TRUE))
-        names(disco_ro) <- reactives
-        tmp <- c(as.list(rest), "disco_ro")
-        tmp[["file"]] <- file
-        do.call(save, tmp)
-    }
-    )
-
 output$reportOutput <- downloadHandler(
     filename = function() {
-        paste0("DiscoRhythm", verCode, "_report_", status$loadedDatasetName,
-               ".html")
+        paste0("DiscoRhythm", verCode, "_batchResults_",
+               tools::file_path_sans_ext(status$loadedDatasetName),
+               ".zip")
     },
     content = function(file) {
         # Using the same format and code as the oscillation detection
@@ -76,7 +59,7 @@ output$reportOutput <- downloadHandler(
                     parameter settings in this session to generate
                     an HTML report.",br(),
                 "For better performance, consider using a local installation
-                of DiscoRhythm.",
+                of DiscoRhythm (if not already).",
                        br(), br(),
                        "discoBatch Execution Summary:",br(),
                        "Number of Samples: ", ncol(Maindata())-1, br(),
@@ -86,22 +69,37 @@ output$reportOutput <- downloadHandler(
                 "Approximate runtime: ",
                 paste0(formatC(round(runtime / 60) + 1), " minute(s)"),
                 br(),br(),
-                "If the app is taking too long,
+                "If the application is taking much longer than expected,
                 consider refreshing the page to start again."
                 ),
             easyClose = TRUE, footer = NULL, size="l"
             ))
         
+        tdir <- paste0(tempfile(),"_batch_results")
+        report_file <- paste0(tdir,"/discorhythm_report.html")
         DiscoRhythm:::discoShinyHandler({
-            do.call(discoBatch,c(list(report=file),discoBatchParams()))
+            tmpODAres <- do.call(discoBatch,c(list(report=report_file),
+                                              discoBatchParams()))
         },"Report Generation",shinySession=session)
+        
+        # exports
+        usedODAs <- names(tmpODAres)
+        lapply(usedODAs,function(name){
+          outfile=paste0(tdir,"/",name,".csv")
+          write.csv(tmpODAres[[name]],file=outfile)
+        })
+        
+        # input parameters
+        saveRDS(discoBatchParams(),file=paste0(tdir,"/discorhythm_inputs.RDS"))
+        
+        zip::zipr(file,dir(tdir,full.names = TRUE))
     }
     )
 
 # Collecting all inputs needed to run discoBatch()
 discoBatchParams <- reactive({
    list(indata = Maindata(),
-                outdata = FALSE,
+                outdata = TRUE,
                 cor_threshold = input$corSD,
                 cor_method = input$corMethod,
                 cor_threshType = input$whatToCut,
@@ -112,6 +110,7 @@ discoBatchParams <- reactive({
                 aov_pcut = input$anovaCut,
                 osc_method = selectedModels(),
                 aov_Fcut = input$anovaFstatCut,
+                avg_method = input$avgMethod,
                 timeType = input$timeType,
                 main_per = input$main_per,
                 osc_period = input$periodInput,

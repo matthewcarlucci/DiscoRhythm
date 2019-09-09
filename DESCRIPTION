@@ -65,7 +65,8 @@ Imports:
     stats,
     SummarizedExperiment,
     BiocGenerics,
-    S4Vectors
+    S4Vectors,
+    zip
 Suggests: testthat
 SystemRequirements: To generate html reports pandoc 
   (http://pandoc.org/installing.html) is required.
