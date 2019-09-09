@@ -203,7 +203,6 @@ ui <- dashboardPage(
             ),
         hr(class="sidebarsplitter"),
         tableOutput("summaryTable"),
-        p(paste0("DiscoRhythm v", verCode)),
     # Restart App (avoiding V8 dep by using functions arg)
         shinyjs::extendShinyjs(text = jsRestartApp,functions = c("reset"))
         )),

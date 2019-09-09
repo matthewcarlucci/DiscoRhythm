@@ -768,10 +768,10 @@ MetaCycle R package (meta2d function using minper=maxper). Cosinor is
 provided by DiscoRhythm. A brief summary of each method:
 
 **Cosinor** - a.k.a "Harmonic Regression" Fits a sinusoid
-with a free phase parameter.
-**JTK Cycle** - non-parametric test of rhythmicity robust to outliers.
-**Lomb-Scargle** - an approach using spectral power density.
-**ARSER** - removes linear trends and performs the Cosinor test.
+with a free phase parameter.  
+**JTK Cycle** - non-parametric test of rhythmicity robust to outliers.  
+**Lomb-Scargle** - an approach using spectral power density.  
+**ARSER** - removes linear trends and performs the Cosinor test.  
 
 **Exclusion Criteria Matrix:** A table is presented describing the
 criteria that exclude a method from being used. All exclusion criteria which are
@@ -898,7 +898,7 @@ once modified to contain the required metadata.
 For a "Summarized experiment" object named `se` the following fields are assumed to be present:
 
 1) `rownames(se)` - The feature IDs.
-2) `assay(se)`[^assay]] - A matrix containing experimental data.
+2) `assay(se)`[^assay] - A matrix containing experimental data.
 3) `colData(se)` - Stores sample metadata (See \@ref(processed-metadata-table)).
 3 columns are required:
 

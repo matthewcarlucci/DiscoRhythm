@@ -65,8 +65,15 @@ fluidPage(
                                   " to go to the next section.", br(),
                                   "Click the", icon("redo"),
                                   "'s to reset to default values."
-                                ),br(),br(),
-
+                                ),
+          p("Sessions on the public DiscoRhythm server will time out after 
+          30 minutes since the last computation has completed.",
+           tags$b("Results will not be automatically saved during usage
+                  of the application."),
+          "Manually download results or use the session archiving
+          features to save the session settings and/or batch execute results 
+          (useful for long running jobs)."),
+          br(),
         # )
             # ),
             box(
@@ -183,7 +190,13 @@ fluidPage(
         p("All results and visualizations can be re-compiled into a
           report for archiving of the DiscoRhythm session. Download
           of the R data associated with the session is also available.")
-                )))
+                ))),
+        br(),br(),
+        HTML(paste0("<details><summary>",
+                    "DiscoRhythm v", verCode,"</summary>")),
+        box(title = "Package News",
+            includeMarkdown(system.file(package = "DiscoRhythm","NEWS"))),
+        HTML("</details>")
         )
     )
 )
