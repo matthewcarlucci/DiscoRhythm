@@ -19,8 +19,8 @@ NULL
 #' @inheritParams discoParseMeta
 #' @export
 #' 
-#' @return A SummarizedExperiment object with colData containing sample
-#' metadata. 
+#' @return discoDFtoSE returns a SummarizedExperiment object with colData 
+#' containing sample metadata. 
 #' 
 #' @importFrom SummarizedExperiment SummarizedExperiment assay
 #' @importFrom S4Vectors DataFrame
@@ -56,7 +56,7 @@ discoDFtoSE <- function(Maindata,Metadata=NULL,shinySession=NULL){
 #' @inheritParams discoInterCorOutliers
 #' @export
 #' 
-#' @return A DiscoRhythm format Maindata data.frame.
+#' @return discoSEtoDF returns a DiscoRhythm format data.frame.
 #' 
 #' @importFrom SummarizedExperiment assay
 #' @importFrom BiocGenerics rownames

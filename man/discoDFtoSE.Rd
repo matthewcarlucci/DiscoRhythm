@@ -28,10 +28,10 @@ expected to contain se$ID, se$ReplicateID, se$Time sample metadata and
 non-null rownames. See the vignette for more details.}
 }
 \value{
-A SummarizedExperiment object with colData containing sample
-metadata.
+discoDFtoSE returns a SummarizedExperiment object with colData 
+containing sample metadata.
 
-A DiscoRhythm format Maindata data.frame.
+discoSEtoDF returns a DiscoRhythm format data.frame.
 }
 \description{
 Functions to import a data.frame (from the format expected by the 

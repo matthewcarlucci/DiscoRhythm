@@ -59,6 +59,16 @@ There are currently 4 available algorithms for rhythm detection:
   robust to outliers.
 }
 
+LS, ARS, and JTK results come directly from MetaCycle meta2d() output using
+the specified fixed period. ARSmle is set to "nomle" and no method 
+integration is used (see meta2d documentation for details). 
+
+CS is implemented directly in DiscoRhythm
+as the single-component cosinor described in Cornelissen,G. (2014). 
+
+All q-values are all calculated by performing p.adjust on the resulting 
+p-values with method="fdr".
+
 Technical replicates are expected to be merged (likely by discoRepAnalysis) 
 prior to usage of discoODAs. 
 

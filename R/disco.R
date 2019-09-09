@@ -186,6 +186,16 @@ discoApp <- function(ncores=1, port=3838){
 #'   robust to outliers.
 #' }
 #' 
+#' LS, ARS, and JTK results come directly from MetaCycle meta2d() output using
+#' the specified fixed period. ARSmle is set to "nomle" and no method 
+#' integration is used (see meta2d documentation for details). 
+#' 
+#' CS is implemented directly in DiscoRhythm
+#' as the single-component cosinor described in Cornelissen,G. (2014). 
+#' 
+#' All q-values are all calculated by performing p.adjust on the resulting 
+#' p-values with method="fdr".
+#' 
 #' Technical replicates are expected to be merged (likely by discoRepAnalysis) 
 #' prior to usage of discoODAs. 
 #' 
@@ -267,6 +277,7 @@ discoODAs <- function(se, period = 24,
         unif$CS[nanId, "pvalue"] <- 1
     # Multiple Test Correction
         unif$CS$qvalue <- stats::p.adjust(unif$CS$pvalue, method = "BH")
+        rownames(unif$CS) <- rownames(se)
     }
     # Run MetaCycle Methods
     rest <- Filter(function(x) x != "CS", method)
@@ -291,7 +302,7 @@ discoODAs <- function(se, period = 24,
             nCores = ncores,
             inDF = Maindata
             )
-
+        
         for (method in rest) {
             tmpdf <- cyc$meta[, paste0(method, c("_adjphase", "_amplitude",
                 "_pvalue", "_BH.Q", "_period"))]
