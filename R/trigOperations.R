@@ -24,4 +24,4 @@ sincos2acr <- function(sin, cos, per = 24) {
 #' @rdname sincos
 #' @inheritParams sincos2acr
 #' @keywords internal
-sincos2amp <- function(sin, cos) 2 * sqrt(sin^2 + cos^2)
+sincos2amp <- function(sin, cos) sqrt(sin^2 + cos^2)
