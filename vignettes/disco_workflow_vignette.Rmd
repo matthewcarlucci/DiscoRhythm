@@ -683,15 +683,19 @@ executed under most experiment design conditions (see
 To obtain an abstract representation of the rhythmic patterns seen across the
 dataset, PCA is performed to reduce dimensionality and test the summarized
 temporal signal for rhythmicity (using the Cosinor method). Using an _a priori_
-hypothesized period, a significant fit on **a single** PC may indicate the
+hypothesized period, a significant fit on **a single** PC indicates the
 presence of
-few phases in the dataset, while strong fits **to multiple** PCs suggests that
-there may exist multiple phases of oscillation. Oscillations detected among the
-first few principal
+few phases [^phases] in the dataset, while strong fits **to multiple** PCs suggests that
+there exist multiple phases of oscillation. Oscillations detected among the
+first principal
 components would be more meaningful than oscillations in the last components.
 When a period is selected based on period detection results, more caution should
 be taken as the reliability of the findings might suffer due to selection bias
 and overfitting.
+
+[^phases]: _e.g._ an oscillating principal component with an 18hr acrophase
+indicates many features oscillate near 18hr and, due to negative 
+loadings, there may also be many features oscillating near a 6hr acrophase.
 
 ```{r PCfits, echo=F, fig.cap=sprintf(figcap,'PC Cosinor Fits')}
 knitr::include_graphics("PCfitsSS.jpg")
