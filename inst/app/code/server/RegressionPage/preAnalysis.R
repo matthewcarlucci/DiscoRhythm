@@ -79,8 +79,6 @@ observe({
         )
 })
 
-# This is a function that returns the exclusion criteria matrix
-# function() is used instead of renderTable() for a reason I cannot remember
 output$exclusionMatrix <- reactive({
     mat <- discoODAexclusionMatrix
 
@@ -156,4 +154,46 @@ output$regressionWarning <- renderText({
             formatC(round(runtime / 60) + 1), " minutes"))))
 
     txt
+})
+
+# UI for using email (only used if sender_creds_file file is present)
+output$emailUI <- renderUI({
+  
+  ui <- list(column(2,
+                      br(),
+                    conditionalPanel('!input.byEmail && input.batchReceiveMethod == "Report"',{
+                      downloadButton("reportOutput", "Submit")
+                    }),
+                    conditionalPanel('!(!input.byEmail && input.batchReceiveMethod == "Report")',{
+                      actionButton("startRegress", " Submit",
+                                   icon = icon("play"))
+                    })
+    ))
+  
+  ui <- c(ui,list(
+    column(3,
+           radioButtons("batchReceiveMethod",
+                        label = "Execution Method",
+                        choices = c("Interactive","Report"),inline = TRUE
+           )
+    )))
+  
+  if(file.exists(sender_creds_file)){
+    ui <- c(ui,list(
+      column(3,
+             checkboxInput("byEmail","Use Email"),
+             conditionalPanel("input.byEmail",
+                              textInput("emailAddress","Email Address")
+             )
+      ),
+      column(4,
+             p(" Notification of interactive result completion will
+                        be sent to this email address if provided. If the report
+                        method is chosen, an email will be sent with the report
+                        attached.",class="text-muted")
+      )
+    ))
+  }
+  
+  return(ui)
 })

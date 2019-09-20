@@ -180,16 +180,12 @@ fluidPage(
                                         rhythmicity in the data. All ODAs
                                         applicable to the data
                                         design are selected by default. You
-                                        must press Detect Oscillations to
+                                        must press Submit to
                                         compute using the input parameters
                                         and to update results when changing
                                         input parameters.
                                         </ol>")
-                                ),
-        h3("Session Archiving"),
-        p("All results and visualizations can be re-compiled into a
-          report for archiving of the DiscoRhythm session. Download
-          of the R data associated with the session is also available.")
+                                )
                 ))),
         br(),br(),
         HTML(paste0("<details><summary>",

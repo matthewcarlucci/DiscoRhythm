@@ -1,10 +1,28 @@
+# Used for both report and notification emails
+sendEmail <- function(recipients, ...){
+  
+  sender_creds <- readRDS(sender_creds_file)
+  sender <- paste0("DiscoRhythm <",sender_creds$email,">")
+  
+  mailR::send.mail(from = sender,
+                   to = recipients,
+                   ... ,
+                   html=FALSE,
+                   smtp = list(host.name = "smtp.gmail.com", port = 465, 
+                               user.name = sender_creds$email,            
+                               passwd = sender_creds$passwd, 
+                               ssl = TRUE),
+                   authenticate = TRUE,
+                   send = TRUE)
+}
+
 selectedModels <- reactive({
     methods <- input$regressionMethod
     methods[methods %in% status$osc_validMethods]
 })
 
 discoODAres <- eventReactive(input$startRegress, {
-  # please see regressionPlot.R
+    req(input$batchReceiveMethod == "Interactive")
     validate(
         need(input$periodInput > 0, "Has to be bigger than 0")
         )
@@ -45,45 +63,70 @@ discoODAres <- eventReactive(input$startRegress, {
         shinyjs::enable("withErrorBars")
     }
 
+    # Notification for ready interactive session
+    if(!is.null(input$byEmail)){
+      if(file.exists(sender_creds_file) & input$byEmail){
+        DiscoRhythm:::discoShinyHandler({
+ 
+          sendEmail(recipients = input$emailAddress,
+                    subject = "DiscoRhythm Session Information",
+                    body = paste0("Your results are ready for viewing. ",
+                                  "The session will time out ",
+                  "after 30 minutes of inactivity.")
+          )
+          
+        },"Email Notification",shinySession = session)
+      }
+    }
+
     odares
 })
 
+# Waiting for interactive results pop-up
 observeEvent(input$startRegress,{
-  # Model names
-    usedModels <- paste(selectedModels()) %>%
-    replace(., name2id,id2name)[.]
-  # Runtime estimation
-    nrows <- ifelse(status$filtered_inf_design$with_tech_replicate &
-        input$aovMethod!="None",
-        sum(anovaP() <= input$anovaCut),
-        nrow(DataFinal())
-        )
-    runtime <- sum(nrows / RTconst[selectedModels()])
+    req(input$batchReceiveMethod == "Interactive")
     showModal(modalDialog(
-        title = "Oscillation Detection Running",
-        HTML(
-            paste0("Please be patient, this might take a few minutes
-                depending on your sample size. ",
-                "For better performance, consider using a local installation
-                of DiscoRhythm.",
-                br(), br(),
-                "Analysis summary:",br(),
-                "Number of Samples: ", nrow(regressionMeta()), br(),
-                "Number of Rows: ", nrow(regressionData()), br(),
-                "Selected Methods: ", paste(usedModels,collapse=", "), br(),
-                "Time started: ", format(Sys.time(),usetz = TRUE), br(),
-                "Approximate runtime: ",
-                paste0(formatC(round(runtime / 60) + 1), " minute(s)"),
-                br(),br(),
-                "If the app is taking too long,
-                consider refreshing the page to start again."
-                )),
-        easyClose = FALSE, footer = NULL, size="l"
-        ))
+      title = "Oscillation Detection Running",
+      p("Please be patient, this might take a few minutes
+                depending on your sample size. "),
+      ODAmodalText(),
+      easyClose = FALSE, footer = NULL, size="l"
+    ))
 })
 
+# Remove modal when interactive oscillation detection finishes
 observe({
     req(input$methodToShow %in% name2id)
     req(!is.null(discoODAres()))
     removeModal()
 })
+
+ODAmodalText <- reactive({
+  usedModels <- paste(selectedModels()) %>% replace(., name2id,id2name)[.]
+  # Runtime estimation
+  nrows <- ifelse(status$filtered_inf_design$with_tech_replicate &
+                    input$aovMethod!="None",
+                  sum(anovaP() <= input$anovaCut),
+                  nrow(DataFinal())
+  )
+  runtime <- sum(nrows / RTconst[selectedModels()])
+  
+  list(
+       tags$b("Do not close this tab, or the session will be terminated and
+                   results will be lost."),
+       br(),
+       h4("Execution Summary"),br(),
+       "Number of Samples: ", ncol(Maindata())-1, br(),
+       "Number of Rows: ", nrow(Maindata()), br(),
+       "Selected Methods: ", paste(usedModels,collapse=", "), br(),
+       "Time started: ", format(Sys.time(),usetz = TRUE), br(),
+       "Approximate runtime: ",
+       paste0(formatC(round(runtime / 60) + 1), " minute(s)"),
+       br(),br(),
+       "If the application is taking much longer than expected,
+                consider refreshing the page to start again.
+      For better performance, consider using a local installation
+                of DiscoRhythm (if not already)."
+  )
+})
+

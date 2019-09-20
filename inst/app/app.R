@@ -41,6 +41,7 @@ addQicon <- function(title = "", id = NULL) {
 ########################################
 docsURL <- "https://bioconductor.org/packages/3.9/bioc/vignettes/DiscoRhythm/inst/doc/disco_workflow_vignette.html"
 verCode <- packageVersion("DiscoRhythm")
+sender_creds_file <- "sender_creds.RDS" # list with "email" and "passwd"
 
 # Method code to full name
 id2name <- discoODAid2name
@@ -197,11 +198,6 @@ ui <- dashboardPage(
         menuSubItem("Oscillation Detection", "regressionPage",
             icon = icon("clock-o")),
         hr(class="sidebarsplitter"),
-        menuItem("Session Archiving",
-            tabName = "sessionArchiving",
-            icon = icon("cloud-download-alt")
-            ),
-        hr(class="sidebarsplitter"),
         tableOutput("summaryTable"),
     # Restart App (avoiding V8 dep by using functions arg)
         shinyjs::extendShinyjs(text = jsRestartApp,functions = c("reset"))
@@ -232,9 +228,7 @@ ui <- dashboardPage(
             tabItem("overview",
                 source("code/ui/CSoverview.R", TRUE)$value),
             tabItem("regressionPage",
-                source("code/ui/regressionPlot.R", TRUE)$value),
-            tabItem("sessionArchiving",
-                source("code/ui/sessionArchiving.R", TRUE)$value)
+                source("code/ui/regressionPlot.R", TRUE)$value)
             )
         )
     )
@@ -255,7 +249,6 @@ server <- function(input, output, session) {
     source("code/server/rowReplicateAnalysis.R", TRUE)
     source("code/server/CSoverview.R", TRUE)
     source("code/server/RegressionPage/regression.R", TRUE)
-    source("code/server/sessionArchiving.R", TRUE)
 
   # Stores important values on the analysis status
     status <- reactiveValues()
@@ -297,8 +290,6 @@ server <- function(input, output, session) {
         } else if (input$sidebar == "overview") {
             updateTabItems(session, "sidebar", "regressionPage")
         } else if (input$sidebar == "regressionPage") {
-          updateTabItems(session, "sidebar", "sessionArchiving")
-        } else if (input$sidebar == "sessionArchiving") {
             showNotification(type = "warning", duration = 4,
                 HTML("<h4>No next step available.</h4>"))
         }

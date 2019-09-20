@@ -7,44 +7,38 @@ fluidPage(
         div(
             id = "previewRegDataDiv",
             box(
-                id = "previewRegData", title = "Preview", status = "primary",
+                id = "previewRegData", title = "Submission Settings",
+                status = "primary",
                 solidHeader = TRUE,
                 collapsible = TRUE, collapsed = FALSE,
                 fluidRow(
-                    column(
-                        5,
-                        numericInput("periodInput",
-                                     label = "Enter Period to Detect:",
-                            value = 24),
-                        htmlOutput("regressionWarning"),
-                        tags$hr(),
-                        actionButton("startRegress", " Detect Oscillations",
-                            icon = icon("play"))
-                        ),
+                    column(4,
+                           checkboxGroupInput("regressionMethod",
+                                              "Choose Oscillation Detection Method(s):",
+                                              choices = name2id, selected = name2id,
+                                              inline = FALSE
+                           )
+                    ),
                     column(
                         4,
-                        checkboxGroupInput("regressionMethod",
-                            "Choose Oscillation Detection Method(s):",
-                            choices = name2id, selected = name2id,
-                            inline = FALSE
-                            )
-                        ),
-                    column(3,
+                        numericInput("periodInput",
+                                     label = "Enter Period to Detect:",
+                                     value = 24),
+                        htmlOutput("regressionWarning")
+                    ),
+                    column(4,
                            p(class="text-muted","Results for this section are
                         generated using DiscoRhythm's ",
-                             tags$code("discoODAs()")," R function.")
-                          )
-                    ),
+                             tags$code("discoODAs()")," R function. Reports
+                             are generated using DiscoRhythm's ",
+                             tags$code("discoBatch()")," R function.")
+                    )
+                ),
                 hr(),
+                h5("Exclusion Criteria Matrix"),
                 fluidRow(
                     column(
                         12,
-                        box(
-                            id = "exclusionCriteria",
-                            title = "Exclusion Criteria Matrix",
-                            width = NULL,
-                            collapsible = FALSE,
-                            collapsed = FALSE,
                             column(
                                 4, p(class = "text-muted",
                                     "The matrix to the right indicates any
@@ -59,11 +53,21 @@ fluidPage(
                                     "More details"
                                     )
                                 ),
-                            column(8, withSpinner(
-                              tableOutput("exclusionMatrix")))
-                            )
+                        column(8, withSpinner(
+                            tableOutput("exclusionMatrix"))
                         )
+                    )
                     ),
+                br(),
+                box(
+                    id = "jobSubmission",
+                    width = NULL,
+                    collapsible = FALSE,
+                    collapsed = FALSE,
+                    h5("Job Submission"),
+                fluidRow(
+                    uiOutput("emailUI")
+                )),
                 width = 12
                 )
             )
