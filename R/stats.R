@@ -15,7 +15,7 @@
 #'         \item amplitude - amplitudes
 #'         \item Rsq - r-squared values
 #'         \item pvalue - p-values
-#'         \item intercept - intercept coefficient
+#'         \item mesor - intercept coefficient
 #'         \item sincoef - sine coefficient
 #'         \item coscoef - cosine coefficient
 #'}
@@ -63,7 +63,7 @@ lmCSmat <- function(x, zts, per = 24) {
 #'         \item amplitude - amplitudes
 #'         \item Rsq - r-squared values
 #'         \item pvalue - p-values
-#'         \item intercept - intercept coefficient
+#'         \item mesor - intercept coefficient
 #'         \item sincoef - sine coefficient
 #'         \item coscoef - cosine coefficient
 #'}
@@ -106,7 +106,7 @@ lmCSmatNoNA <- function(x, zts, per = 24) {
     data.frame(
         acrophase = acrophases, amplitude = amplitudes, Rsq = Rsqs,
         pvalue = pval,
-        intercept = betas[1, ], sincoef = betas[2, ], coscoef = betas[3, ]
+        mesor = betas[1, ], sincoef = betas[2, ], coscoef = betas[3, ]
         )
 }
 

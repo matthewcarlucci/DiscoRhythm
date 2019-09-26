@@ -31,10 +31,22 @@ prepareReport <- function(file){
         # exports
         usedODAs <- names(tmpODAres)
         lapply(usedODAs,function(name){
-          outfile = paste0(tdir,"/",name,".csv")
-          cols <- c("acrophase","amplitude","pvalue","qvalue")
-          res <- tmpODAres[[name]][,cols] # provide common columns only
-          write.csv(res,file=outfile)
+          # Add dataset name since excel can't open CSVs with same name
+          outfile = paste0(tdir,"/",name,"_",
+                           tools::file_path_sans_ext(status$loadedDatasetName),
+                           ".csv")
+          tmpdata <- tmpODAres[[name]]
+          
+          # Creating the same output as output$dlSingleModelTable
+          res <- data.frame(IDs = rownames(tmpdata),
+                             acrophase = tmpdata$acrophase,
+                             amplitude = tmpdata$amplitude,
+                             pvalue = tmpdata$pvalue,
+                             qvalue = tmpdata$qvalue,
+                             Mean = rowMean()
+          )
+          write.csv(res,file=outfile,row.names = FALSE) 
+          
         })
         
         # input parameters

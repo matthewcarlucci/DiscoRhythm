@@ -21,7 +21,7 @@ data frame with the following estimated statistics:
         \item amplitude - amplitudes
         \item Rsq - r-squared values
         \item pvalue - p-values
-        \item intercept - intercept coefficient
+        \item mesor - intercept coefficient
         \item sincoef - sine coefficient
         \item coscoef - cosine coefficient
 }

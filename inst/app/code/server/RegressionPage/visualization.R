@@ -8,16 +8,19 @@ shinyjs::hide(id = "regressionRowCompDiv")
 ########## Individual Model  #########
 #####################################
 
+rowMean <- reactive({
+  rowMeans(regressionData()[, -1], na.rm = FALSE)
+})
+
 observe({
     req(input$methodToShow %in% c("JTK", "ARS", "LS", "CS"))
 
     amp <- discoODAres()[[input$methodToShow]]$amplitude
   # Update Mean Range slider
-    rowMean <- rowMeans(regressionData()[, -1], na.rm = FALSE)
-    minMean <- round(min(rowMean, na.rm = TRUE), 3) - 0.01
-    maxMean <- round(max(rowMean, na.rm = TRUE), 3) + 0.01
+    minMean <- round(min(rowMean(), na.rm = TRUE), 3) - 0.01
+    maxMean <- round(max(rowMean(), na.rm = TRUE), 3) + 0.01
     updateSliderInput(session, "meanRange", min = minMean, max = maxMean,
-        value = c(min(rowMean), max(rowMean)))
+        value = c(min(rowMean()), max(rowMean())))
 
     minamp <- round(min(amp, na.rm = TRUE), 3)
     maxamp <- round(max(amp, na.rm = TRUE), 3) + 0.001
@@ -53,18 +56,15 @@ observe({
 })
 
 singleModelTable <- reactive({
-    data <- regressionData()[, 1]
-    rowMean <- rowMeans(regressionData()[, -1], na.rm = FALSE)
-    tmpdata <- discoODAres()[[input$methodToShow]]
-    data <- data.frame(
-        IDs = data,
-        acrophase = tmpdata$acrophase,
-        amplitude = tmpdata$amplitude,
-        pvalue = tmpdata$pvalue,
-        qvalue = tmpdata$qvalue,
-        Mean = rowMean
-        )
-    data
+  tmpdata <- discoODAres()[[input$methodToShow]]
+  data <- data.frame(IDs = rownames(tmpdata),
+                     acrophase = tmpdata$acrophase,
+                     amplitude = tmpdata$amplitude,
+                     pvalue = tmpdata$pvalue,
+                     qvalue = tmpdata$qvalue,
+                     Mean = rowMean()
+  )
+  data
 })
 
 output$tableSelectedSample <- DT::renderDataTable({
@@ -75,7 +75,7 @@ output$tableSelectedSample <- DT::renderDataTable({
         need(length(ids) > 0, "No Significant Rows at Selected Threshold!")
         )
     dt$IDs <- ids
-  # select(IDs,acrophase,amplitude,Mean,pvalue,qvalue,everything())
+  
     datatable(dt,
         options = list(
             searching = TRUE,

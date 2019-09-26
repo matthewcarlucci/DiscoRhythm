@@ -1,10 +1,21 @@
+#' Execute Oscillation Detection Using DiscoRhythm
+#'
+#' Runs specified oscillation detection algorithms (ODAs) 
+#' sequentially to obtain oscillation characteristics for each row of 
+#' the input data.
+#'
+#' @name discoODAs
+NULL
+
 #' @rdname discoODAs
-#'
 #' @inheritParams discoODAs
-#'
-#' @keywords internal
-#'
-#'
+#' 
+#' @export
+#' 
+#' @examples 
+#' # Return valid ODAs for example dataset
+#' discoGetODAs(discoGetSimu(as_se=TRUE),period=24)
+#' 
 # Wrapper for detectDesign(), checkPeriod(), checkODAs()
 # Given the input data, models of interest and period of interest,
 #  output which models are valid

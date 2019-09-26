@@ -142,12 +142,9 @@ discoApp <- function(ncores=1, port=3838){
     shiny::runApp(appDir, display.mode = "normal")
 }
 
-#' Execute Oscillation Detection Using DiscoRhythm
-#'
-#' Runs specified oscillation detection algorithms (if possible) 
-#' sequentially to obtain oscillation characteristics for each row of 
-#' the input data.
-#'
+
+#' @rdname discoODAs
+#' 
 #' @inheritParams discoInterCorOutliers
 #' @param period numeric, the hypothesized period to test for.
 #' @param method character, short names of ODAs to use. If length>1 
@@ -157,21 +154,18 @@ discoApp <- function(ncores=1, port=3838){
 #' @param ncores numeric, number of cores to parallelize with (applicable to JTK, ARSER
 #' and LS only). If 1 will execute in serial.
 #'
-#' @rdname discoODAs
 #'
 #' @return A named list of results where each element is a data.frame for the
 #' corresponding method with rownames corresponding to the feature identifiers
 #' and columns containing estimates for:
 #' \itemize{
-#'   \item p-value
-#'   \item amplitude
 #'   \item acrophase
+#'   \item amplitude
+#'   \item p-value
 #'   \item q-value
-#'   \item period
 #' }
-#' Note that the period in the data.frame is the one that was used for rhythm 
-#' detection and this may not always match the user supplied period in some 
-#' cases (a warning will occur in such cases).
+#' 
+#' Additional columns relevant to each method will be present. 
 #' 
 #' @details 
 #' There are currently 4 available algorithms for rhythm detection:
@@ -190,10 +184,10 @@ discoApp <- function(ncores=1, port=3838){
 #' the specified fixed period. ARSmle is set to "nomle" and no method 
 #' integration is used (see meta2d documentation for details). 
 #' 
-#' CS is implemented directly in DiscoRhythm
+#' CS is implemented directly in DiscoRhythm's lmCSmat()
 #' as the single-component cosinor described in Cornelissen,G. (2014). 
 #' 
-#' All q-values are all calculated by performing p.adjust on the resulting 
+#' All q-values are calculated by performing p.adjust() on the resulting 
 #' p-values with method="fdr".
 #' 
 #' Technical replicates are expected to be merged (likely by discoRepAnalysis) 
@@ -241,10 +235,9 @@ discoApp <- function(ncores=1, port=3838){
 #' # Get the identifiers for common rhythmic features
 #' rownames(se_merged)[idx]
 #'
-#' # Check which methods are suitable for the example dataset
-#' validMethods <- discoGetODAs(se,period=24)
 #'
 #' @export
+#' @seealso \code{\link{lmCSmat}} \code{\link[MetaCycle]{meta2d}}
 discoODAs <- function(se, period = 24,
     method = c("CS","JTK","LS","ARS"),
     circular_t=FALSE, ncores = 1) {
@@ -278,6 +271,9 @@ discoODAs <- function(se, period = 24,
     # Multiple Test Correction
         unif$CS$qvalue <- stats::p.adjust(unif$CS$pvalue, method = "BH")
         rownames(unif$CS) <- rownames(se)
+     # Reorder columns such that first 4 are the same across all methods  
+        unif$CS <- unif$CS[,c("acrophase","amplitude","pvalue",
+                              "qvalue","Rsq","mesor","sincoef","coscoef")]
     }
     # Run MetaCycle Methods
     rest <- Filter(function(x) x != "CS", method)

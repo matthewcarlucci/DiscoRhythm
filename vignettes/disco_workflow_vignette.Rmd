@@ -808,9 +808,8 @@ handle this condition:
 [^matrix]: This matrix is from the object: `discoODAexclusionMatrix`
 
 ```{r echo=FALSE}
-DiscoRhythm::discoODAexclusionMatrix %>%
-  t() %>%
-  knitr::kable(format = "markdown")
+mat <- t(DiscoRhythm::discoODAexclusionMatrix)
+knitr::kable(mat,format = "markdown")
 ```
 
 This criteria should be considered during the design phase of an experiment
@@ -1208,6 +1207,12 @@ further analysis.
 
 ```{r code = readLines(batchscript), eval= FALSE}
 ```
+
+#### Reproducing Rhythm Detection Tables
+
+Usage in R provides additional columns from `discoODAs` which are excluded from 
+web application outputs. Additionally, the web application provides row means
+which may be easily calculated in R with `rowMeans`.
 
 # Session Info
 
