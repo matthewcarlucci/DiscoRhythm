@@ -16,10 +16,10 @@ output:
 }
 </style>
 
-The analysis below can be reproduced in R with `discoBatch()` or 
+The analysis below can be reproduced in R with `discoBatch()` or
 interactively with `discoApp()` by using
 the same input data and parameters shown below.
-*Note: This report is static and does not perform any reactive data 
+*Note: This report is static and does not perform any reactive data
 processing.*
 
 # Data Processing
@@ -46,16 +46,15 @@ knitr::kable(data.frame(
 ## Main Computations
 
 ```{r echo=F}
-batchscript=system.file("", "DiscoRhythm_batch.R", 
+batchscript=system.file("", "DiscoRhythm_batch.R",
                                package = "DiscoRhythm",
                                mustWork = TRUE)
 ```
 
 Below is all R code necessary to generate the main DiscoRhythm results. These
 results will be used in section \@ref(visualizations) for generating the
-summary figures. Refer back to the introduction to DiscoRhythm document
-(`browseVignettes("DiscoRhythm")`) for a detailed description of the workflow 
-steps.
+summary figures. Refer to the "Introduction to DiscoRhythm" document
+for a detailed description of the workflow steps.
 
 ```{r code = readLines(batchscript)}
 ```
@@ -63,7 +62,7 @@ steps.
 # Visualizations
 
 Importing the DiscoRhythm plotting functions used by the web application
-for use in this report. To reproduce these results, ensure you have all 
+for use in this report. To reproduce these results, ensure you have all
 necessary package versions (See \@ref(session-info)). Refer to the user's
 guide or to the descriptions in the web application for details on each figure.
 

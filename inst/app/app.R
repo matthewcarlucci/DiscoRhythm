@@ -26,7 +26,7 @@ library(shinyBS)
 ########################################
 
 source("code/server/plots.R")
-options(shiny.maxRequestSize = 100 * 1024^2, warn = -1)
+options(shiny.maxRequestSize = 100 * 1024^2)
 options(spinner.color.background = "#F5F5F5")
 options(spinner.color = colors$discoMain)
 

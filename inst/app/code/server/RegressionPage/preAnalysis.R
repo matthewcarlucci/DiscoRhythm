@@ -190,7 +190,9 @@ output$emailUI <- renderUI({
              p(" Notification of interactive result completion will
                         be sent to this email address if provided. If the report
                         method is chosen, an email will be sent with the report
-                        attached.",class="text-muted")
+                        attached. Email addresses and results will be deleted 
+                        from the server regularly.",
+               class="text-muted")
       )
     ))
   }

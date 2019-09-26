@@ -51,7 +51,7 @@ fluidPage(
             8,
             tabBox(
                 width = NULL,
-                id = "pcaPlotBox",
+                id = "selectionTable",
                 tabPanel("Selection Table",
                     width = NULL,
                     DT::dataTableOutput("tableSelectedSamples"),
