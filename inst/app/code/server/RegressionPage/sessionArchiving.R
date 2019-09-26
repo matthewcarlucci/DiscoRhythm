@@ -23,15 +23,18 @@ prepareReport <- function(file){
         tdir <- paste0(tempfile(),"_batch_results")
         report_file <- paste0(tdir,"/discorhythm_report.html")
         DiscoRhythm:::discoShinyHandler({
-            tmpODAres <- do.call(discoBatch,c(list(report=report_file),
+            tmpODAres <- do.call(discoBatch,c(list(indata=rawData(),
+                                                   report=report_file),
                                               discoBatchParams()))
         },"Report Generation",shinySession=session)
         
         # exports
         usedODAs <- names(tmpODAres)
         lapply(usedODAs,function(name){
-          outfile=paste0(tdir,"/",name,".csv")
-          write.csv(tmpODAres[[name]],file=outfile)
+          outfile = paste0(tdir,"/",name,".csv")
+          cols <- c("acrophase","amplitude","pvalue","qvalue")
+          res <- tmpODAres[[name]][,cols] # provide common columns only
+          write.csv(res,file=outfile)
         })
         
         # input parameters
@@ -87,8 +90,7 @@ observeEvent(input$startRegress,{
 
 # Collecting all inputs needed to run discoBatch()
 discoBatchParams <- reactive({
-   list(indata = Maindata(),
-                outdata = TRUE,
+   list(outdata = TRUE,
                 cor_threshold = input$corSD,
                 cor_method = input$corMethod,
                 cor_threshType = input$whatToCut,

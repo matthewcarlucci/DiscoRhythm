@@ -1156,26 +1156,37 @@ of the two input formats described in \@ref(data-import) (`data.frame` or
 
 Section \@ref(report) describes how to archive
 results in a DiscoRhythm web session. The RDS file produced by 
-this feature contains the input dataset and parameter settings used in the 
+this feature contains the parameters used in the 
 session which can be used by one of the methods below to continue an
 analysis in R.
 
-Read the data file into R with:
+First the CSV input dataset can be read into R. This may be done as:
+
+```
+indata <- read.csv(path_to_csv_file)
+```
+
+And the R data file can be read into R with:
 
 ```
 discorhythm_inputs <- readRDS('discorhythm_inputs.RDS')
 ```
 
+#### Method 1
+
 The batch analysis can then be computed to create a report and obtain a
 list of the oscillation detection results.
 
 ```
-discoODAres <- do.call(discoBatch, c(list(report='discorhythm_report.html'),
+discoODAres <- do.call(discoBatch, c(list(indata=indata,
+                                          report='discorhythm_report.html'),
                                           discorhythm_inputs))
 ```
 
 The above code is simply a call to `discoBatch` using a list of arguments
 as input.
+
+#### Method 2
 
 Alternatively, a customized DiscoRhythm workflow may be built on the code
 template below which computes the major results. First, to get all necessary
