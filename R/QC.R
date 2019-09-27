@@ -125,8 +125,8 @@ discoPCAoutliers <- function(se, threshold = 3,
 #'
 discoInterCorOutliers <- function(se,
                                     cor_method = c("pearson",
-                                                   "kendall",
-                                                   "spearman"),
+                                                    "kendall",
+                                                    "spearman"),
                                     threshold = 3,
                                     thresh_type = c("sd","value")) {
 

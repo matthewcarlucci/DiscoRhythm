@@ -109,7 +109,8 @@ if (!requireNamespace("BiocManager", quietly=TRUE))
 BiocManager::install("DiscoRhythm")
 ```
 
-The following commands then can be used in order to launch the DiscoRhythm application:
+The following commands then can be used in order to launch the 
+DiscoRhythm application:
 
 ```
 library(DiscoRhythm)
@@ -162,7 +163,8 @@ oscillation.
 **P-value** - Described simply, it is the probability that a finding could have
 occurred under the null hypothesis. For rhythm detection, this would be the
 probability that the “goodness of fit” of a rhythmic model would occur at a
-value greater than or equal to the observed value when applied to a non-rhythmic signal.
+value greater than or equal to the observed value when applied to a non-rhythmic
+signal.
 
 **Biological replicates** - Independent random samples from the population of
 interest with the same time of collection.
@@ -186,7 +188,8 @@ after the following modifications:
 2. Remove ‘Set[1-2]-’ from all column names (DiscoRhythm column name format)
 3. Save as CSV
 
-@Hurley2018-hg - A circadian proteomic study, where supplemental dataset 2 may be
+@Hurley2018-hg - A circadian proteomic study, where supplemental dataset 2 may 
+be
 used as input to DiscoRhythm after saving sheet “2B” or “2H” as CSV.
 
 @Wu2016-rd - This software package contains truncated transcriptomic datasets
@@ -217,7 +220,8 @@ and persistent homology) and Fig. 6 provides a clear decision tree to aid with
 the selection of the most suitable method for practical data analysis.
 This publication references additional method evaluation articles.
 
-@Wu2014-mo provides an empirical evaluation of 5 methods (ARSER, JTK Cycle, COSOPT,
+@Wu2014-mo provides an empirical evaluation of 5 methods (ARSER, JTK Cycle, 
+COSOPT,
 Fisher's G test, and HAYSTACK).
 
 These references also provide some valuable insights about the experiment design
@@ -428,7 +432,8 @@ analysis progress in a sequential fashion with data from the previous step
 being carried over to the next.
 Each section can be accessed using the sidebar on the left.
 
-Interactive controls allow users to set parameters specific to each section's analysis.
+Interactive controls allow users to set parameters specific to each section's 
+analysis.
 When parameters relevant to a figure change, the corresponding figure will
 dynamically update to reflect the newly calculated results. The exception
 to this is the oscillation detection section which requires user input to 
@@ -685,7 +690,8 @@ dataset, PCA is performed to reduce dimensionality and test the summarized
 temporal signal for rhythmicity (using the Cosinor method). Using an _a priori_
 hypothesized period, a significant fit on **a single** PC indicates the
 presence of
-few phases [^phases] in the dataset, while strong fits **to multiple** PCs suggests that
+few phases [^phases] in the dataset, while strong fits **to multiple** PCs 
+suggests that
 there exist multiple phases of oscillation. Oscillations detected among the
 first principal
 components would be more meaningful than oscillations in the last components.
@@ -759,12 +765,14 @@ sample collections present.
 
 ### Rhythmicity Calculation Configuration
 
-The user must choose a single period [^period] of oscillation to test across all rows
+The user must choose a single period [^period] of oscillation to test across all
+rows
 of the dataset. The application may show warnings/messages regarding the choice
 of period. By default, the period specified in the 'Select Data' section will be
 chosen.
 
-[^period]: If it is unknown which periodicity to test start with the dominant period
+[^period]: If it is unknown which periodicity to test start with the dominant 
+period
 seen in section \@ref(period-detection).
 
 JTK Cycle, Lomb-Scargle, and ARSER results are all obtained through the
@@ -814,7 +822,8 @@ knitr::kable(mat,format = "markdown")
 
 This criteria should be considered during the design phase of an experiment
 when
-possible to ensure the most appropriate method will be available for use. It may not
+possible to ensure the most appropriate method will be available for use. 
+It may not
 always be ideal to utilize multiple methods for rhythm detection as the process
 of integrating the results is not well defined and may interfere with drawing
 clear conclusions. Discussions regarding methods for integrating rhythm
@@ -921,7 +930,8 @@ help for the function `discoBatch()` with command `?discoBatch`.
 by other Bioconductor packages
 should be suitable inputs to DiscoRhythm functions
 once modified to contain the required metadata.
-For a "Summarized experiment" object named `se` the following fields are assumed to be present:
+For a "Summarized experiment" object named `se` the following fields are assumed
+to be present:
 
 1) `rownames(se)` - The feature IDs.
 2) `assay(se)`[^assay] - A matrix containing experimental data.
@@ -974,7 +984,8 @@ se <- discoDFtoSE(indata)
 ### discoSEtoDF
 
 The reverse operation, `discoSEtoDF`, is also available and is mainly intended
-for exporting the data to a "csv" format to be used as an input to the web application.
+for exporting the data to a "csv" format to be used as an input to the web 
+application.
 
 ```
 write.csv(discoSEtoDF(se),file = "DiscoRhythmInputFile.csv",row.names = FALSE)
@@ -1032,7 +1043,8 @@ PCAres <- discoPCAoutliers(selectDataSE,
 
 ### discoPCA
 
-A simple wrapper was written for the `stats::prcomp` function for better use with
+A simple wrapper was written for the `stats::prcomp` function for better use 
+with
 the web application and it can be utilized as:
 
 ```{r}

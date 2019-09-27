@@ -69,9 +69,9 @@ discoSEtoDF <- function(se){
         if(anyDuplicated(se$ID)){
             message("Duplicate IDs found, remaking IDs...")
             colnames(df)[-1] <- paste(se$Time,
-                                      seq_len(ncol(se)),
-                                      se$ReplicateID,
-                                      sep="_")
+                                        seq_len(ncol(se)),
+                                        se$ReplicateID,
+                                        sep="_")
         } else{
             colnames(df)[-1] <- se$ID
         }

@@ -8,9 +8,9 @@ Web Interface**
 
 [DiscoRhythm public server](https://mcarlucci.shinyapps.io/discorhythm/)
 
-See the [tutorial](https://bioconductor.org/packages/3.9/bioc/vignettes/DiscoRhythm/inst/doc/disco_workflow_vignette.html) for details on usage of the web application and R package.
+See the [tutorial](https://bioconductor.org/packages/release/bioc/vignettes/DiscoRhythm/inst/doc/disco_workflow_vignette.html) for details on usage of the web application and R package.
 
-See [DiscoRhythm on Bioconductor](https://bioconductor.org/packages/3.9/bioc/html/DiscoRhythm.html) for more details.
+See [DiscoRhythm on Bioconductor](https://bioconductor.org/packages/release/bioc/html/DiscoRhythm.html) for more details.
 
 ### R Package Installation
 

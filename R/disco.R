@@ -151,8 +151,8 @@ discoApp <- function(ncores=1, port=3838){
 #' all input method names will be evaluated.
 #' @param circular_t logical, is time circular on some base-cycle
 #' (ex. time of day). See the DiscoRhythm vignette for details.
-#' @param ncores numeric, number of cores to parallelize with (applicable to JTK, ARSER
-#' and LS only). If 1 will execute in serial.
+#' @param ncores numeric, number of cores to parallelize with 
+#' (applicable to JTK, ARSER and LS only). If 1, will execute in serial.
 #'
 #'
 #' @return A named list of results where each element is a data.frame for the
@@ -271,9 +271,9 @@ discoODAs <- function(se, period = 24,
     # Multiple Test Correction
         unif$CS$qvalue <- stats::p.adjust(unif$CS$pvalue, method = "BH")
         rownames(unif$CS) <- rownames(se)
-     # Reorder columns such that first 4 are the same across all methods  
+    # Reorder columns such that first 4 are the same across all methods  
         unif$CS <- unif$CS[,c("acrophase","amplitude","pvalue",
-                              "qvalue","Rsq","mesor","sincoef","coscoef")]
+                        "qvalue","Rsq","mesor","sincoef","coscoef")]
     }
     # Run MetaCycle Methods
     rest <- Filter(function(x) x != "CS", method)

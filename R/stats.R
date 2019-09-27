@@ -29,21 +29,22 @@
 #'
 #' @keywords internal
 lmCSmat <- function(x, zts, per = 24) {
-  Y <- as.matrix(x)
+    Y <- as.matrix(x)
 
-  res <- lmCSmatNoNA(Y[NULL,], zts, per)
-  res[1:nrow(Y),] <- NA
-
-  obsinds  <- t(!is.na(Y))
-  obstypes <- unique(obsinds, MARGIN = 2)
-  obstypes <- obstypes[,colSums(obstypes) > 2, drop=FALSE]
-
-  for(i in seq_len(ncol(obstypes))) {
-    inds <- colMeans(obsinds == obstypes[,i]) == 1
-    res[inds,] <- lmCSmatNoNA(Y[inds,obstypes[,i],drop=FALSE], zts[obstypes[,i]], per)
-  }
-
-  res
+    res <- lmCSmatNoNA(Y[NULL,], zts, per)
+    res[seq_len(nrow(Y)),] <- NA
+    
+    obsinds  <- t(!is.na(Y))
+    obstypes <- unique(obsinds, MARGIN = 2)
+    obstypes <- obstypes[,colSums(obstypes) > 2, drop=FALSE]
+    
+    for(i in seq_len(ncol(obstypes))) {
+        inds <- colMeans(obsinds == obstypes[,i]) == 1
+        res[inds,] <- lmCSmatNoNA(Y[inds,obstypes[,i],drop=FALSE],
+                                zts[obstypes[,i]], per)
+    }
+    
+    res
 }
 
 #' Cosinor Without NA Values

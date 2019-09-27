@@ -1,28 +1,37 @@
+Changes in version 1.1.1 (2019-09-27)
+
++ Added report execution mode with zip archive of results.
+  Results can now be emailed from the public server.
++ Automatically fix duplicate row names.
++ Allow direct upload of metadata table to web application.
++ Cosinor now works with NA values (using discoODAs only).
++ Bug fixes.
+
 Changes in version 0.99.8 (2019-04-29)
-+ New URL for public server
++ New URL for public server.
 
 Changes in version 0.99.7 (2019-04-29)
-+ Write intermediate report files to same directory as output report
++ Write intermediate report files to same directory as output report.
 
 Changes in version 0.99.6 (2019-04-26)
-+ Addition of ncores and port arguments to discoApp
++ Addition of ncores and port arguments to discoApp.
 
 Changes in version 0.99.4 (2019-04-24)
-+ Addition of more unit tests on inputs
-+ Bug fixes
++ Addition of more unit tests on inputs.
++ Bug fixes.
 
 Changes in version 0.99.4 (2019-04-24)
-+ Addition of more unit tests on inputs
-+ Bug fixes
++ Addition of more unit tests on inputs.
++ Bug fixes.
 
 Changes in version 0.99.3 (2019-04-18)
-+ Bug fixes
++ Bug fixes.
 
 Changes in version 0.99.2 (2019-04-18)
-+ Use match.arg for argument options
++ Use match.arg for argument options.
 
 Changes in version 0.99.1 (2019-04-09)
-+ Added support for usage of SummarizedExperiment objects
++ Added support for usage of SummarizedExperiment objects.
 
 Changes in version 0.99.0 (2019-04-04)
-+ Submitted to Bioconductor
++ Submitted to Bioconductor.
