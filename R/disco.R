@@ -404,6 +404,6 @@ discoPeriodDetection <- function(se,
     }, numeric(nrow(se)))
     colnames(cosinor_res) <- periods
 
-    allres <- data.table::melt(cosinor_res)
+    allres <- reshape2::melt(cosinor_res)
     return(allres)
 }

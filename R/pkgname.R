@@ -9,7 +9,7 @@
 #' shinydashboard BiocStyle shinyjs
 #' magick VennDiagram UpSetR heatmaply viridis DT zip
 #' @importFrom knitr kable
-#' @importFrom data.table melt
+#' @importFrom reshape2 melt
 #' @importFrom kableExtra column_spec row_spec
 #' @importFrom shinyBS bsTooltip
 #' @importFrom ggExtra ggMarginal

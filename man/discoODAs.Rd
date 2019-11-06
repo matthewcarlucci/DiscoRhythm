@@ -23,8 +23,8 @@ all input method names will be evaluated.}
 \item{circular_t}{logical, is time circular on some base-cycle
 (ex. time of day). See the DiscoRhythm vignette for details.}
 
-\item{ncores}{numeric, number of cores to parallelize with (applicable to JTK, ARSER
-and LS only). If 1 will execute in serial.}
+\item{ncores}{numeric, number of cores to parallelize with 
+(applicable to JTK, ARSER and LS only). If 1, will execute in serial.}
 }
 \value{
 A named list of results where each element is a data.frame for the

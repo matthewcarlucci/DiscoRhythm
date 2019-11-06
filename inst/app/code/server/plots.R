@@ -100,7 +100,7 @@ plotPCAdists <- function(pca, SDfactor, pcToUse = "", npcs = 10) {
 
     npcs <- min(npcs, ncol(pca$rotation))
 
-    df <- data.table::melt(pca$x[, 1:npcs])
+    df <- reshape2::melt(pca$x[, 1:npcs])
     df2 <- df
     df2$usePC = df2$Var2 %in% pcToUse
     df2 <- df2 %>%
@@ -297,7 +297,7 @@ plotOVpcaScatter <- function(OVpca, regressionMeta, OVperiodSelect,
   # rects <- data.frame(xmin = per / 2, xmax = per, ymin = -Inf, ymax = Inf)
 
   # Make plotting data.frame
-    plotdf <- data.table::melt(data.frame("time"=regressionMeta$Time,
+    plotdf <- reshape2::melt(data.frame("time"=regressionMeta$Time,
         OVpca$x[,PCsToUse]),id.var="time")
     colnames(plotdf) <- c("time","PC","value")
     plotdf$nPC <- as.numeric(gsub("PC","",plotdf$PC))
@@ -361,13 +361,23 @@ plotAcroHist <- function(vec, binNum, name = "", rose = TRUE, per = 24) {
         scale_x_discrete("", limits = c(0, per)) +
         sharedtheme()
     } else {
+    
+    # value for centering the bin intervals (i.e. half bin width)  
+    offset <- per / numbins / 2
+    
     # round acro to nearest bin
-        tmp <- ceiling(vec / per * numbins) / numbins * per
+        tmp <- floor((vec%%per) / per * numbins) / numbins * per
         cnts <- table(tmp)
         plotdf <- data.frame(
             "acrophase" = as.numeric(names(cnts)),
             "Count" = as.numeric(cnts)
             )
+        
+    # fill in zeros
+    poss_vals <- seq(numbins)/numbins*per-offset*2
+    zero_idx <- which(!(poss_vals %in% plotdf$acrophase))
+    plotdf <- rbind(plotdf,data.frame("acrophase"=poss_vals[zero_idx],
+                                      "Count"=0))
 
     # find limits and labels for the y axis
         ymax <- max(cnts)
@@ -380,16 +390,17 @@ plotAcroHist <- function(vec, binNum, name = "", rose = TRUE, per = 24) {
         labels <- formatC(breaks, format = "d", big.mark = ",")
         mcnt <- sum(cnts) / numbins
 
-        offset <- per / numbins / 2
     # draw
-        p <- ggplot() +
+        p <-
+          ggplot() +
         geom_rect(data = data.frame(1), ymin = mcnt, ymax = Inf, xmin = 0,
             xmax = per, fill = colors$discoMain, alpha = 0.2) +
         geom_rect(data = data.frame(1), ymin = 0, ymax = mcnt, xmin = 0,
             xmax = per, fill = colors$discoSec, alpha = 0.2) +
-        geom_bar(data = plotdf, aes(x = acrophase - offset, y = Count),
+        geom_bar(data = plotdf, aes(x = acrophase + offset, y = Count),
             stat = "identity", colour = colors$neutral2,
-            fill = colors$neutral) +
+            position=position_identity(),
+            fill = colors$neutral,width = offset) +
         geom_hline(yintercept = c(0, breaks), colour = colors$neutral,
             size = 0.2) +
         scale_x_continuous(name = "", limits = c(0, per),
@@ -462,7 +473,7 @@ plotAmpliHist <- function(discoODAres, bg, fg, binNum, obsUnit = "") {
     plotdf <- vec %>%
     mutate(bin = ceiling((amplitude - min(amplitude)) / nfact * binNum)) %>%
     group_by(bin, SigOrNot) %>%
-    summarise(N = n(), value = (bin * nfact)[1] / binNum)
+    summarise(N = dplyr::n(), value = (bin * nfact)[1] / binNum)
 
     gg <- ggplot(plotdf, aes(x = value, y = N, fill = SigOrNot)) +
     geom_bar(stat = "identity") +
