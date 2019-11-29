@@ -9,7 +9,7 @@ Authors@R: c(
     email = "algimantas.krisciunas@gmc.vu.lt",
     role = c("aut")),
     person("Haohan", "Li",
-    email = "ch2siu@waterloo.ca",
+    email = "Xavier.li@edu.uwaterloo.ca",
     role = c("aut")),
     person("Povilas", "Gibas",
     email = "povilas.gibas@bti.vu.lt",
@@ -21,7 +21,7 @@ Authors@R: c(
     email = "Art.Petronis@camh.ca",
     role = c("aut")),
     person("Gabriel", "Oh",
-    email = "Garbriel.Oh@camh.ca",
+    email = "Gabriel.Oh@camh.ca",
     role = c("aut"))
     )
 Description: Set of functions for estimation of cyclical characteristics, such 
