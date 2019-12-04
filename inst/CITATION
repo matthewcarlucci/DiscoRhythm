@@ -1,0 +1,21 @@
+citEntry(entry="article",
+         title = paste("DiscoRhythm: an easy-to-use web application and",
+            "R package for discovering rhythmicity"),
+         author = personList( as.person("Matthew Carlucci"),
+                              as.person("Algimantas Kriščiūnas"),
+                              as.person("Haohan Li"),
+                              as.person("Povilas Gibas"),
+                              as.person("Karolis Koncevičius"),
+                              as.person("Art Petronis"),
+                              as.person("Gabriel Oh")
+                              ),
+         year = 2019,
+         journal = "Bioinformatics",
+         doi = "10.1093/bioinformatics/btz834",
+         url = "https://doi.org/10.1093/bioinformatics/btz834",
+         textVersion =
+         paste("Matthew Carlucci, Algimantas Kriščiūnas, Haohan Li,",
+         "Povilas Gibas, Karolis Koncevičius, Art Petronis, Gabriel Oh,",
+         "DiscoRhythm: an easy-to-use web application and R package for", 
+         "discovering rhythmicity, Bioinformatics, , btz834,",
+         "https://doi.org/10.1093/bioinformatics/btz834") )
