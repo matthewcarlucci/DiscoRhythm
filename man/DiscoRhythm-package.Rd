@@ -30,11 +30,11 @@ Useful links:
 Authors:
 \itemize{
   \item Algimantas Kriščiūnas \email{algimantas.krisciunas@gmc.vu.lt}
-  \item Haohan Li \email{ch2siu@waterloo.ca}
+  \item Haohan Li \email{Xavier.li@edu.uwaterloo.ca}
   \item Povilas Gibas \email{povilas.gibas@bti.vu.lt}
   \item Karolis Koncevičius \email{karolis.koncevicius@gmc.vu.lt}
   \item Art Petronis \email{Art.Petronis@camh.ca}
-  \item Gabriel Oh \email{Garbriel.Oh@camh.ca}
+  \item Gabriel Oh \email{Gabriel.Oh@camh.ca}
 }
 
 }

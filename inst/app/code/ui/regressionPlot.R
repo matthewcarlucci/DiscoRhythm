@@ -65,7 +65,23 @@ fluidPage(
                     collapsible = FALSE,
                     collapsed = FALSE,
                     h5("Job Submission"),
-                fluidRow(
+                    fluidRow(
+                        column(2,
+                               br(),
+                               conditionalPanel('!input.byEmail && input.batchReceiveMethod == "Report"',{
+                                   downloadButton("reportOutput", "Submit")
+                               }),
+                               conditionalPanel('!(!input.byEmail && input.batchReceiveMethod == "Report")',{
+                                   actionButton("startRegress", " Submit",
+                                                icon = icon("play"))
+                               })
+                        ),
+                        column(3,
+                               radioButtons("batchReceiveMethod",
+                                            label = "Execution Method",
+                                            choices = c("Interactive","Report"),inline = TRUE
+                               )
+                        ),
                     uiOutput("emailUI")
                 )),
                 width = 12

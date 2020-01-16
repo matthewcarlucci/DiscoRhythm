@@ -24,7 +24,7 @@ fluidPage(
                         hr(),
                         p(class="text-muted","Results for this section were
                         generated using DiscoRhythm's ",
-                            tags$code("discoRepAnalysis()")," R function.")
+                            tags$code("discoPeriodDetection()")," R function.")
                     ),
                     column(
                         9,

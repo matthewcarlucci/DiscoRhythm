@@ -159,24 +159,7 @@ output$regressionWarning <- renderText({
 # UI for using email (only used if sender_creds_file file is present)
 output$emailUI <- renderUI({
   
-  ui <- list(column(2,
-                      br(),
-                    conditionalPanel('!input.byEmail && input.batchReceiveMethod == "Report"',{
-                      downloadButton("reportOutput", "Submit")
-                    }),
-                    conditionalPanel('!(!input.byEmail && input.batchReceiveMethod == "Report")',{
-                      actionButton("startRegress", " Submit",
-                                   icon = icon("play"))
-                    })
-    ))
-  
-  ui <- c(ui,list(
-    column(3,
-           radioButtons("batchReceiveMethod",
-                        label = "Execution Method",
-                        choices = c("Interactive","Report"),inline = TRUE
-           )
-    )))
+  ui <- list()
   
   if(file.exists(sender_creds_file)){
     ui <- c(ui,list(

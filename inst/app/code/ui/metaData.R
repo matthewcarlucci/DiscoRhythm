@@ -9,7 +9,7 @@ fluidPage(
                 p(class = "text-muted",
                     "Select samples to use for further analysis.
                     Samples flagged as outliers in previous steps are
-                    deselected by default"),
+                    deselected by default."),
                 actionButton("rowSelectionDeselectPca",
                     "Deselect PCA Outliers",
                     icon = icon("remove-circle", lib = "glyphicon"),
