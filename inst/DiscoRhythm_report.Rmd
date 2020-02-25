@@ -16,11 +16,27 @@ output:
 }
 </style>
 
-The analysis below can be reproduced in R with `discoBatch()` or
-interactively with `discoApp()` by using
-the same input data and parameters shown below.
+The analysis below can be reproduced by one of the following methods: 
+
+1. Running the commands in R.
+2. Running `discoBatch()` with the parameters in section \@ref(parameter-settings).
+3. Interactively with `discoApp()` with the parameters in \@ref(parameter-settings).
+
 *Note: This report is static and does not perform any reactive data
-processing.*
+processing.* 
+
+To run commands directly in R, import the data and input parameters:
+
+```{r}
+# Choose an appropriate command for importing the data
+# indata <- read.csv("path/to/input_data.csv") # From CSV file
+# indata <- readRDS("path/to/input_data.RDS") # From R data file
+# indata <- DiscoRhythm::discoGetSimu() # Import example dataset
+
+# Read input parameters and put them into the global environment
+# discorhythm_inputs <- readRDS('discorhythm_inputs.RDS')
+# list2env(discorhythm_inputs,envir=.GlobalEnv)
+```
 
 # Data Processing
 
@@ -56,15 +72,23 @@ results will be used in section \@ref(visualizations) for generating the
 summary figures. Refer to the "Introduction to DiscoRhythm" document
 for a detailed description of the workflow steps.
 
-```{r code = readLines(batchscript)}
+<!-- To run the computation code -->
+```{r include=FALSE,echo=FALSE}
+# local=TRUE to run within the environment used to call this Rmd
+source(batchscript, local = TRUE)
+```
+
+<!-- To show the code in the report -->
+```{r code = readLines(batchscript),eval=FALSE}
 ```
 
 # Visualizations
 
 Importing the DiscoRhythm plotting functions used by the web application
 for use in this report. To reproduce these results, ensure you have all
-necessary package versions (See \@ref(session-info)). Refer to the user's
-guide or to the descriptions in the web application for details on each figure.
+necessary package versions (See \@ref(session-info)). Refer to the 
+`r BiocStyle::Biocpkg('DiscoRhythm')` user's guide
+or web application for details on each figure.
 
 ```{r }
 source(system.file("app/code/server", "plots.R", package = "DiscoRhythm",
@@ -76,6 +100,7 @@ source(system.file("app/code/server", "plots.R", package = "DiscoRhythm",
 ## Design Summary
 
 ```{r }
+suppressPackageStartupMessages(library(SummarizedExperiment))
 knitr::kable(discoDesignSummary(colData(selectDataSE)), format = "markdown")
 ```
 
@@ -161,13 +186,13 @@ knitr::kable(discoDesignSummary(colData(FilteredSE)), format = "markdown")
 ## ANOVA P-Value Histogram
 
 ```{r }
-plotPvalues(ANOVAres$aovP,50, aov_pcut, 'ANOVA')
+if(aov_method!='None') plotPvalues(ANOVAres$aovP,50, aov_pcut, 'ANOVA')
 ```
 
 ## Signal-to-noise
 
 ```{r }
-ObsVsExpSNR(ANOVAres$allStats,aov_Fcut)
+if(aov_method!='None') ObsVsExpSNR(ANOVAres$allStats,aov_Fcut)
 ```
 
 # Period Detection

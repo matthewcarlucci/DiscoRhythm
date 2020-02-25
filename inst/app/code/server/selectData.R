@@ -15,16 +15,20 @@ names(downloadNameVector) <- names(csvnameVector)
 # Data Collection
 ########################################
 
-rawData <- reactive({
-  req(!is.null(input$inCSV$datapath) | input$selectInputType == "preload")
-  DiscoRhythm:::discoShinyHandler({
+inputpath <- reactive({
+    req(!is.null(input$inCSV$datapath) | input$selectInputType == "preload")
     if (input$selectInputType == "preload") {
-      inputpath <- csvnameVector[input$preData]
+      ret <- csvnameVector[input$preData]
     } else if (input$selectInputType == "csv") {
-      inputpath <- input$inCSV$datapath
+      ret <- input$inCSV$datapath
     }
-    
-    data <- data.table::fread(inputpath,
+    return(ret)
+})
+
+rawData <- reactive({
+  req(!is.null(inputpath()))
+  DiscoRhythm:::discoShinyHandler({
+    data <- data.table::fread(inputpath(),
                               header = TRUE,
                               data.table = FALSE,
                               nrows = 1e5,

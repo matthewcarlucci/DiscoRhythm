@@ -7,8 +7,13 @@
 \usage{
 discoGetODAs(se, method = NULL, period, circular_t = FALSE)
 
-discoODAs(se, period = 24, method = c("CS", "JTK", "LS", "ARS"),
-  circular_t = FALSE, ncores = 1)
+discoODAs(
+  se,
+  period = 24,
+  method = c("CS", "JTK", "LS", "ARS"),
+  circular_t = FALSE,
+  ncores = 1
+)
 }
 \arguments{
 \item{se}{SummarizedExperiment, the main data object used by DiscoRhythm 

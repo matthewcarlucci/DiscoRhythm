@@ -4,12 +4,26 @@
 \alias{discoBatch}
 \title{Core DiscoRhythm Workflow}
 \usage{
-discoBatch(indata, report = NULL, outdata = TRUE, ncores = 1,
-  timeType = "circular", main_per = 24, cor_threshold = 3,
-  cor_method = "pearson", cor_threshType = "sd", pca_threshold = 3,
-  pca_scale = TRUE, pca_pcToCut = paste0("PC", seq_len(4)),
-  aov_method = "None", aov_pcut = 0.05, aov_Fcut = 0,
-  avg_method = "Median", osc_method = NULL, osc_period = 24)
+discoBatch(
+  indata,
+  report = NULL,
+  outdata = TRUE,
+  ncores = 1,
+  timeType = "circular",
+  main_per = 24,
+  cor_threshold = 3,
+  cor_method = "pearson",
+  cor_threshType = "sd",
+  pca_threshold = 3,
+  pca_scale = TRUE,
+  pca_pcToCut = paste0("PC", seq_len(4)),
+  aov_method = "None",
+  aov_pcut = 0.05,
+  aov_Fcut = 0,
+  avg_method = "Median",
+  osc_method = NULL,
+  osc_period = 24
+)
 }
 \arguments{
 \item{indata}{SummarizedExperiment or data.frame, see the vignette for

@@ -52,9 +52,18 @@ prepareReport <- function(file){
         # input parameters
         saveRDS(discoBatchParams(),file=paste0(tdir,"/discorhythm_inputs.RDS"))
         
-        removeModal()
+        # Copy the Rmd file to the directory
+        file.copy(system.file("", "DiscoRhythm_report.Rmd",
+                                            package = "DiscoRhythm",
+                                            mustWork = TRUE),
+                  paste0(tdir,"/discorhythm_report.Rmd"))
+        
+        # Copy the input data to the zip archive
+        # file.copy(inputpath(),paste0(tdir,"/input_data.csv"))
         
         zip::zipr(file,dir(tdir,full.names = TRUE))
+        
+        removeModal()
 }
 
 get_zipname <- function(){
