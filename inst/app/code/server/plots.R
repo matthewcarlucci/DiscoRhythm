@@ -1,27 +1,11 @@
+# Get internal package color palette 
+colors <- DiscoRhythm:::discoColors
+
 ##### ggplot Theme #####
 
 sharedtheme <- function() {
     theme_bw() + theme(text = element_text(size = 10))
 }
-
-colors <- list(
-    "discoMain" = "#FDB813",
-    "discoMain2" = "#FA7D2B",
-    "discoSec" = "#847dd1",
-    "discoSec2" = "#7a74c1",
-    "neutral" = "#808285",
-    "neutral2" = "#515356",
-    "neutral-light" = "#c8cace",
-  # "sig"="#BE1E2D",
-    "shading" = "#DCDDDE",
-    "qualRamp" = rainbow
-    )
-colors$sig <- colors$discoMain2
-colors$outlier <- colors$sig
-colors$highval <- colors$discoMain
-colors$lowval <- colors$discoSec
-# colors$quantRamp <- colorRampPalette(c(colors$lowval,colors$highval))
-colors$quantRamp <- viridis::viridis
 
 ##### Inter-Sample Correlation #####
 
