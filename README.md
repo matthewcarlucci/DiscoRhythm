@@ -8,7 +8,7 @@
 
 ## Overview
 
-A summary of DiscoRhythm from *[Carlucci M. et al, 2019](https://doi.org/10.1093/bioinformatics/btz834)* is presented below.
+A summary of DiscoRhythm from *[Carlucci M. et al, 2020](https://doi.org/10.1093/bioinformatics/btz834)* is presented below.
 
 ![](inst/DiscoRhythm_Figure1.png)
 
@@ -51,4 +51,4 @@ can be used to run the DiscoRhythm web application.
 
 ### Citation
 
->Matthew Carlucci, Algimantas Kriščiūnas, Haohan Li, Povilas Gibas, Karolis Koncevičius, Art Petronis, Gabriel Oh, DiscoRhythm: an easy-to-use web application and R package for discovering rhythmicity, Bioinformatics, , btz834, [https://doi.org/10.1093/bioinformatics/btz834](https://doi.org/10.1093/bioinformatics/btz834)
+>Matthew Carlucci, Algimantas Kriščiūnas, Haohan Li, Povilas Gibas, Karolis Koncevičius, Art Petronis, Gabriel Oh, DiscoRhythm: an easy-to-use web application and R package for discovering rhythmicity, *Bioinformatics*, Volume 36, Issue 6, 15 March 2020, Pages 1952–1954, [https://doi.org/10.1093/bioinformatics/btz834](https://doi.org/10.1093/bioinformatics/btz834)
