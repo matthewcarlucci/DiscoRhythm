@@ -39,7 +39,7 @@ addQicon <- function(title = "", id = NULL) {
 ########################################
 # GLOBAL VARIABLES
 ########################################
-docsURL <- "https://bioconductor.org/packages/3.10/bioc/vignettes/DiscoRhythm/inst/doc/disco_workflow_vignette.html"
+docsURL <- "https://bioconductor.org/packages/3.11/bioc/vignettes/DiscoRhythm/inst/doc/disco_workflow_vignette.html"
 verCode <- packageVersion("DiscoRhythm")
 sender_creds_file <- "sender_creds.RDS" # list with "email" and "passwd"
 

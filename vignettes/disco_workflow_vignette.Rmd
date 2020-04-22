@@ -1215,7 +1215,7 @@ list2env(discorhythm_inputs,envir=.GlobalEnv)
 ```
 
 The code from this template can then be used directly and modified for
-further analysis.
+further analysis. This code and visualization code can be found in the discorhythm_report.html file.
 
 ```{r code = readLines(batchscript), eval= FALSE}
 ```
