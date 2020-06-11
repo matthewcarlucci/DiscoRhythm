@@ -228,13 +228,13 @@ observe({
     summaryVal$TRmerge <- NA
 })
 
-# Hide tabs if no CSV loaded and show when loaded
+# Make sections inaccessible if no CSV loaded
 observeEvent(input$selectInputType, {
     myTabs <- c("filtCorrelationInterCT", "pca", "metadata",
         "rowReplicateAnalysis", "overview", "regressionPage")
     if (input$selectInputType == "csv") {
         observe({
-            if (is.null(input$inCSV$datapath)) {
+            if (is.null(input$inCSV$datapath) | is.null(selectDataSE())) {
                 for (i in myTabs) {
                     addCssClass(selector = paste0("a[data-value='", i, "']"),
                         class = "inactiveLink")

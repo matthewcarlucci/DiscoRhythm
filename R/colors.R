@@ -21,3 +21,10 @@ discoColors$highval <- discoColors$discoMain
 discoColors$lowval <- discoColors$discoSec
 # discoColors$quantRamp <- colorRampPalette(c(discoColors$lowval,discoColors$highval))
 discoColors$quantRamp <- viridis::viridis
+
+#' Common theme elements in DiscoRhythm plots
+#' 
+#' @keywords internal
+theme_disco <- function() {
+  theme_bw() + theme(text = element_text(size = 10))
+}

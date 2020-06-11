@@ -128,8 +128,8 @@ discoBatch <- function(indata,
 discoApp <- function(ncores=1, port=3838){
     appDir <- system.file("app", "", package = "DiscoRhythm")
     if (appDir == "") {
-        stop("Could not find example directory.
-            Try re-installing `DiscoRhythm`.",
+        stop("Could not find application directory. ",
+            "Try re-installing DiscoRhythm.",
             call. = FALSE)
     }
     

@@ -3,9 +3,7 @@ colors <- DiscoRhythm:::discoColors
 
 ##### ggplot Theme #####
 
-sharedtheme <- function() {
-    theme_bw() + theme(text = element_text(size = 10))
-}
+sharedtheme <- DiscoRhythm:::theme_disco
 
 ##### Inter-Sample Correlation #####
 

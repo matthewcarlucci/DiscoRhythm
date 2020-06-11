@@ -73,7 +73,7 @@ output$dlCorHeatmapHTML <- downloadHandler(
 
 meanCor <- reactive({
     corMat <- getCorrelation()
-  # Remove Diagonal of the correalation matrix which used to be all 1
+    # Remove Diagonal of the correlation matrix which used to be all 1
     diag(corMat) <- NA
     rowMeans(corMat, na.rm = TRUE)
 })
