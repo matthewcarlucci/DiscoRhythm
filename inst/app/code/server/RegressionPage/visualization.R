@@ -159,7 +159,12 @@ output$dlWavePlot <- downloadHandler(
 ############ Summary  ################
 #####################################
 observe({
+    
+    # Must check for reactive outside of S4 dispatch (nrow generic) since error
+    # attributes are lost (see https://stackoverflow.com/questions/62327810)
+    req(discoODAres())
     req(nrow(discoODAres()[[1]]) >= 1)
+    
     models <- selectedModels()
     pvalue <- input$pqValueSummary == "1"
     amplilist <- list()
