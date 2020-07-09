@@ -200,7 +200,7 @@ output$dlFstatPlot <- downloadHandler(
 # Main downstream dataframe, passed to regression models
 regressionMeta <- reactive({
     req(FinalSE())
-    as.data.frame(colData(FinalSE()))
+    as.data.frame(SummarizedExperiment::colData(FinalSE()))
 })
 regressionData <- reactive({
     req(FinalSE())

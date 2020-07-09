@@ -99,9 +99,11 @@ source(system.file("app/code/server", "plots.R", package = "DiscoRhythm",
 
 ## Design Summary
 
+<!-- SummarizedExperiment::colData will 
+be called directly to avoid BiocGenerics -->
+
 ```{r }
-suppressPackageStartupMessages(library(SummarizedExperiment))
-knitr::kable(discoDesignSummary(colData(selectDataSE)), format = "markdown")
+knitr::kable(discoDesignSummary(SummarizedExperiment::colData(selectDataSE)), format = "markdown")
 ```
 
 # Outlier Detection
@@ -111,7 +113,7 @@ knitr::kable(discoDesignSummary(colData(selectDataSE)), format = "markdown")
 ### Average Correlations
 
 ```{r }
-plotly::ggplotly(plotAvgCor(colData(selectDataSE),CorRes$meanCor,
+plotly::ggplotly(plotAvgCor(SummarizedExperiment::colData(selectDataSE),CorRes$meanCor,
                             corCut = CorRes$threshold,tUnit = "hr"))
 ```
 
@@ -135,11 +137,11 @@ plotly::ggplotly(
 
 ```{r }
 gridExtra::grid.arrange(
-  plotPCAWithShape(PCAres$x,as.data.frame(colData(selectDataSE)),
+  plotPCAWithShape(PCAres$x,as.data.frame(SummarizedExperiment::colData(selectDataSE)),
                    col = "None",1,2,
                    PCAres$outliers)+
     ggtitle("Before Outlier Removal"),
-  plotPCAWithShape(PCAresAfter$x,as.data.frame(colData(selectDataSE)),
+  plotPCAWithShape(PCAresAfter$x,as.data.frame(SummarizedExperiment::colData(selectDataSE)),
                    col = "None",1,2)+
     ggtitle("After Outlier Removal"),
   ncol=2)
@@ -172,14 +174,14 @@ invisible(plotPCAPairsAfter(PCAresAfter$x,c("PC1","PC2","PC3","PC4"),
 
 ```{r }
 DT::datatable(as.data.frame(
-  colData(selectDataSE)[PCAres$outliers | CorRes$outliers,]
+  SummarizedExperiment::colData(selectDataSE)[PCAres$outliers | CorRes$outliers,]
 ))
 ```
 
 ### Remaining Samples
 
 ```{r }
-knitr::kable(discoDesignSummary(colData(FilteredSE)), format = "markdown")
+knitr::kable(discoDesignSummary(SummarizedExperiment::colData(FilteredSE)), format = "markdown")
 ```
 
 # Replicate Analysis {.tabset}
