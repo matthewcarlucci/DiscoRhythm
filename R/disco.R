@@ -116,6 +116,8 @@ discoBatch <- function(indata,
 #' @inheritParams discoBatch
 #' @param port numeric, port to run the shiny application on. Sets shiny.port
 #' option.
+#' @param local logical, set to FALSE for public server mode to reduce file
+#' size limits.
 #'
 #' @return Nothing is returned by this function.
 #'
@@ -125,7 +127,7 @@ discoBatch <- function(indata,
 #' }
 #' @export
 #'
-discoApp <- function(ncores=1, port=3838){
+discoApp <- function(ncores=1, port=3838, local=TRUE){
     appDir <- system.file("app", "", package = "DiscoRhythm")
     if (appDir == "") {
         stop("Could not find application directory. ",
@@ -135,9 +137,12 @@ discoApp <- function(ncores=1, port=3838){
     
     options(shiny.port=port)
     
-    # making .discorhythm_ncores available to the shiny app environment
+    # making .discorhythm_ncores and .discorhythm_local available to the 
+    # shiny app environment
     .GlobalEnv$.discorhythm_ncores <- ncores
     on.exit(rm(.discorhythm_ncores, envir=.GlobalEnv))
+    .GlobalEnv$.discorhythm_local <- local
+    on.exit(rm(.discorhythm_local, envir=.GlobalEnv))
     
     shiny::runApp(appDir, display.mode = "normal")
 }

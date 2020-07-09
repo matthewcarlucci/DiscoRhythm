@@ -28,7 +28,16 @@ library(shinyBS)
 ########################################
 
 source("code/server/plots.R")
-options(shiny.maxRequestSize = 100 * 1024^2)
+
+# Arguments passed from DiscoRhythm::discoApp() or set outside call to app.R
+# See ?discoApp for argument details
+NCORES <- ifelse(exists(".discorhythm_ncores"),.discorhythm_ncores,1)
+LOCAL <- ifelse(exists(".discorhythm_local"),.discorhythm_local,FALSE)
+
+# Unlimited file size for local usage (100Mb for server)
+max_input_file_size  <- ifelse(LOCAL,Inf,100 * 1024^2)
+
+options(shiny.maxRequestSize = max_input_file_size)
 options(spinner.color.background = "#F5F5F5")
 options(spinner.color = colors$discoMain)
 
@@ -64,13 +73,6 @@ jsCollapseBox <- "shinyjs.collapse = function(boxid) {
 RTconst <- c("JTK" = 100, "ARS" = 75, "LS" = 50, "CS" = 700)
 
 discotheme <- NULL
-
-# argument passed from discoApp or set outside call to app.R
-if(exists(".discorhythm_ncores")){
-  NCORES <- .discorhythm_ncores
-} else {
-  NCORES <- 1
-}
 
 ########################################
 # USER INTERFACE
