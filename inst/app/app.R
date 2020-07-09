@@ -17,7 +17,9 @@ library(shiny)
 library(shinyjs)
 library(shinycssloaders)
 library(shinydashboard)
-library(SummarizedExperiment)
+# Avoid loading BiocGenerics (via SummarizedExperiment) so that this error 
+# is not encountered: https://stackoverflow.com/questions/62327810
+# library(SummarizedExperiment)
 library(DiscoRhythm)
 library(shinyBS)
 
