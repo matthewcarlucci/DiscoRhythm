@@ -88,13 +88,15 @@ Maindata <- reactive({
 
 # Low row number will cause skipping QC
 hideQc <- reactive({
+    req(Maindata())
     nrow(Maindata()) <= 10
 })
 
 # Metadata() is the main raw meta data object
 # Created if Maindata() is created
 Metadata <- reactive({
-    as.data.frame(colData(selectDataSE())  )
+    req(selectDataSE())
+    as.data.frame(SummarizedExperiment::colData(selectDataSE()))
 })
 
 ########################################
@@ -208,6 +210,8 @@ observe({
 
 # Preload summary table with values
 observe({
+    req(Metadata())
+    req(Maindata())
     if (is.null(input$inCSV$name) & input$selectInputType == "csv") {
         shinyjs::hide("dataName")
         shinyjs::hide("summaryTable")
