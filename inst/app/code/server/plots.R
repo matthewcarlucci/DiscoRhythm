@@ -79,8 +79,10 @@ plotObsDistribution <- function(data, selectedSamples, ylab = "Value") {
 plotPCAdists <- function(pca, SDfactor, pcToUse = "", npcs = 10) {
     suppressPackageStartupMessages({library(dplyr)})
     set.seed(1) # For consistent jitter in ggplot
-
-    npcs <- min(npcs, ncol(pca$rotation))
+    
+    # Exclude last PC from visualization as it interferes with
+    # the violin plotting
+    npcs <- min(npcs, ncol(pca$rotation)-1)
 
     df <- reshape2::melt(pca$x[, 1:npcs])
     df2 <- df
@@ -94,11 +96,12 @@ plotPCAdists <- function(pca, SDfactor, pcToUse = "", npcs = 10) {
     p <- df2 %>%
     ggplot(aes(Var2, value, alpha = usePC)) +
     labs(x = "", y = "PC Score") +
-    scale_alpha_manual(values = c(0.5, 1)) +
+    scale_alpha_manual(values = c(0.5, 1),
+                       limits=c(FALSE,TRUE)) +
     geom_hline(yintercept = 0) +
     geom_violin(fill = colors$neutral2)
 
-  # MC: I think this causes errors if not split like this
+    # MC: I think this causes errors if not split like this
     if(any(df2$outlier)){
         p <- p + geom_point(
             data = df2 %>% subset(outlier), aes(group = Var1),
@@ -156,21 +159,35 @@ plotPCAWithShape <- function(x, Metadata, col, pcA = 1, pcB = 2,
     p
 }
 
-plotPCAstats <- function(pcaBeforeTable, pcaAfterTable, pcToUse="", npcs=10) {
-    usePC <- rep(paste0("PC",seq_len(npcs)),2)
-
-    plotdf <- rbind(
-        data.frame(pcaAfterTable, status = "After"),
-        data.frame(pcaBeforeTable, status = "Before")
-        ) %>%
-    reshape2::melt(c("PC", "status")) %>%
-    subset(variable == "Proportion.of.Variance") %>%
-    mutate(status = factor(status, levels = c("Before", "After"))) %>%
-    mutate(value = as.numeric(value)) %>%
-    mutate(usePC=usePC %in% pcToUse)
-
-    plotdf %>%
-    ggplot(aes(PC, value, fill = status, alpha=usePC)) +
+# Plot variance explained from two different PCAs 
+# (before and after removing outliers)
+# Label which PCs were used for outlier detection
+plotPCAstats <- function(pcaBeforeTable, pcaAfterTable, pcToUse="",
+                         npcs=10 # Deprecated
+                         ) {
+    
+    if(npcs!=10){
+      warning("The npcs argument is no longer used and will be removed in 
+              DiscoRhythm 1.8.0")
+    }
+  
+    npcs <- nrow(pcaBeforeTable)
+  
+    master_tab <- rbind(
+      data.frame(pcaAfterTable, status = "After"),
+      data.frame(pcaBeforeTable, status = "Before")
+    )
+    
+    plotdf <- master_tab
+    plotdf$PC <- factor(plotdf$PC,levels=unique(plotdf$PC))
+    plotdf$Proportion.of.Variance = as.numeric(plotdf$Proportion.of.Variance)
+    plotdf$usePC = (master_tab$PC %in% pcToUse)
+    plotdf$status=factor(plotdf$status,levels=c("Before","After"))
+      
+    ggplot(plotdf,aes(PC, Proportion.of.Variance, fill = status,
+                      # Only apply alpha to unused "Before" PCs
+                      alpha=!(!usePC & status=="Before") 
+                      )) +
     geom_bar(
         color = "black",
         stat = "identity", position = "dodge"
@@ -181,15 +198,17 @@ plotPCAstats <- function(pcaBeforeTable, pcaAfterTable, pcToUse="", npcs=10) {
         fill = ""
         ) +
     scale_alpha_manual(
-        values = c(0.2,1)
+        values = c(0.2,1),
+        limits=c(FALSE,TRUE)
         )+
     scale_fill_manual(
         values = c(colors$neutral2, colors$outlier),
         limits = c("Before", "After")
         ) +
     scale_y_continuous(labels = scales::percent) +
+    labs(alpha="usePC") +
     sharedtheme() +
-    scale_x_discrete(limits = paste0("PC", seq_len(10)))
+    scale_x_discrete(limits = paste0("PC", seq_len(min(npcs,10))))
 }
 
 ##### Before Outlier Removal

@@ -4,11 +4,13 @@
 \name{discoODAid2name}
 \alias{discoODAid2name}
 \title{Mapping Identifiers to Full Names}
-\format{A named vector, length 4
+\format{
+A named vector, length 4
 \describe{
   \item{names(discoODAid2name)}{Identifier}
   \item{as.vector(discoODAid2name)}{Full names}
-}}
+}
+}
 \usage{
 discoODAid2name
 }

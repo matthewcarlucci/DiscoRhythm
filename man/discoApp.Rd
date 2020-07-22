@@ -4,7 +4,7 @@
 \alias{discoApp}
 \title{Launch the DiscoRhythm Shiny Application}
 \usage{
-discoApp(ncores = 1, port = 3838)
+discoApp(ncores = 1, port = 3838, local = TRUE)
 }
 \arguments{
 \item{ncores}{numeric, number of cores to use for parallelized tasks.
@@ -12,6 +12,9 @@ Currently, only used in oscillation detection function \code{discoODAs}.}
 
 \item{port}{numeric, port to run the shiny application on. Sets shiny.port
 option.}
+
+\item{local}{logical, set to FALSE for public server mode to reduce file
+size limits.}
 }
 \value{
 Nothing is returned by this function.

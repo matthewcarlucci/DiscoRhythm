@@ -1,5 +1,9 @@
+Changes in version 1.5.6 (2020-07-22)
++ Visual change to screen plot (No longer apply alpha to "after").
++ Bug fixes.
+
 Changes in version 1.3.2 (2020-01-16)
-+ Fixed UI bug preventing job submission under some conditions
++ Fixed UI bug preventing job submission under some conditions.
 
 Changes in version 1.1.1 (2019-09-27)
 

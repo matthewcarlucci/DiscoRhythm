@@ -139,7 +139,7 @@ pcaStatsPlot <- reactive({
         p <- errorPlot(main = "0 or 1 Samples\nRemaining", textcol = "black")
     } else {
         p <- plotPCAstats(pcaBefore()$table, pcaAfter()$table,
-            pcToUse=input$pcToCut, npcs=10)
+                          pcToUse=input$pcToCut)
     }
     p
 })

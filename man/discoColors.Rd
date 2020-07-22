@@ -6,7 +6,9 @@
 \title{Color pallete used by DiscoRhythm for plotting.
 This palette is duplicated in inst/app/www/custom_styles.css for
 application to the shiny app.}
-\format{An object of class \code{list} of length 14.}
+\format{
+An object of class \code{list} of length 14.
+}
 \usage{
 discoColors
 }
