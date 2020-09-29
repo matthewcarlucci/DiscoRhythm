@@ -302,16 +302,14 @@ case).
 
 ```{r echo=F}
 kableExtra::column_spec(knitr::kable(head(indata[,1:6])),
-              1, background = "#FDB813",
-              include_thead = TRUE)
+              1, background = "#FDB813")
 ```
 
 All subsequent columns contain experimental sample data.
 
 ```{r echo=F}
 kableExtra::column_spec(knitr::kable(head(indata[,1:6])),
-              2:6, background = "#FDB813",
-              include_thead = TRUE)
+              2:6, background = "#FDB813")
 ```
 
 ## Column Names
@@ -323,7 +321,7 @@ kableExtra::column_spec(
 kableExtra::row_spec(
   knitr::kable(head(indata[,1:6])),
               0, background = "#FDB813"),
-1, background = "inherit",include_thead = TRUE)
+1, background = "inherit")
 ```
 
 Names [^alphanumeric] are expected to follow the pattern:
