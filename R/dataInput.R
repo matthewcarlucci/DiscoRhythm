@@ -54,15 +54,14 @@ discoCheckInput <- function(se, n_min_sample = 3) {
         dat <- as.matrix(data.frame(lapply(dat, function(x) as.numeric(x))))
         colnames(dat) <- colNames
     }
-    
+
     # Remove constant rows or rows with NAs
     # Flag rows with NAs
     rowToKeep <- apply(dat, 1, function(x) {!any(is.na(x))})
     # Flag rows with constant values
-    rowToKeep[rowToKeep] <- apply(
-        dat[rowToKeep, ], 1,
-        function(x) {!(max(x) == min(x))}
-    )
+    rowToKeep[rowToKeep] <- apply(dat[rowToKeep, , drop=FALSE], 1,function(x) {
+        !(max(x) == min(x))
+    })
     if (sum(!rowToKeep) != 0) {
         dat <- dat[rowToKeep, ]
         warning(paste(
