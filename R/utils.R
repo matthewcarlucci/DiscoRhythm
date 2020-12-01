@@ -104,11 +104,13 @@ discoShinyHandler <- function(expr,
         )
     },
     error = function(msg) {
+        warning("An error message was displayed in the application")
+        warning(msg$message)
         shiny::showModal(shiny::modalDialog(
             title = paste0("Error in ", section),
             shiny::tags$b(msg$message), shiny::tags$br(),
             "R function: ",
-            msg$call, shiny::tags$br(),
+            deparse(msg$call), shiny::tags$br(),
             "Contact the author if you believe this to be a bug",
             easyClose = TRUE, footer = NULL
             ))
