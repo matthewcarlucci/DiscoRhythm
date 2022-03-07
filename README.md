@@ -1,7 +1,6 @@
 
 # DiscoRhythm - Discovering Rhythmicity <img src="inst/app/www/disco_128.png" align="right" width="120" />
 
-![platforms](https://bioconductor.org/shields/availability/3.10/DiscoRhythm.svg)
 ![build](https://bioconductor.org/shields/build/release/bioc/DiscoRhythm.svg)
 ![in Bioc](https://bioconductor.org/shields/years-in-bioc/DiscoRhythm.svg)
 [![](https://img.shields.io/badge/doi-10.1093/bioinformatics/btz834-green.svg)](https://doi.org/10.1093/bioinformatics/btz834)
