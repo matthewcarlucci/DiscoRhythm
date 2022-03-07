@@ -62,7 +62,6 @@ id2name <- discoODAid2name
 name2id <- names(id2name)
 names(name2id) <- id2name
 
-jsRestartApp <- "shinyjs.reset = function() {history.go(0)}"
 jsShinyBusy <- "$('html').hasClass('shiny-busy')"
 jsShinyNotBusy <- "!$('html').hasClass('shiny-busy')"
 jsCollapseBox <- "shinyjs.collapse = function(boxid) {
@@ -205,9 +204,7 @@ ui <- dashboardPage(
         menuSubItem("Oscillation Detection", "regressionPage",
             icon = icon("clock-o")),
         hr(class="sidebarsplitter"),
-        tableOutput("summaryTable"),
-    # Restart App (avoiding V8 dep by using functions arg)
-        shinyjs::extendShinyjs(text = jsRestartApp,functions = c("reset"))
+        tableOutput("summaryTable")
         )),
 
   # Where to find code for each tabItem

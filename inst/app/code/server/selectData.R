@@ -151,7 +151,7 @@ observeEvent(input$restartAppInSelectData, {
         )
 })
 observeEvent(input$restartAppConfirmed, {
-    js$reset()
+    session$reload()
 })
 
 # Code to download example data
